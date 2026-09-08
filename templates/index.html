@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+    Historial de partidos SofaScore
+  </title>
+
+
+  <!-- =====================================================
+       CSS
+       ===================================================== -->
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       CONTENEDOR PRINCIPAL
+       ===================================================== -->
+
+  <div class="container">
+
+
+    <!-- =================================================
+         TÍTULO
+         ================================================= -->
+
+    <h1>
+      Historial de partidos SofaScore
+    </h1>
+
+
+    <!-- =================================================
+         BUSCADOR
+         ================================================= -->
+
+    <div class="buscador">
+
+
+      <div class="inputs">
+
+
+        <!-- =========================================
+             EQUIPO LOCAL
+             ========================================= -->
+
+        <div class="campo">
+
+          <label for="team_id_1">
+            ID equipo local
+          </label>
+
+          <input id="team_id_1" type="number" placeholder="ID del equipo">
+
+        </div>
+
+
+        <!-- =========================================
+             EQUIPO VISITANTE
+             ========================================= -->
+
+        <div class="campo">
+
+          <label for="team_id_2">
+            ID equipo visitante
+          </label>
+
+          <input id="team_id_2" type="number" placeholder="ID del equipo">
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =============================================
+           BOTÓN
+           ============================================= -->
+
+      <button id="btnBuscar" onclick="buscarPartidos()">
+        Buscar partidos
+      </button>
+
+
+      <!-- =============================================
+           MENSAJE
+           ============================================= -->
+
+      <div id="mensaje"></div>
+
+
+    </div>
+
+
+    <!-- =================================================
+         RESULTADOS
+         ================================================= -->
+
+    <div id="resultados" class="equipos" style="display: none;">
+
+
+      <!-- =================================================
+           EQUIPO LOCAL
+           ================================================= -->
+
+      <div class="equipo">
+
+
+        <h2 id="nombreLocal">
+          Equipo local
+        </h2>
+
+
+        <!-- =============================================
+             GENERAL
+             ============================================= -->
+
+        <div class="seccion">
+
+          <h3>
+            Últimos 10 partidos generales
+          </h3>
+
+          <div id="localGeneral"></div>
+
+        </div>
+
+
+        <!-- =============================================
+             COMO LOCAL
+             ============================================= -->
+
+        <div class="seccion">
+
+          <h3>
+            Últimos 10 partidos como local
+          </h3>
+
+          <div id="localComoLocal"></div>
+
+        </div>
+
+
+      </div>
+
+
+      <!-- =================================================
+           EQUIPO VISITANTE
+           ================================================= -->
+
+      <div class="equipo">
+
+
+        <h2 id="nombreVisitante">
+          Equipo visitante
+        </h2>
+
+
+        <!-- =============================================
+             GENERAL
+             ============================================= -->
+
+        <div class="seccion">
+
+          <h3>
+            Últimos 10 partidos generales
+          </h3>
+
+          <div id="visitanteGeneral"></div>
+
+        </div>
+
+
+        <!-- =============================================
+             COMO VISITANTE
+             ============================================= -->
+
+        <div class="seccion">
+
+          <h3>
+            Últimos 10 partidos como visitante
+          </h3>
+
+          <div id="visitanteComoVisitante"></div>
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         MERCADOS
+         ===================================================== -->
+
+    <section id="mercados" class="mercados">
+
+      <!--
+        Esta sección se rellenará mediante mercados.js.
+
+        Estructura:
+
+        MERCADOS
+          └── POPULARES
+                └── Resultado del partido
+      -->
+
+    </section>
+
+
+  </div>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+       ===================================================== -->
+
+
+  <!-- Aplicación principal -->
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+
+  <!-- Partidos -->
+
+  <script src="{{ url_for('static', filename='js/partidos.js') }}"></script>
+
+
+  <!-- Estadísticas -->
+
+  <script src="{{ url_for('static', filename='js/estadisticas.js') }}"></script>
+
+
+  <!-- Mercados -->
+
+  <script src="{{ url_for('static', filename='js/mercados.js') }}"></script>
+
+
+</body>
+
+</html>

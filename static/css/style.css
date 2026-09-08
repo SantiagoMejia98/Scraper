@@ -1,0 +1,306 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #222;
+}
+
+.container {
+  max-width: 1500px;
+  margin: auto;
+}
+
+h1 {
+  margin-bottom: 25px;
+}
+
+.buscador {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.inputs {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.campo {
+  flex: 1;
+  min-width: 250px;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: bold;
+}
+
+.campo input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 6px;
+  background: #222;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#mensaje {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.equipos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+.equipo {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.equipo h2 {
+  margin-top: 0;
+}
+
+.seccion {
+  margin-top: 25px;
+}
+
+.seccion h3 {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ddd;
+}
+
+.partido {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #fafafa;
+  overflow: hidden;
+}
+
+.partido-cabecera {
+  padding: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.partido-cabecera:hover {
+  background: #f0f0f0;
+}
+
+.fecha {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 6px;
+}
+
+.equipos-partido {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.nombre-equipo {
+  font-weight: bold;
+}
+
+.visitante {
+  text-align: right;
+}
+
+.marcador {
+  font-size: 20px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.resultado {
+  margin-top: 7px;
+  font-weight: bold;
+}
+
+.victoria {
+  color: #16803c;
+}
+
+.empate {
+  color: #a06a00;
+}
+
+.derrota {
+  color: #c62828;
+}
+
+.competicion {
+  font-size: 13px;
+  color: #777;
+  margin-top: 5px;
+}
+
+.estadisticas {
+  display: none;
+  border-top: 1px solid #ddd;
+  background: white;
+  padding: 15px;
+}
+
+.estadisticas.visible {
+  display: block;
+}
+
+.estadisticas-titulo {
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.tabla-estadisticas {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-estadisticas th {
+  background: #eeeeee;
+  padding: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.tabla-estadisticas td {
+  padding: 7px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.tabla-estadisticas td:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+
+.tabla-estadisticas td:not(:first-child) {
+  text-align: center;
+}
+
+.periodo {
+  margin-top: 18px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.cargando {
+  color: #777;
+  padding: 5px 0;
+}
+
+.error {
+  color: #c62828;
+  background: #ffeaea;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.vacio {
+  padding: 15px;
+  color: #777;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.flecha {
+  float: right;
+  font-size: 16px;
+  color: #777;
+}
+
+/* ============================================================
+   TABLA DE JUGADORES
+   ============================================================ */
+
+.tabla-jugadores-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 5px;
+}
+
+.tabla-jugadores {
+  min-width: max-content;
+  width: max-content;
+}
+
+.tabla-jugadores th,
+.tabla-jugadores td {
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.tabla-jugadores th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.tabla-jugadores th:first-child,
+.tabla-jugadores td:first-child {
+  text-align: left;
+}
+
+.tabla-jugadores th:first-child,
+.tabla-jugadores td:first-child {
+  min-width: 160px;
+}
+
+.tabla-jugadores small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: normal;
+  color: #777;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .equipos {
+    grid-template-columns: 1fr;
+  }
+}
