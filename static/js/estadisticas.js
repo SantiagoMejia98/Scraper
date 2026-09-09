@@ -2,11 +2,13 @@
 // ESTADÍSTICAS DE PARTIDOS
 // ============================================================
 
+
 // ============================================================
 // ESCAPAR HTML
 // ============================================================
 
 function escaparHTML(texto) {
+
   if (texto === null || texto === undefined) {
     return "";
   }
@@ -19,11 +21,13 @@ function escaparHTML(texto) {
     .replace(/'/g, "&#039;");
 }
 
+
 // ============================================================
 // NORMALIZAR ID
 // ============================================================
 
 function normalizarId(valor) {
+
   if (valor === null || valor === undefined) {
     return "";
   }
@@ -31,16 +35,26 @@ function normalizarId(valor) {
   return String(valor);
 }
 
+
 // ============================================================
 // OBTENER EQUIPO OBJETIVO REAL
 // ============================================================
 
-function obtenerEquipoObjetivoReal(equipoObjetivoId, homeTeamId, awayTeamId) {
-  const objetivo = normalizarId(equipoObjetivoId);
+function obtenerEquipoObjetivoReal(
+  equipoObjetivoId,
+  homeTeamId,
+  awayTeamId
+) {
 
-  const home = normalizarId(homeTeamId);
+  const objetivo =
+    normalizarId(equipoObjetivoId);
 
-  const away = normalizarId(awayTeamId);
+  const home =
+    normalizarId(homeTeamId);
+
+  const away =
+    normalizarId(awayTeamId);
+
 
   // ==========================================================
   // EQUIPO ANALIZADO = LOCAL
@@ -50,6 +64,7 @@ function obtenerEquipoObjetivoReal(equipoObjetivoId, homeTeamId, awayTeamId) {
     return "local";
   }
 
+
   // ==========================================================
   // EQUIPO ANALIZADO = VISITANTE
   // ==========================================================
@@ -58,8 +73,10 @@ function obtenerEquipoObjetivoReal(equipoObjetivoId, homeTeamId, awayTeamId) {
     return "visitante";
   }
 
+
   return null;
 }
+
 
 // ============================================================
 // TOGGLE ESTADÍSTICAS
@@ -72,24 +89,44 @@ async function toggleEstadisticas(
   homeTeamId,
   awayTeamId,
 ) {
-  const panel = document.getElementById(`stats-${idUnico}`);
 
-  const contenido = document.getElementById(`stats-content-${idUnico}`);
+  const panel =
+    document.getElementById(
+      `stats-${idUnico}`
+    );
 
-  const flecha = document.getElementById(`flecha-${idUnico}`);
+  const contenido =
+    document.getElementById(
+      `stats-content-${idUnico}`
+    );
+
+  const flecha =
+    document.getElementById(
+      `flecha-${idUnico}`
+    );
+
 
   if (!panel || !contenido) {
-    console.error("No se encontró el panel de estadísticas.");
+
+    console.error(
+      "No se encontró el panel de estadísticas."
+    );
 
     return;
   }
+
 
   // ==========================================================
   // CERRAR
   // ==========================================================
 
-  if (panel.classList.contains("visible")) {
-    panel.classList.remove("visible");
+  if (
+    panel.classList.contains("visible")
+  ) {
+
+    panel.classList.remove(
+      "visible"
+    );
 
     if (flecha) {
       flecha.textContent = "▶";
@@ -98,64 +135,112 @@ async function toggleEstadisticas(
     return;
   }
 
+
   // ==========================================================
   // ABRIR
   // ==========================================================
 
-  panel.classList.add("visible");
+  panel.classList.add(
+    "visible"
+  );
 
   if (flecha) {
     flecha.textContent = "▼";
   }
 
+
   // ==========================================================
   // CACHE
   // ==========================================================
 
-  const cacheKey = `${eventId}-${equipoObjetivoId}`;
+  const cacheKey =
+    `${eventId}-${equipoObjetivoId}`;
 
-  let data = estadisticasCache[cacheKey];
+  let data =
+    estadisticasCache[cacheKey];
+
 
   // ==========================================================
   // COMPATIBILIDAD CON CACHE ANTIGUO
   // ==========================================================
 
   if (!data) {
-    data = estadisticasCache[eventId];
+    data =
+      estadisticasCache[eventId];
   }
+
 
   // ==========================================================
   // SI YA ESTÁ CARGADO EN ESTE PANEL
   // ==========================================================
 
-  if (contenido.dataset.cargado === "true") {
+  if (
+    contenido.dataset.cargado === "true"
+  ) {
     return;
   }
+
 
   // ==========================================================
   // SI NO ESTÁ EN CACHE
   // ==========================================================
 
   if (!data) {
+
     contenido.innerHTML = `
       <div class="cargando">
         Cargando estadísticas...
       </div>
     `;
 
-    try {
-      const response = await fetch(`/api/partido/${eventId}/estadisticas`);
 
-      const resultado = await response.json();
+    try {
+
+      const response =
+        await fetch(
+          `/api/partido/${eventId}/estadisticas`
+        );
+
+
+      const resultado =
+        await response.json();
+
 
       if (!response.ok) {
-        throw new Error(resultado.error || "Error al obtener estadísticas.");
+
+        throw new Error(
+          resultado.error ||
+          "Error al obtener estadísticas."
+        );
       }
+
 
       data = resultado;
 
-      estadisticasCache[cacheKey] = data;
+
+      // ======================================================
+      // GUARDAR EN CACHE EN MEMORIA
+      // ======================================================
+
+      estadisticasCache[cacheKey] =
+        data;
+
+
+      // ======================================================
+      // GUARDAR EN LOCAL STORAGE
+      // ======================================================
+
+      if (
+        typeof guardarCacheEstadisticas ===
+        "function"
+      ) {
+
+        guardarCacheEstadisticas();
+
+      }
+
     } catch (error) {
+
       contenido.innerHTML = `
         <div class="error">
           ❌ ${escaparHTML(error.message)}
@@ -166,11 +251,13 @@ async function toggleEstadisticas(
     }
   }
 
+
   // ==========================================================
   // ERROR DEL BACKEND
   // ==========================================================
 
   if (data.error) {
+
     contenido.innerHTML = `
       <div class="error">
         ❌ ${escaparHTML(data.error)}
@@ -180,31 +267,42 @@ async function toggleEstadisticas(
     return;
   }
 
+
   // ==========================================================
   // IDs DEFINITIVOS
   // ==========================================================
 
-  const objetivoFinal = equipoObjetivoId ?? data.equipo_objetivo_id;
+  const objetivoFinal =
+    equipoObjetivoId ??
+    data.equipo_objetivo_id;
 
-  const homeFinal = homeTeamId ?? data.home_team_id;
+  const homeFinal =
+    homeTeamId ??
+    data.home_team_id;
 
-  const awayFinal = awayTeamId ?? data.away_team_id;
+  const awayFinal =
+    awayTeamId ??
+    data.away_team_id;
+
 
   // ==========================================================
   // DETERMINAR HOME / AWAY
   // ==========================================================
 
-  const equipoObjetivo = obtenerEquipoObjetivoReal(
-    objetivoFinal,
-    homeFinal,
-    awayFinal,
-  );
+  const equipoObjetivo =
+    obtenerEquipoObjetivoReal(
+      objetivoFinal,
+      homeFinal,
+      awayFinal,
+    );
+
 
   // ==========================================================
   // VALIDAR EQUIPO OBJETIVO
   // ==========================================================
 
   if (!equipoObjetivo) {
+
     contenido.innerHTML = `
       <div class="error">
         ⚠️ No se pudo identificar
@@ -212,14 +310,23 @@ async function toggleEstadisticas(
       </div>
     `;
 
-    console.error("No se pudo determinar el equipo objetivo:", {
-      equipoObjetivoId: objetivoFinal,
-      homeTeamId: homeFinal,
-      awayTeamId: awayFinal,
-    });
+    console.error(
+      "No se pudo determinar el equipo objetivo:",
+      {
+        equipoObjetivoId:
+          objetivoFinal,
+
+        homeTeamId:
+          homeFinal,
+
+        awayTeamId:
+          awayFinal,
+      }
+    );
 
     return;
   }
+
 
   // ==========================================================
   // RENDERIZAR
@@ -233,8 +340,11 @@ async function toggleEstadisticas(
     equipoObjetivo,
   );
 
-  contenido.dataset.cargado = "true";
+
+  contenido.dataset.cargado =
+    "true";
 }
+
 
 // ============================================================
 // RENDERIZAR ESTADÍSTICAS
@@ -247,13 +357,19 @@ function renderizarEstadisticas(
   equipoObjetivoId,
   equipoObjetivo,
 ) {
+
   let html = "";
+
 
   // ==========================================================
   // PERIODOS
   // ==========================================================
 
-  const periodosRaw = Array.isArray(data.periodos) ? data.periodos : [];
+  const periodosRaw =
+    Array.isArray(data.periodos)
+      ? data.periodos
+      : [];
+
 
   const periodos = {
     "1ST": [],
@@ -261,21 +377,34 @@ function renderizarEstadisticas(
     FT: [],
   };
 
+
   // ==========================================================
   // AGRUPAR FILAS
   // ==========================================================
 
-  periodosRaw.forEach((fila) => {
-    if (!fila) {
-      return;
-    }
+  periodosRaw.forEach(
+    (fila) => {
 
-    const periodo = fila.periodo;
+      if (!fila) {
+        return;
+      }
 
-    if (periodo === "1ST" || periodo === "2ND" || periodo === "FT") {
-      periodos[periodo].push(fila);
+      const periodo =
+        fila.periodo;
+
+      if (
+        periodo === "1ST" ||
+        periodo === "2ND" ||
+        periodo === "FT"
+      ) {
+
+        periodos[periodo].push(
+          fila
+        );
+      }
     }
-  });
+  );
+
 
   // ==========================================================
   // NOMBRES DE PERIODOS
@@ -287,97 +416,142 @@ function renderizarEstadisticas(
     FT: "FT",
   };
 
+
   // ==========================================================
   // ORDEN
   // ==========================================================
 
-  const ordenPeriodos = ["1ST", "2ND", "FT"];
+  const ordenPeriodos = [
+    "1ST",
+    "2ND",
+    "FT"
+  ];
+
 
   // ==========================================================
   // MOSTRAR PERIODOS
   // ==========================================================
 
-  ordenPeriodos.forEach((periodo) => {
-    const filas = periodos[periodo] || [];
+  ordenPeriodos.forEach(
+    (periodo) => {
 
-    if (!Array.isArray(filas) || filas.length === 0) {
-      return;
-    }
+      const filas =
+        periodos[periodo] || [];
 
-    html += `
-      <div class="periodo-estadisticas">
 
-        <h4>
-          ${escaparHTML(nombresPeriodo[periodo])}
-        </h4>
+      if (
+        !Array.isArray(filas) ||
+        filas.length === 0
+      ) {
+        return;
+      }
 
-        <table class="tabla-estadisticas">
 
-          <thead>
+      html += `
+        <div class="periodo-estadisticas">
 
+          <h4>
+            ${escaparHTML(
+              nombresPeriodo[periodo]
+            )}
+          </h4>
+
+          <table class="tabla-estadisticas">
+
+            <thead>
+
+              <tr>
+
+                <th>
+                  ${escaparHTML(
+                    data.local_equipo ||
+                    "Local"
+                  )}
+                </th>
+
+                <th>
+                  Estadística
+                </th>
+
+                <th>
+                  ${escaparHTML(
+                    data.visitante_equipo ||
+                    "Visitante"
+                  )}
+                </th>
+
+              </tr>
+
+            </thead>
+
+            <tbody>
+      `;
+
+
+      // ========================================================
+      // FILAS
+      // ========================================================
+
+      filas.forEach(
+        (fila) => {
+
+          html += `
             <tr>
 
-              <th>
-                ${escaparHTML(data.local_equipo || "Local")}
-              </th>
+              <td>
+                ${escaparHTML(
+                  fila.local ?? "-"
+                )}
+              </td>
 
-              <th>
-                Estadística
-              </th>
+              <td>
+                ${escaparHTML(
+                  fila.estadistica ?? "-"
+                )}
+              </td>
 
-              <th>
-                ${escaparHTML(data.visitante_equipo || "Visitante")}
-              </th>
+              <td>
+                ${escaparHTML(
+                  fila.visitante ?? "-"
+                )}
+              </td>
 
             </tr>
+          `;
+        }
+      );
 
-          </thead>
 
-          <tbody>
-    `;
-
-    // ========================================================
-    // FILAS
-    // ========================================================
-
-    filas.forEach((fila) => {
       html += `
-        <tr>
+            </tbody>
 
-          <td>
-            ${escaparHTML(fila.local ?? "-")}
-          </td>
+          </table>
 
-          <td>
-            ${escaparHTML(fila.estadistica ?? "-")}
-          </td>
-
-          <td>
-            ${escaparHTML(fila.visitante ?? "-")}
-          </td>
-
-        </tr>
+        </div>
       `;
-    });
+    }
+  );
 
-    html += `
-          </tbody>
-
-        </table>
-
-      </div>
-    `;
-  });
 
   // ==========================================================
   // JUGADORES
   // ==========================================================
 
-  const jugadoresPorEquipo = data.jugadores || {};
+  const jugadoresPorEquipo =
+    data.jugadores || {};
 
-  const jugadores = Array.isArray(jugadoresPorEquipo[equipoObjetivo])
-    ? jugadoresPorEquipo[equipoObjetivo]
-    : [];
+
+  const jugadores =
+    Array.isArray(
+      jugadoresPorEquipo[
+        equipoObjetivo
+      ]
+    )
+      ? jugadoresPorEquipo[
+          equipoObjetivo
+        ]
+      : [];
+
 
   // ==========================================================
   // SEPARAR PORTEROS / CAMPO
@@ -387,35 +561,57 @@ function renderizarEstadisticas(
 
   const jugadoresCampo = [];
 
-  jugadores.forEach((jugador) => {
-    if (esPortero(jugador)) {
-      porteros.push(jugador);
-    } else {
-      jugadoresCampo.push(jugador);
+
+  jugadores.forEach(
+    (jugador) => {
+
+      if (esPortero(jugador)) {
+
+        porteros.push(jugador);
+
+      } else {
+
+        jugadoresCampo.push(jugador);
+      }
     }
-  });
+  );
+
 
   // ==========================================================
   // PORTEROS
   // ==========================================================
 
   if (porteros.length > 0) {
-    html += renderizarTablaPorteros(porteros);
+
+    html +=
+      renderizarTablaPorteros(
+        porteros
+      );
   }
+
 
   // ==========================================================
   // JUGADORES DE CAMPO
   // ==========================================================
 
   if (jugadoresCampo.length > 0) {
-    html += renderizarTablaJugadoresCampo(jugadoresCampo);
+
+    html +=
+      renderizarTablaJugadoresCampo(
+        jugadoresCampo
+      );
   }
+
 
   // ==========================================================
   // SIN JUGADORES
   // ==========================================================
 
-  if (jugadores.length === 0 && !html.trim()) {
+  if (
+    jugadores.length === 0 &&
+    !html.trim()
+  ) {
+
     html = `
       <div class="vacio">
         No hay estadísticas de jugadores
@@ -424,11 +620,13 @@ function renderizarEstadisticas(
     `;
   }
 
+
   // ==========================================================
   // SIN ESTADÍSTICAS
   // ==========================================================
 
   if (!html.trim()) {
+
     html = `
       <div class="vacio">
         No hay estadísticas disponibles.
@@ -436,21 +634,32 @@ function renderizarEstadisticas(
     `;
   }
 
-  contenedor.innerHTML = html;
+
+  contenedor.innerHTML =
+    html;
 }
+
 
 // ============================================================
 // IDENTIFICAR PORTERO
 // ============================================================
 
 function esPortero(jugador) {
+
   if (!jugador) {
     return false;
   }
 
-  const posicion = String(jugador.posicion || jugador.position || "")
-    .trim()
-    .toUpperCase();
+
+  const posicion =
+    String(
+      jugador.posicion ||
+      jugador.position ||
+      ""
+    )
+      .trim()
+      .toUpperCase();
+
 
   // ==========================================================
   // POSICIONES DE PORTERO
@@ -464,38 +673,58 @@ function esPortero(jugador) {
     posicion === "ARQUERO" ||
     posicion === "GOALKEEPER"
   ) {
+
     return true;
   }
+
 
   // ==========================================================
   // TEXTO ADICIONAL
   // ==========================================================
 
   if (
-    posicion.includes("GOALKEEPER") ||
-    posicion.includes("PORTERO") ||
-    posicion.includes("ARQUERO")
+    posicion.includes(
+      "GOALKEEPER"
+    ) ||
+    posicion.includes(
+      "PORTERO"
+    ) ||
+    posicion.includes(
+      "ARQUERO"
+    )
   ) {
+
     return true;
   }
 
+
   return false;
 }
+
 
 // ============================================================
 // TABLA DE PORTEROS
 // ============================================================
 
-function renderizarTablaPorteros(porteros) {
-  if (!Array.isArray(porteros) || porteros.length === 0) {
+function renderizarTablaPorteros(
+  porteros
+) {
+
+  if (
+    !Array.isArray(porteros) ||
+    porteros.length === 0
+  ) {
+
     return "";
   }
+
 
   // ==========================================================
   // COLUMNAS PORTEROS
   // ==========================================================
 
   const columnas = [
+
     {
       titulo: "Jugador",
       campo: "jugador",
@@ -545,6 +774,7 @@ function renderizarTablaPorteros(porteros) {
     },
   ];
 
+
   return construirTablaJugadores(
     porteros,
     columnas,
@@ -553,23 +783,34 @@ function renderizarTablaPorteros(porteros) {
   );
 }
 
+
 // ============================================================
 // TABLA DE JUGADORES DE CAMPO
 // ============================================================
+
 // ============================================================
 // TABLAS DE JUGADORES DE CAMPO
 // ============================================================
 
-function renderizarTablaJugadoresCampo(jugadores) {
-  if (!Array.isArray(jugadores) || jugadores.length === 0) {
+function renderizarTablaJugadoresCampo(
+  jugadores
+) {
+
+  if (
+    !Array.isArray(jugadores) ||
+    jugadores.length === 0
+  ) {
+
     return "";
   }
+
 
   // ==========================================================
   // TABLA GOLES
   // ==========================================================
 
   const columnasGoles = [
+
     {
       titulo: "Jugador",
       campo: "jugador",
@@ -631,11 +872,13 @@ function renderizarTablaJugadoresCampo(jugadores) {
     },
   ];
 
+
   // ==========================================================
   // TABLA TARJETAS
   // ==========================================================
 
   const columnasTarjetas = [
+
     {
       titulo: "Jugador",
       campo: "jugador",
@@ -679,11 +922,13 @@ function renderizarTablaJugadoresCampo(jugadores) {
     },
   ];
 
+
   // ==========================================================
   // TABLA ESTADÍSTICAS
   // ==========================================================
 
   const columnasEstadisticas = [
+
     {
       titulo: "Jugador",
       campo: "jugador",
@@ -757,53 +1002,68 @@ function renderizarTablaJugadoresCampo(jugadores) {
     },
   ];
 
+
   // ==========================================================
   // CONSTRUIR LAS 3 TABLAS
   // ==========================================================
 
   let html = "";
 
+
   // ==========================================================
   // GOLES
   // ==========================================================
 
-  html += construirTablaJugadores(
-    jugadores,
-    columnasGoles,
-    "GOLES",
-    "tabla-jugadores-campo",
-  );
+  html +=
+    construirTablaJugadores(
+      jugadores,
+      columnasGoles,
+      "GOLES",
+      "tabla-jugadores-campo",
+    );
+
 
   // ==========================================================
   // TARJETAS
   // ==========================================================
 
-  html += construirTablaJugadores(
-    jugadores,
-    columnasTarjetas,
-    "TARJETAS",
-    "tabla-jugadores-campo",
-  );
+  html +=
+    construirTablaJugadores(
+      jugadores,
+      columnasTarjetas,
+      "TARJETAS",
+      "tabla-jugadores-campo",
+    );
+
 
   // ==========================================================
   // ESTADÍSTICAS
   // ==========================================================
 
-  html += construirTablaJugadores(
-    jugadores,
-    columnasEstadisticas,
-    "ESTADÍSTICAS",
-    "tabla-jugadores-campo",
-  );
+  html +=
+    construirTablaJugadores(
+      jugadores,
+      columnasEstadisticas,
+      "ESTADÍSTICAS",
+      "tabla-jugadores-campo",
+    );
+
 
   return html;
 }
+
 
 // ============================================================
 // CONSTRUIR TABLA DE JUGADORES
 // ============================================================
 
-function construirTablaJugadores(jugadores, columnas, titulo, claseTabla) {
+function construirTablaJugadores(
+  jugadores,
+  columnas,
+  titulo,
+  claseTabla
+) {
+
   // ==========================================================
   // FILTRAR Y ORDENAR JUGADORES
   // ==========================================================
@@ -814,29 +1074,75 @@ function construirTablaJugadores(jugadores, columnas, titulo, claseTabla) {
   //
   // ==========================================================
 
-  const jugadoresOrdenados = jugadores
-    .filter((jugador) => {
-      const minutos = Number(jugador?.minutesPlayed);
+  const jugadoresOrdenados =
+    jugadores
+      .filter(
+        (jugador) => {
 
-      return Number.isFinite(minutos) && minutos > 0;
-    })
-    .sort((a, b) => {
-      const titularA = a?.titular === true ? 1 : 0;
-      const titularB = b?.titular === true ? 1 : 0;
+          const minutos =
+            Number(
+              jugador?.minutesPlayed
+            );
 
-      if (titularA !== titularB) {
-        return titularB - titularA;
-      }
+          return (
+            Number.isFinite(
+              minutos
+            ) &&
+            minutos > 0
+          );
+        }
+      )
+      .sort(
+        (a, b) => {
 
-      const minutosA = Number(a?.minutesPlayed) || 0;
-      const minutosB = Number(b?.minutesPlayed) || 0;
+          const titularA =
+            a?.titular === true
+              ? 1
+              : 0;
 
-      return minutosB - minutosA;
-    });
+          const titularB =
+            b?.titular === true
+              ? 1
+              : 0;
 
-  if (jugadoresOrdenados.length === 0) {
+
+          if (
+            titularA !== titularB
+          ) {
+
+            return (
+              titularB -
+              titularA
+            );
+          }
+
+
+          const minutosA =
+            Number(
+              a?.minutesPlayed
+            ) || 0;
+
+          const minutosB =
+            Number(
+              b?.minutesPlayed
+            ) || 0;
+
+
+          return (
+            minutosB -
+            minutosA
+          );
+        }
+      );
+
+
+  if (
+    jugadoresOrdenados.length === 0
+  ) {
+
     return "";
   }
+
 
   let html = `
 
@@ -849,7 +1155,9 @@ function construirTablaJugadores(jugadores, columnas, titulo, claseTabla) {
       <div class="tabla-jugadores-scroll">
 
         <table
-          class="tabla-jugadores ${escaparHTML(claseTabla)}"
+          class="tabla-jugadores ${escaparHTML(
+            claseTabla
+          )}"
         >
 
           <thead>
@@ -857,17 +1165,24 @@ function construirTablaJugadores(jugadores, columnas, titulo, claseTabla) {
             <tr>
   `;
 
+
   // ==========================================================
   // ENCABEZADOS
   // ==========================================================
 
-  columnas.forEach((columna) => {
-    html += `
-      <th>
-        ${escaparHTML(columna.titulo)}
-      </th>
-    `;
-  });
+  columnas.forEach(
+    (columna) => {
+
+      html += `
+        <th>
+          ${escaparHTML(
+            columna.titulo
+          )}
+        </th>
+      `;
+    }
+  );
+
 
   html += `
 
@@ -878,66 +1193,103 @@ function construirTablaJugadores(jugadores, columnas, titulo, claseTabla) {
           <tbody>
   `;
 
+
   // ==========================================================
   // FILAS
   // ==========================================================
 
-  jugadoresOrdenados.forEach((jugador) => {
-    const nombre =
-      jugador.jugador ||
-      jugador.nombre ||
-      jugador.name ||
-      jugador.playerName ||
-      "-";
+  jugadoresOrdenados.forEach(
+    (jugador) => {
 
-    html += `
-      <tr>
-    `;
+      const nombre =
+        jugador.jugador ||
+        jugador.nombre ||
+        jugador.name ||
+        jugador.playerName ||
+        "-";
 
-    // ========================================================
-    // COLUMNAS
-    // ========================================================
 
-    columnas.forEach((columna) => {
-      const valor = jugador[columna.campo];
+      html += `
+        <tr>
+      `;
 
-      // ======================================================
-      // BOOLEAN
-      // ======================================================
 
-      if (columna.tipo === "boolean") {
-        html += crearCeldaBoolean(valor);
+      // ========================================================
+      // COLUMNAS
+      // ========================================================
 
-        return;
-      }
+      columnas.forEach(
+        (columna) => {
 
-      // ======================================================
-      // NOMBRE
-      // ======================================================
+          const valor =
+            jugador[
+              columna.campo
+            ];
 
-      if (columna.campo === "jugador") {
-        html += `
-          <td>
-            <div class="nombre-jugador">
-              ${escaparHTML(nombre)}
-            </div>
-          </td>
-        `;
 
-        return;
-      }
+          // ======================================================
+          // BOOLEAN
+          // ======================================================
 
-      // ======================================================
-      // VALOR NORMAL
-      // ======================================================
+          if (
+            columna.tipo ===
+            "boolean"
+          ) {
 
-      html += crearCeldaValor(valor);
-    });
+            html +=
+              crearCeldaBoolean(
+                valor
+              );
 
-    html += `
-      </tr>
-    `;
-  });
+            return;
+          }
+
+
+          // ======================================================
+          // NOMBRE
+          // ======================================================
+
+          if (
+            columna.campo ===
+            "jugador"
+          ) {
+
+            html += `
+              <td>
+
+                <div class="nombre-jugador">
+
+                  ${escaparHTML(
+                    nombre
+                  )}
+
+                </div>
+
+              </td>
+            `;
+
+            return;
+          }
+
+
+          // ======================================================
+          // VALOR NORMAL
+          // ======================================================
+
+          html +=
+            crearCeldaValor(
+              valor
+            );
+        }
+      );
+
+
+      html += `
+        </tr>
+      `;
+    }
+  );
+
 
   // ==========================================================
   // CERRAR TABLA
@@ -955,19 +1307,25 @@ function construirTablaJugadores(jugadores, columnas, titulo, claseTabla) {
 
   `;
 
+
   return html;
 }
+
 
 // ============================================================
 // CELDA BOOLEAN
 // ============================================================
 
-function crearCeldaBoolean(valor) {
+function crearCeldaBoolean(
+  valor
+) {
+
   // ==========================================================
   // TRUE = SÍ
   // ==========================================================
 
   if (valor === true) {
+
     return `
       <td>
         Sí
@@ -975,8 +1333,9 @@ function crearCeldaBoolean(valor) {
     `;
   }
 
+
   // ==========================================================
-  // FALSE = -
+  // FALSE = NO
   // ==========================================================
 
   return `
@@ -986,16 +1345,25 @@ function crearCeldaBoolean(valor) {
   `;
 }
 
+
 // ============================================================
 // CELDA DE VALOR
 // ============================================================
 
-function crearCeldaValor(valor) {
+function crearCeldaValor(
+  valor
+) {
+
   // ==========================================================
   // SIN VALOR
   // ==========================================================
 
-  if (valor === null || valor === undefined || valor === "") {
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === ""
+  ) {
+
     return `
       <td>
         0
@@ -1003,18 +1371,27 @@ function crearCeldaValor(valor) {
     `;
   }
 
+
   // ==========================================================
   // OBJETOS / ARRAYS
   // ==========================================================
 
-  if (typeof valor === "object") {
+  if (
+    typeof valor === "object"
+  ) {
+
     try {
+
       return `
         <td>
-          ${escaparHTML(JSON.stringify(valor))}
+          ${escaparHTML(
+            JSON.stringify(valor)
+          )}
         </td>
       `;
+
     } catch (error) {
+
       return `
         <td>
           0
@@ -1022,6 +1399,7 @@ function crearCeldaValor(valor) {
       `;
     }
   }
+
 
   // ==========================================================
   // VALOR NORMAL
