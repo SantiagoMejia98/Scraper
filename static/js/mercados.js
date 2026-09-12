@@ -504,6 +504,18 @@ function renderizarMercados(
         Tiros de esquina
       </h2>
 
+      <h3 class="subtitulo-mercado">Tiros de esquina Menos/Más</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "FT", null, 16.5)}
+
+      <h3 class="subtitulo-mercado">Tiros de esquina en Primer Tiempo Más/Menos</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "1ST", null, 10.5)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Tiros de esquina Menos/Más</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "FT", "equipo", 10.5, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Tiros de esquina Menos/Más</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "FT", "equipo", 10.5, "visitante")}
+
       <h2 class="titulo-seccion">
         Tarjetas
       </h2>
@@ -551,6 +563,16 @@ function renderizarMercados(
       )}
 
       <h3 class="subtitulo-mercado">
+        Tarjetas totales Más/Menos Primer Tiempo
+      </h3>
+
+      ${crearTablaMasMenosTarjetasPrimerTiempo(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h3 class="subtitulo-mercado">
         ${escaparHTML(nombreEquipoLocal)} Tarjetas totales Más/Menos
       </h3>
 
@@ -572,6 +594,16 @@ function renderizarMercados(
         "visitante",
       )}
 
+      <h3 class="subtitulo-mercado">
+        Hándicap - Tarjetas
+      </h3>
+
+      ${crearTablaHandicapTarjetas(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
       <h3 class="subtitulo-mercado">Equipo con más tarjetas</h3>
       ${crearTablaMasTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
 
@@ -580,6 +612,45 @@ function renderizarMercados(
 
       <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Tarjeta roja</h3>
       ${crearTablaTarjetaRojaEquipo(resultado, nombreEquipoLocal, nombreEquipoVisitante, "visitante")}
+
+      <h3 class="subtitulo-mercado">Equipo que recibe la próxima tarjeta 1</h3>
+      ${crearTablaProximaTarjeta(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Total de tarjetas en el Primer Tiempo (Más/Menos)</h3>
+      ${crearTablaTarjetasEquipoPrimerTiempo(resultado, nombreEquipoLocal, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Total de tarjetas en el Primer Tiempo (Más/Menos)</h3>
+      ${crearTablaTarjetasEquipoPrimerTiempo(resultado, nombreEquipoVisitante, "visitante")}
+
+      <h3 class="subtitulo-mercado">Tarjeta mostrada en ambos tiempos</h3>
+      ${crearTablaTarjetasAmbosTiempos(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
+      <h3 class="subtitulo-mercado">Ambos equipos reciben una tarjeta en ambos tiempos</h3>
+      ${crearTablaAmbosEquiposTarjetasAmbosTiempos(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Segundo Tiempo Tarjetas Totales Más/Menos</h3>
+      ${crearTablaTarjetasEquipoSegundoTiempo(resultado, nombreEquipoLocal, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Segundo Tiempo Tarjetas Totales Más/Menos</h3>
+      ${crearTablaTarjetasEquipoSegundoTiempo(resultado, nombreEquipoVisitante, "visitante")}
+
+      <h3 class="subtitulo-mercado">Tarjeta roja Primer Tiempo</h3>
+      ${crearTablaEventoTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante, "roja_primero", true)}
+
+      <h3 class="subtitulo-mercado">Tarjeta roja y Penal concedido</h3>
+      ${crearTablaEventoTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante, "roja_y_penal", true)}
+
+      <h3 class="subtitulo-mercado">Tarjeta roja o Penal concedido</h3>
+      ${crearTablaEventoTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante, "roja_o_penal", false)}
+
+      <h3 class="subtitulo-mercado">Tarjetas Rangos</h3>
+      ${crearTablaRangosTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
+      <h3 class="subtitulo-mercado">Tarjetas de medio tiempo/tiempo completo</h3>
+      ${crearTablaMedioTiempoTiempoCompletoTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
+      <h3 class="subtitulo-mercado">Tarjetas Marcador Correcto</h3>
+      ${crearTablaMarcadorCorrectoTarjetas(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
 
       <h2 class="titulo-seccion">
         Estadísticas
@@ -712,6 +783,104 @@ function renderizarMercados(
 }
 
 
+function crearTablaMasMenosCorners(resultado, local, visitante, periodo, tipo, maximo, objetivo) {
+  const base=obtenerColumnasHistoricasMercados(resultado,local,visitante);
+  const columnas=tipo==="equipo"?base.filter((_,indice)=>objetivo==="local"?indice<2:indice>1):base;
+  const lineas=[];for(let linea=.5;linea<=maximo;linea+=1)lineas.push(linea);
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeCorners(c.partidos,periodo,tipo,linea,true,c.equipoId)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeCorners(c.partidos,periodo,tipo,linea,false,c.equipoId)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaMarcadorCorrectoTarjetas(resultado, local, visitante) {
+  const columnas=[
+    {partidos:resultado?.equipo_local?.partidos_general||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>General`,invertir:false},
+    {partidos:resultado?.equipo_local?.partidos_local||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>Casa`,invertir:false},
+    {partidos:resultado?.equipo_visitante?.partidos_visitante||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>Fuera`,invertir:true},
+    {partidos:resultado?.equipo_visitante?.partidos_general||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>General`,invertir:true},
+  ];
+  const marcadores=[[1,0],[2,0],[2,1],[3,1],[3,2],[4,2],[4,3],[0,0],[1,1],[2,2],[3,3],[0,1],[0,2],[1,2],[0,3],[1,3],[2,3],[0,4],[1,4],[2,4],[3,4],[1,5],[2,5],[3,5]];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Marcador</th>${columnas.map(c=>`<th>${formatearTituloTarjetas(c.titulo)}</th>`).join("")}</tr></thead><tbody>${marcadores.map(([tarjetasLocal,tarjetasVisitante])=>`<tr><td>${tarjetasLocal}-${tarjetasVisitante}</td>${columnas.map(c=>`<td>${porcentajeMarcadorCorrectoTarjetas(c.partidos,c.equipoId,c.invertir?tarjetasVisitante:tarjetasLocal,c.invertir?tarjetasLocal:tarjetasVisitante)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaRangosTarjetas(resultado, local, visitante) {
+  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
+  const rangos=[{etiqueta:"0",min:0,max:0},{etiqueta:"1-2",min:1,max:2},{etiqueta:"3-4",min:3,max:4},{etiqueta:"5-6",min:5,max:6},{etiqueta:"7-8",min:7,max:8},{etiqueta:"9-10",min:9,max:10},{etiqueta:"11+",min:11,max:null}];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${rangos.map(r=>`<tr><td>${r.etiqueta}</td>${columnas.map(c=>`<td>${porcentajeRangoTarjetas(c.partidos,r.min,r.max)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaMedioTiempoTiempoCompletoTarjetas(resultado,local,visitante) {
+  const columnas=[
+    {partidos:resultado?.equipo_local?.partidos_general||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>General`,equipo:"local",rival:"visitante"},
+    {partidos:resultado?.equipo_local?.partidos_local||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>Casa`,equipo:"local",rival:"visitante"},
+    {partidos:resultado?.equipo_visitante?.partidos_visitante||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>Fuera`,equipo:"visitante",rival:"local"},
+    {partidos:resultado?.equipo_visitante?.partidos_general||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>General`,equipo:"visitante",rival:"local"},
+  ];
+  const opciones=[local,"Empate",visitante];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Medio tiempo / Tiempo completo</th>${columnas.map(c=>`<th>${formatearTituloTarjetas(c.titulo)}</th>`).join("")}</tr></thead><tbody>${opciones.flatMap(primero=>opciones.map(completo=>`<tr><td>${escaparHTML(primero)} / ${escaparHTML(completo)}</td>${columnas.map(c=>`<td>${porcentajeMedioTiempoTiempoCompletoTarjetas(c.partidos,c.equipoId,primero===local?"equipo":primero===visitante?"rival":"empate",completo===local?"equipo":completo===visitante?"rival":"empate")}</td>`).join("")}</tr>`)).join("")}</tbody></table></div>`;
+}
+
+function crearTablaEventoTarjetas(resultado, local, visitante, tipo, incluirNo) {
+  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
+  const filas=incluirNo?["Sí","No"]:["Sí"];
+  return tablaTarjetasSimple(columnas,filas,(partidos,opcion)=>porcentajeEventoTarjetas(partidos,tipo,opcion==="Sí"));
+}
+
+function crearTablaTarjetasAmbosTiempos(resultado, local, visitante) {
+  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
+  return tablaTarjetasSimple(columnas,["Sí","No"],(p,opcion)=>porcentajeTarjetasAmbosTiempos(p,opcion==="Sí"));
+}
+
+function crearTablaAmbosEquiposTarjetasAmbosTiempos(resultado, local, visitante) {
+  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
+  return tablaTarjetasSimple(columnas,["Sí"],p=>porcentajeAmbosEquiposTarjetasAmbosTiempos(p));
+}
+
+function crearTablaTarjetasEquipoSegundoTiempo(resultado,nombre,objetivo) {
+  const equipo=objetivo==="local"?resultado?.equipo_local:resultado?.equipo_visitante;
+  const condicion=objetivo==="local"?"Casa":"Fuera";
+  const columnas=[{partidos:equipo?.partidos_general||[],equipoId:equipo?.id,titulo:`${nombre}<br>General`},{partidos:objetivo==="local"?equipo?.partidos_local||[]:equipo?.partidos_visitante||[],equipoId:equipo?.id,titulo:`${nombre}<br>${condicion}`}];
+  const lineas=[]; for(let linea=.5;linea<=4.5;linea+=1)lineas.push(linea);
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${c.titulo}</th>`).join("")}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoSegundoTiempo(c.partidos,c.equipoId,linea,true)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoSegundoTiempo(c.partidos,c.equipoId,linea,false)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaProximaTarjeta(resultado, local, visitante) {
+  const columnas = [
+    { partidos: resultado?.equipo_local?.partidos_general || [], equipoId: resultado?.equipo_local?.id, titulo: `${local}<br>General` },
+    { partidos: resultado?.equipo_local?.partidos_local || [], equipoId: resultado?.equipo_local?.id, titulo: `${local}<br>Casa` },
+    { partidos: resultado?.equipo_visitante?.partidos_visitante || [], equipoId: resultado?.equipo_visitante?.id, titulo: `${visitante}<br>Fuera` },
+    { partidos: resultado?.equipo_visitante?.partidos_general || [], equipoId: resultado?.equipo_visitante?.id, titulo: `${visitante}<br>General` },
+  ];
+  const filas = [[local, "equipo"], ["Sin amonestaciones", "sin_tarjetas"], [visitante, "rival"]];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${c.titulo}</th>`).join("")}</tr></thead><tbody>${filas.map(([etiqueta,estado])=>`<tr><td>${escaparHTML(etiqueta)}</td>${columnas.map(c=>`<td>${porcentajeProximaTarjeta(c.partidos,c.equipoId,estado)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaTarjetasEquipoPrimerTiempo(resultado, nombre, objetivo) {
+  const equipo = objetivo === "local" ? resultado?.equipo_local : resultado?.equipo_visitante;
+  const condicion = objetivo === "local" ? "Casa" : "Fuera";
+  const columnas = [{ partidos: equipo?.partidos_general || [], equipoId: equipo?.id, titulo: `${nombre}<br>General` }, { partidos: objetivo === "local" ? equipo?.partidos_local || [] : equipo?.partidos_visitante || [], equipoId: equipo?.id, titulo: `${nombre}<br>${condicion}` }];
+  const lineas = [];
+  for (let linea = 0.5; linea <= 4.5; linea += 1) lineas.push(linea);
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${c.titulo}</th>`).join("")}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoPrimerTiempo(c.partidos,c.equipoId,linea,true)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoPrimerTiempo(c.partidos,c.equipoId,linea,false)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaHandicapTarjetas(resultado, local, visitante) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const opciones = [
+    { etiqueta: `${local} -0.5`, equipo: "local", handicap: -0.5 },
+    { etiqueta: `${visitante} +0.5`, equipo: "visitante", handicap: 0.5 },
+    { etiqueta: `${local} +0.5`, equipo: "local", handicap: 0.5 },
+    { etiqueta: `${visitante} -0.5`, equipo: "visitante", handicap: -0.5 },
+    { etiqueta: `${local} +1.5`, equipo: "local", handicap: 1.5 },
+    { etiqueta: `${visitante} -1.5`, equipo: "visitante", handicap: -1.5 },
+    { etiqueta: `${local} +2.5`, equipo: "local", handicap: 2.5 },
+    { etiqueta: `${visitante} -2.5`, equipo: "visitante", handicap: -2.5 },
+    { etiqueta: `${local} +3.5`, equipo: "local", handicap: 3.5 },
+    { etiqueta: `${visitante} -3.5`, equipo: "visitante", handicap: -3.5 },
+  ];
+
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map(opcion => `<tr><td>${escaparHTML(opcion.etiqueta)}</td>${columnas.map(columna => `<td>${porcentajeHandicapTarjetas(columna.partidos, opcion.equipo, opcion.handicap)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+
 function crearTablaMasTarjetas(resultado, local, visitante) {
   const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
   return tablaTarjetasSimple(columnas, [local, "Empate", visitante], (p, opcion) => porcentajeResultadoTarjetas(p, opcion === local ? "local" : opcion === visitante ? "visitante" : "Empate"));
@@ -724,7 +893,14 @@ function crearTablaTarjetaRojaEquipo(resultado, local, visitante, objetivo) {
 }
 
 function tablaTarjetasSimple(columnas, filas, calcular) {
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${escaparHTML(c.titulo || `${c.nombre}<br>${c.condicion}`)}</th>`).join("")}</tr></thead><tbody>${filas.map(f=>`<tr><td>${escaparHTML(f)}</td>${columnas.map(c=>`<td>${calcular(c.partidos,f)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${formatearTituloTarjetas(c.titulo || `${c.nombre}<br>${c.condicion}`)}</th>`).join("")}</tr></thead><tbody>${filas.map(f=>`<tr><td>${escaparHTML(f)}</td>${columnas.map(c=>`<td>${calcular(c.partidos,f)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function formatearTituloTarjetas(titulo) {
+  return String(titulo)
+    .split("<br>")
+    .map(escaparHTML)
+    .join("<br>");
 }
 
 // ============================================================
@@ -838,8 +1014,30 @@ function porcentajeResultadoTarjetas(partidos, opcion) {
   let v=0,a=0; (partidos||[]).forEach(p=>{const t=obtenerResumenTarjetas(p); if(!t)return; v++; const r=t.local>t.visitante?"local":t.local<t.visitante?"visitante":"Empate"; if(r===opcion)a++;}); return porcentajeMercado(a,v);
 }
 
+function porcentajeHandicapTarjetas(partidos, equipo, handicap) {
+  let validos = 0;
+  let acertados = 0;
+  (partidos || []).forEach((partido) => {
+    const resumen = obtenerResumenTarjetas(partido);
+    if (resumen === null) return;
+    validos += 1;
+    const tarjetasEquipo = resumen[equipo];
+    const tarjetasRival = resumen[equipo === "local" ? "visitante" : "local"];
+    if (tarjetasEquipo + handicap > tarjetasRival) acertados += 1;
+  });
+  return porcentajeMercado(acertados, validos);
+}
+
 function porcentajeRojaEquipo(partidos, equipoId, si) {
   let v=0,a=0; (partidos||[]).forEach(p=>{const t=p?.estadisticas?.eventos_jugadores?.tarjetas; if(!Array.isArray(t))return; v++; const lado=obtenerIdEquipoLocalPartido(p)===Number(equipoId)?"local":"visitante"; const roja=t.some(x=>x?.equipo===lado&&(x?.tipo==="Roja"||x?.tipo==="Segunda amarilla")); if(roja===si)a++;}); return porcentajeMercado(a,v);
+}
+
+
+function crearTablaMasMenosTarjetasPrimerTiempo(resultado, local, visitante) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const lineas = [];
+  for (let linea = 0.5; linea <= 4.5; linea += 1) lineas.push(linea);
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea => `<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c => `<td>${porcentajeTarjetasPrimerTiempo(c.partidos,linea,true)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c => `<td>${porcentajeTarjetasPrimerTiempo(c.partidos,linea,false)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 
@@ -1535,21 +1733,25 @@ function obtenerColumnasHistoricasMercados(
   return [
     {
       partidos: resultado?.equipo_local?.partidos_general || [],
+      equipoId: resultado?.equipo_local?.id,
       nombre: nombreEquipoLocal,
       condicion: "General",
     },
     {
       partidos: resultado?.equipo_local?.partidos_local || [],
+      equipoId: resultado?.equipo_local?.id,
       nombre: nombreEquipoLocal,
       condicion: "Casa",
     },
     {
       partidos: resultado?.equipo_visitante?.partidos_visitante || [],
+      equipoId: resultado?.equipo_visitante?.id,
       nombre: nombreEquipoVisitante,
       condicion: "Fuera",
     },
     {
       partidos: resultado?.equipo_visitante?.partidos_general || [],
+      equipoId: resultado?.equipo_visitante?.id,
       nombre: nombreEquipoVisitante,
       condicion: "General",
     },
@@ -4155,6 +4357,92 @@ function porcentajeTarjetasRojas(
     acertados,
     validos
   );
+}
+
+
+function porcentajeTarjetasPrimerTiempo(partidos, linea, esMas) {
+  let validos = 0;
+  let acertados = 0;
+  (partidos || []).forEach((partido) => {
+    const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
+    if (!Array.isArray(tarjetas)) return;
+    validos += 1;
+    const total = tarjetas.filter((tarjeta) => Number(tarjeta?.minuto) <= 45).length;
+    if (esMas ? total > linea : total < linea) acertados += 1;
+  });
+  return porcentajeMercado(acertados, validos);
+}
+
+function porcentajeProximaTarjeta(partidos, equipoId, esperado) {
+  let validos=0, acertados=0;
+  (partidos||[]).forEach(partido=>{const tarjetas=partido?.estadisticas?.eventos_jugadores?.tarjetas; if(!Array.isArray(tarjetas))return; validos++; const primera=tarjetas[0]; const lado=obtenerIdEquipoLocalPartido(partido)===Number(equipoId)?"local":"visitante"; const estado=!primera?"sin_tarjetas":primera.equipo===lado?"equipo":"rival"; if(estado===esperado)acertados++;});
+  return porcentajeMercado(acertados,validos);
+}
+
+function porcentajeTarjetasEquipoPrimerTiempo(partidos,equipoId,linea,esMas) {
+  let validos=0,acertados=0;
+  (partidos||[]).forEach(partido=>{const tarjetas=partido?.estadisticas?.eventos_jugadores?.tarjetas; if(!Array.isArray(tarjetas))return; validos++; const lado=obtenerIdEquipoLocalPartido(partido)===Number(equipoId)?"local":"visitante"; const total=tarjetas.filter(t=>t?.equipo===lado&&Number(t?.minuto)<=45).length; if(esMas?total>linea:total<linea)acertados++;});
+  return porcentajeMercado(acertados,validos);
+}
+
+function obtenerTarjetasPorTiempo(partido) {
+  const tarjetas=partido?.estadisticas?.eventos_jugadores?.tarjetas;
+  if(!Array.isArray(tarjetas))return null;
+  const resumen={local:{primero:0,segundo:0},visitante:{primero:0,segundo:0}};
+  tarjetas.forEach(t=>{if(!resumen[t?.equipo])return; const tiempo=Number(t?.minuto)<=45?"primero":"segundo"; resumen[t.equipo][tiempo]+=1;});
+  return resumen;
+}
+
+function porcentajeTarjetasAmbosTiempos(partidos,esperado) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);if(!t)return;v++;const cumple=t.local.primero+t.visitante.primero>0&&t.local.segundo+t.visitante.segundo>0;if(cumple===esperado)a++;});return porcentajeMercado(a,v);
+}
+
+function porcentajeAmbosEquiposTarjetasAmbosTiempos(partidos) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);if(!t)return;v++;if(t.local.primero>0&&t.local.segundo>0&&t.visitante.primero>0&&t.visitante.segundo>0)a++;});return porcentajeMercado(a,v);
+}
+
+function porcentajeTarjetasEquipoSegundoTiempo(partidos,equipoId,linea,esMas) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);if(!t)return;v++;const lado=obtenerIdEquipoLocalPartido(p)===Number(equipoId)?"local":"visitante";const total=t[lado].segundo;if(esMas?total>linea:total<linea)a++;});return porcentajeMercado(a,v);
+}
+
+function obtenerTotalPenalesConcedidos(partido) {
+  const filas=partido?.estadisticas?.periodos;
+  if(!Array.isArray(filas))return null;
+  const fila=filas.find(f=>f?.periodo==="FT"&&f?.estadistica_key==="timeline:penales_causados");
+  if(!fila)return null;
+  const local=Number(fila.local),visitante=Number(fila.visitante);
+  return Number.isFinite(local)&&Number.isFinite(visitante)?local+visitante:null;
+}
+
+function porcentajeEventoTarjetas(partidos,tipo,esperado) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const tarjetas=p?.estadisticas?.eventos_jugadores?.tarjetas;const penales=obtenerTotalPenalesConcedidos(p);if(!Array.isArray(tarjetas)||penales===null)return;v++;const roja=tarjetas.some(t=>t?.tipo==="Roja"||t?.tipo==="Segunda amarilla");const rojaPrimero=tarjetas.some(t=>(t?.tipo==="Roja"||t?.tipo==="Segunda amarilla")&&Number(t?.minuto)<=45);const penal=penales>0;const cumple=tipo==="roja_primero"?rojaPrimero:tipo==="roja_y_penal"?roja&&penal:roja||penal;if(cumple===esperado)a++;});return porcentajeMercado(a,v);
+}
+
+function porcentajeRangoTarjetas(partidos,min,max) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerResumenTarjetas(p);if(!t)return;v++;if(t.total>=min&&(max===null||t.total<=max))a++;});return porcentajeMercado(a,v);
+}
+
+function resultadoTarjetas(a,b) { return a>b?"equipo":a<b?"rival":"empate"; }
+
+function porcentajeMedioTiempoTiempoCompletoTarjetas(partidos,equipoId,esperadoPrimero,esperadoCompleto) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);if(!t)return;v++;const lado=obtenerIdEquipoLocalPartido(p)===Number(equipoId)?"local":"visitante";const rival=lado==="local"?"visitante":"local";const primero=resultadoTarjetas(t[lado].primero,t[rival].primero);const completo=resultadoTarjetas(t[lado].primero+t[lado].segundo,t[rival].primero+t[rival].segundo);if(primero===esperadoPrimero&&completo===esperadoCompleto)a++;});return porcentajeMercado(a,v);
+}
+
+function porcentajeMarcadorCorrectoTarjetas(partidos,equipoId,esperadoEquipo,esperadoRival) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerResumenTarjetas(p);if(!t)return;v++;const lado=obtenerIdEquipoLocalPartido(p)===Number(equipoId)?"local":"visitante";const rival=lado==="local"?"visitante":"local";if(t[lado]===esperadoEquipo&&t[rival]===esperadoRival)a++;});return porcentajeMercado(a,v);
+}
+
+function obtenerCornersPartido(partido,periodo) {
+  const filas=partido?.estadisticas?.periodos;
+  if(!Array.isArray(filas))return null;
+  const fila=filas.find(f=>(f?.periodo===periodo||(periodo==="FT"&&f?.periodo==="ALL"))&&f?.estadistica_key==="corner kicks");
+  if(!fila)return null;
+  const local=Number(fila.local),visitante=Number(fila.visitante);
+  return Number.isFinite(local)&&Number.isFinite(visitante)?{local,visitante}:null;
+}
+
+function porcentajeCorners(partidos,periodo,tipo,linea,esMas,equipoId) {
+  let v=0,a=0;(partidos||[]).forEach(p=>{const corners=obtenerCornersPartido(p,periodo);if(!corners)return;v++;const lado=obtenerIdEquipoLocalPartido(p)===Number(equipoId)?"local":"visitante";const total=tipo==="equipo"?corners[lado]:corners.local+corners.visitante;if(esMas?total>linea:total<linea)a++;});return porcentajeMercado(a,v);
 }
 
 
