@@ -516,6 +516,48 @@ function renderizarMercados(
       <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Tiros de esquina Menos/Más</h3>
       ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "FT", "equipo", 10.5, "visitante")}
 
+      <h3 class="subtitulo-mercado">Primer Tiempo Equipo con más tiros de esquina</h3>
+      ${crearTablaEquipoMasCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "1ST")}
+
+      <h3 class="subtitulo-mercado">Primer Tiempo ${escaparHTML(nombreEquipoLocal)} Tiros de esquina Menos/Más</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "1ST", "equipo", 10.5, "local")}
+
+      <h3 class="subtitulo-mercado">Primer Tiempo ${escaparHTML(nombreEquipoVisitante)} Tiros de esquina Menos/Más</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "1ST", "equipo", 10.5, "visitante")}
+
+      <h3 class="subtitulo-mercado">Tiros de esquina en Segundo Tiempo Más/Menos</h3>
+      ${crearTablaMasMenosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "2ND", null, 16.5)}
+
+      <h3 class="subtitulo-mercado">Equipo con más Tiros de esquina</h3>
+      ${crearTablaEquipoMasCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, "FT")}
+
+      <h3 class="subtitulo-mercado">Tiempo con Más Tiros de Esquina</h3>
+      ${crearTablaTiempoConMasCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
+      <h3 class="subtitulo-mercado">Total de Tiros de esquina</h3>
+      ${crearTablaRangosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, [
+        { etiqueta: "0-5", minimo: 0, maximo: 5 },
+        { etiqueta: "6-8", minimo: 6, maximo: 8 },
+        { etiqueta: "9-11", minimo: 9, maximo: 11 },
+        { etiqueta: "12-14", minimo: 12, maximo: 14 },
+        { etiqueta: "15+", minimo: 15, maximo: null },
+      ])}
+
+      <h3 class="subtitulo-mercado">Rango de Tiros de Esquina</h3>
+      ${crearTablaRangosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, [
+        { etiqueta: "0", minimo: 0, maximo: 0 },
+        { etiqueta: "1-3", minimo: 1, maximo: 3 },
+        { etiqueta: "4-6", minimo: 4, maximo: 6 },
+        { etiqueta: "7-9", minimo: 7, maximo: 9 },
+        { etiqueta: "10-12", minimo: 10, maximo: 12 },
+        { etiqueta: "13-15", minimo: 13, maximo: 15 },
+        { etiqueta: "16-18", minimo: 16, maximo: 18 },
+        { etiqueta: "19+", minimo: 19, maximo: null },
+      ])}
+
+      <h3 class="subtitulo-mercado">Tiros de Esquina Marcador Correcto</h3>
+      ${crearTablaMarcadorCorrectoCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
+
       <h2 class="titulo-seccion">
         Tarjetas
       </h2>
@@ -656,6 +698,84 @@ function renderizarMercados(
         Estadísticas
       </h2>
 
+      <h3 class="subtitulo-mercado">Remates totales</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "total shots", 15.5, 31.5)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Remates totales</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "total shots", 9.5, 25.5, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Remates totales</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "total shots", 9.5, 25.5, "visitante")}
+
+      <h3 class="subtitulo-mercado">Tiros al Arco</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "shots on target", 0.5, 15.5)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Tiros al Arco</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "shots on target", 0.5, 9.5, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Tiros al Arco</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "shots on target", 0.5, 9.5, "visitante")}
+
+      <h3 class="subtitulo-mercado">Primer Tiempo Tiros al Arco</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "shots on target", 0.5, 7.5, null, false, "1ST")}
+
+      <h3 class="subtitulo-mercado">Total de Faltas Cometidas</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "fouls", 10.5, 35.5)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Total de Faltas Cometidas</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "fouls", 5.5, 25.5, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Total de Faltas Cometidas</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "fouls", 5.5, 25.5, "visitante")}
+
+      <h3 class="subtitulo-mercado">Total de Fueras de lugar</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "offsides", 0.5, 6.5)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Total de Fueras de lugar</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "offsides", 0.5, 6.5, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Total de Fueras de lugar</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "offsides", 0.5, 6.5, "visitante")}
+
+      <h3 class="subtitulo-mercado">Palo</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "hit woodwork", 0.5, 1.5, null, true)}
+
+      <h3 class="subtitulo-mercado">Total de Saques de meta</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "goal kicks", 10.5, 35.5)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Total de Saques de meta</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "goal kicks", 7.5, 25.5, "local")}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Total de Saques de meta</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "goal kicks", 7.5, 25.5, "visitante")}
+
+      <h3 class="subtitulo-mercado">Total de Saques de banda</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "throw-ins", 15.5, 65.5, null, false, "FT", 2)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Total de Saques de banda</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "throw-ins", 5.5, 35.5, "local", false, "FT", 2)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Total de Saques de banda</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "throw-ins", 5.5, 35.5, "visitante", false, "FT", 2)}
+
+      <h3 class="subtitulo-mercado">Total de pases</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "passes", 400.5, 1400.5, null, false, "FT", 50)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Total de pases</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "passes", 100.5, 800.5, "local", false, "FT", 50)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Total de pases</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "passes", 100.5, 800.5, "visitante", false, "FT", 50)}
+
+      <h3 class="subtitulo-mercado">Tackles totales</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "total tackles", 10.5, 60.5, null, false, "FT", 2)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoLocal)} Tackles totales</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "total tackles", 3.5, 35.5, "local", false, "FT", 2)}
+
+      <h3 class="subtitulo-mercado">${escaparHTML(nombreEquipoVisitante)} Tackles totales</h3>
+      ${crearTablaMasMenosEstadistica(resultado, nombreEquipoLocal, nombreEquipoVisitante, "total tackles", 3.5, 35.5, "visitante", false, "FT", 2)}
+
       <h2 class="titulo-seccion">
         Goles
       </h2>
@@ -780,6 +900,62 @@ function renderizarMercados(
 
     </section>
   `;
+
+  configurarSeccionesColapsables(contenedor);
+}
+
+
+function configurarSeccionesColapsables(contenedor) {
+  const encabezados = contenedor.querySelectorAll(
+    ".mercados-seccion > .titulo-seccion",
+  );
+
+  encabezados.forEach((encabezado) => {
+    const contenidos = [];
+    let elemento = encabezado.nextElementSibling;
+
+    while (elemento && elemento.tagName !== "H2") {
+      contenidos.push(elemento);
+      elemento = elemento.nextElementSibling;
+    }
+
+    if (contenidos.length === 0) {
+      return;
+    }
+
+    const indicador = document.createElement("span");
+    indicador.className = "indicador-seccion";
+    indicador.setAttribute("aria-hidden", "true");
+    encabezado.append(indicador);
+
+    const alternar = () => {
+      const contraida = encabezado.getAttribute("aria-expanded") === "false";
+      const expandida = contraida;
+
+      encabezado.setAttribute("aria-expanded", String(expandida));
+      contenidos.forEach((contenido) => {
+        contenido.hidden = !expandida;
+      });
+      indicador.textContent = expandida ? "⌃" : "⌄";
+    };
+
+    encabezado.classList.add("titulo-seccion-colapsable");
+    encabezado.setAttribute("role", "button");
+    encabezado.setAttribute("tabindex", "0");
+    encabezado.setAttribute("aria-expanded", "false");
+    contenidos.forEach((contenido) => {
+      contenido.hidden = true;
+    });
+    indicador.textContent = "⌄";
+
+    encabezado.addEventListener("click", alternar);
+    encabezado.addEventListener("keydown", (evento) => {
+      if (evento.key === "Enter" || evento.key === " ") {
+        evento.preventDefault();
+        alternar();
+      }
+    });
+  });
 }
 
 
@@ -788,6 +964,186 @@ function crearTablaMasMenosCorners(resultado, local, visitante, periodo, tipo, m
   const columnas=tipo==="equipo"?base.filter((_,indice)=>objetivo==="local"?indice<2:indice>1):base;
   const lineas=[];for(let linea=.5;linea<=maximo;linea+=1)lineas.push(linea);
   return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeCorners(c.partidos,periodo,tipo,linea,true,c.equipoId)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeCorners(c.partidos,periodo,tipo,linea,false,c.equipoId)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+function crearTablaMasMenosEstadistica(resultado, local, visitante, estadisticaKey, minimo, maximo, objetivo, contarFaltantesComoCero = false, periodo = "FT", paso = 1) {
+  const base = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = objetivo === "local"
+    ? base.slice(0, 2)
+    : objetivo === "visitante"
+      ? base.slice(2)
+      : base;
+  const lineas = [];
+
+  for (let linea = minimo; linea <= maximo; linea += paso) {
+    lineas.push(linea);
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
+        <tbody>
+          ${lineas.map((linea) => `
+            <tr>
+              <td>Más ${formatearLinea(linea)}</td>
+              ${columnas.map((columna) => `<td>${porcentajeEstadistica(
+                columna.partidos,
+                estadisticaKey,
+                linea,
+                true,
+                columna.equipoId,
+                objetivo,
+                contarFaltantesComoCero,
+                periodo,
+              )}</td>`).join("")}
+            </tr>
+            <tr>
+              <td>Menos ${formatearLinea(linea)}</td>
+              ${columnas.map((columna) => `<td>${porcentajeEstadistica(
+                columna.partidos,
+                estadisticaKey,
+                linea,
+                false,
+                columna.equipoId,
+                objetivo,
+                contarFaltantesComoCero,
+                periodo,
+              )}</td>`).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function crearTablaEquipoMasCorners(resultado, local, visitante, periodo) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const equipoLocalId = Number(resultado?.equipo_local?.id);
+
+  const filas = [
+    { etiqueta: local, resultadoLocal: "equipo", resultadoVisitante: "rival" },
+    { etiqueta: "Empate", resultadoLocal: "empate", resultadoVisitante: "empate" },
+    { etiqueta: visitante, resultadoLocal: "rival", resultadoVisitante: "equipo" },
+  ];
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Mercado</th>
+            ${crearEncabezadosColumnasMercados(columnas)}
+          </tr>
+        </thead>
+        <tbody>
+          ${filas.map((fila) => `
+            <tr>
+              <td>${escaparHTML(fila.etiqueta)}</td>
+              ${columnas.map((columna) => {
+                const esEquipoLocal = Number(columna.equipoId) === equipoLocalId;
+                const esperado = esEquipoLocal
+                  ? fila.resultadoLocal
+                  : fila.resultadoVisitante;
+
+                return `<td>${porcentajeEquipoMasCorners(
+                  columna.partidos,
+                  periodo,
+                  columna.equipoId,
+                  esperado,
+                )}</td>`;
+              }).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function crearTablaTiempoConMasCorners(resultado, local, visitante) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const filas = [
+    { etiqueta: "Primer Tiempo", esperado: "primer_tiempo" },
+    { etiqueta: "Empate", esperado: "empate" },
+    { etiqueta: "Segundo Tiempo", esperado: "segundo_tiempo" },
+  ];
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
+        <tbody>
+          ${filas.map((fila) => `
+            <tr>
+              <td>${fila.etiqueta}</td>
+              ${columnas.map((columna) => `<td>${porcentajeTiempoConMasCorners(columna.partidos, fila.esperado)}</td>`).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function crearTablaRangosCorners(resultado, local, visitante, rangos) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
+        <tbody>
+          ${rangos.map((rango) => `
+            <tr>
+              <td>${rango.etiqueta}</td>
+              ${columnas.map((columna) => `<td>${porcentajeRangoTotalCorners(columna.partidos, rango.minimo, rango.maximo)}</td>`).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function crearTablaMarcadorCorrectoCorners(resultado, local, visitante) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const equipoLocalId = Number(resultado?.equipo_local?.id);
+  const marcadores = [];
+
+  for (let cornersLocal = 0; cornersLocal <= 10; cornersLocal += 1) {
+    for (let cornersVisitante = 0; cornersVisitante <= 10; cornersVisitante += 1) {
+      marcadores.push({ local: cornersLocal, visitante: cornersVisitante });
+    }
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead><tr><th>Marcador</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
+        <tbody>
+          ${marcadores.map((marcador) => `
+            <tr>
+              <td>${marcador.local}-${marcador.visitante}</td>
+              ${columnas.map((columna) => {
+                const invertir = Number(columna.equipoId) !== equipoLocalId;
+                const cornersEquipo = invertir ? marcador.visitante : marcador.local;
+                const cornersRival = invertir ? marcador.local : marcador.visitante;
+
+                return `<td>${porcentajeMarcadorCorrectoCorners(
+                  columna.partidos,
+                  columna.equipoId,
+                  cornersEquipo,
+                  cornersRival,
+                )}</td>`;
+              }).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 function crearTablaMarcadorCorrectoTarjetas(resultado, local, visitante) {
@@ -4441,8 +4797,179 @@ function obtenerCornersPartido(partido,periodo) {
   return Number.isFinite(local)&&Number.isFinite(visitante)?{local,visitante}:null;
 }
 
+function obtenerEstadisticaPartido(partido, periodo, estadisticaKey) {
+  const filas = partido?.estadisticas?.periodos;
+
+  if (!Array.isArray(filas)) {
+    return null;
+  }
+
+  const fila = filas.find((item) => (
+    (item?.periodo === periodo || (periodo === "FT" && item?.periodo === "ALL")) &&
+    item?.estadistica_key === estadisticaKey
+  ));
+
+  if (!fila) {
+    return null;
+  }
+
+  const local = Number(fila.local);
+  const visitante = Number(fila.visitante);
+
+  return Number.isFinite(local) && Number.isFinite(visitante)
+    ? { local, visitante }
+    : null;
+}
+
 function porcentajeCorners(partidos,periodo,tipo,linea,esMas,equipoId) {
   let v=0,a=0;(partidos||[]).forEach(p=>{const corners=obtenerCornersPartido(p,periodo);if(!corners)return;v++;const lado=obtenerIdEquipoLocalPartido(p)===Number(equipoId)?"local":"visitante";const total=tipo==="equipo"?corners[lado]:corners.local+corners.visitante;if(esMas?total>linea:total<linea)a++;});return porcentajeMercado(a,v);
+}
+
+function porcentajeEstadistica(partidos, estadisticaKey, linea, esMas, equipoId, objetivo, contarFaltantesComoCero = false, periodo = "FT") {
+  let validos = 0;
+  let acertados = 0;
+
+  (partidos || []).forEach((partido) => {
+    const estadistica = obtenerEstadisticaPartido(partido, periodo, estadisticaKey);
+
+    let valor;
+
+    if (!estadistica) {
+      if (!contarFaltantesComoCero) {
+        return;
+      }
+
+      valor = 0;
+    } else {
+      const ladoEquipo = obtenerIdEquipoLocalPartido(partido) === Number(equipoId)
+        ? "local"
+        : "visitante";
+
+      valor = objetivo
+        ? estadistica[ladoEquipo]
+        : estadistica.local + estadistica.visitante;
+    }
+
+    validos += 1;
+
+    if (esMas ? valor > linea : valor < linea) {
+      acertados += 1;
+    }
+  });
+
+  return porcentajeMercado(acertados, validos);
+}
+
+function porcentajeEquipoMasCorners(partidos, periodo, equipoId, esperado) {
+  let validos = 0;
+  let acertados = 0;
+
+  (partidos || []).forEach((partido) => {
+    const corners = obtenerCornersPartido(partido, periodo);
+
+    if (!corners) {
+      return;
+    }
+
+    const ladoEquipo = obtenerIdEquipoLocalPartido(partido) === Number(equipoId)
+      ? "local"
+      : "visitante";
+    const ladoRival = ladoEquipo === "local" ? "visitante" : "local";
+    const resultado = corners[ladoEquipo] > corners[ladoRival]
+      ? "equipo"
+      : corners[ladoEquipo] < corners[ladoRival]
+        ? "rival"
+        : "empate";
+
+    validos += 1;
+
+    if (resultado === esperado) {
+      acertados += 1;
+    }
+  });
+
+  return porcentajeMercado(acertados, validos);
+}
+
+function porcentajeTiempoConMasCorners(partidos, esperado) {
+  let validos = 0;
+  let acertados = 0;
+
+  (partidos || []).forEach((partido) => {
+    const primerTiempo = obtenerCornersPartido(partido, "1ST");
+    const segundoTiempo = obtenerCornersPartido(partido, "2ND");
+
+    if (!primerTiempo || !segundoTiempo) {
+      return;
+    }
+
+    const totalPrimerTiempo = primerTiempo.local + primerTiempo.visitante;
+    const totalSegundoTiempo = segundoTiempo.local + segundoTiempo.visitante;
+    const resultado = totalPrimerTiempo > totalSegundoTiempo
+      ? "primer_tiempo"
+      : totalPrimerTiempo < totalSegundoTiempo
+        ? "segundo_tiempo"
+        : "empate";
+
+    validos += 1;
+
+    if (resultado === esperado) {
+      acertados += 1;
+    }
+  });
+
+  return porcentajeMercado(acertados, validos);
+}
+
+function porcentajeRangoTotalCorners(partidos, minimo, maximo) {
+  let validos = 0;
+  let acertados = 0;
+
+  (partidos || []).forEach((partido) => {
+    const corners = obtenerCornersPartido(partido, "FT");
+
+    if (!corners) {
+      return;
+    }
+
+    const total = corners.local + corners.visitante;
+    validos += 1;
+
+    if (total >= minimo && (maximo === null || total <= maximo)) {
+      acertados += 1;
+    }
+  });
+
+  return porcentajeMercado(acertados, validos);
+}
+
+function porcentajeMarcadorCorrectoCorners(partidos, equipoId, cornersEquipo, cornersRival) {
+  let validos = 0;
+  let acertados = 0;
+
+  (partidos || []).forEach((partido) => {
+    const corners = obtenerCornersPartido(partido, "FT");
+
+    if (!corners) {
+      return;
+    }
+
+    const ladoEquipo = obtenerIdEquipoLocalPartido(partido) === Number(equipoId)
+      ? "local"
+      : "visitante";
+    const ladoRival = ladoEquipo === "local" ? "visitante" : "local";
+
+    validos += 1;
+
+    if (
+      corners[ladoEquipo] === cornersEquipo &&
+      corners[ladoRival] === cornersRival
+    ) {
+      acertados += 1;
+    }
+  });
+
+  return porcentajeMercado(acertados, validos);
 }
 
 

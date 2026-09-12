@@ -246,6 +246,25 @@ button:disabled {
   color: #777;
 }
 
+.titulo-seccion-colapsable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.titulo-seccion-colapsable:focus-visible {
+  outline: 2px solid #1f6feb;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.indicador-seccion {
+  font-size: 20px;
+  line-height: 1;
+}
+
 /* ============================================================
    TABLA DE JUGADORES
    ============================================================ */
