@@ -456,6 +456,19 @@ function renderizarMercados(
 
 
       <h3 class="subtitulo-mercado">
+        Más/Menos Goles en Primer Tiempo
+      </h3>
+
+      ${crearTablaMasMenosTotal(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+        "1ST",
+        4.5,
+      )}
+
+
+      <h3 class="subtitulo-mercado">
         ${escaparHTML(nombreEquipoLocal)} - Goles totales Más/Menos
       </h3>
 
@@ -473,6 +486,40 @@ function renderizarMercados(
         resultado,
         nombreEquipoLocal,
         nombreEquipoVisitante,
+      )}
+
+      <h3 class="subtitulo-mercado">
+        Más/Menos Goles en Primer Tiempo ${escaparHTML(nombreEquipoLocal)}
+      </h3>
+
+      ${crearTablaMasMenosGolesEquipoPrimerTiempo(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+        "local",
+      )}
+
+      <h3 class="subtitulo-mercado">
+        Más/Menos Goles en Primer Tiempo ${escaparHTML(nombreEquipoVisitante)}
+      </h3>
+
+      ${crearTablaMasMenosGolesEquipoPrimerTiempo(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+        "visitante",
+      )}
+
+      <h3 class="subtitulo-mercado">
+        Más/Menos Goles en Segundo Tiempo
+      </h3>
+
+      ${crearTablaMasMenosTotal(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+        "2ND",
+        4.5,
       )}
 
       <h3 class="subtitulo-mercado">
@@ -898,10 +945,441 @@ function renderizarMercados(
         "visitante",
       )}
 
+      <h2 class="titulo-seccion">
+        Medio tiempo
+      </h2>
+
+      ${crearMercadosMedioTiempo(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h2 class="titulo-seccion">
+        Especiales
+      </h2>
+
+      ${crearMercadosEspeciales(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h2 class="titulo-seccion">
+        Hándicap
+      </h2>
+
+      ${crearMercadosHandicap(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
     </section>
   `;
 
   configurarSeccionesColapsables(contenedor);
+}
+
+
+// ============================================================
+// MERCADOS DE HÁNDICAP
+// ============================================================
+
+function crearMercadosHandicap(resultado, local, visitante) {
+  return `
+    <h3 class="subtitulo-mercado">Hándicap Resultado del Partido</h3>
+    ${crearTablaHandicapResultado(resultado, local, visitante, "FT", 4)}
+
+    <h3 class="subtitulo-mercado">Hándicap Primer Tiempo</h3>
+    ${crearTablaHandicapResultado(resultado, local, visitante, "1ST", 2)}
+  `;
+}
+
+
+function crearTablaHandicapResultado(resultado, local, visitante, periodo, maximo) {
+  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const lineas = [];
+  for (let handicap = -maximo; handicap <= maximo; handicap += 1) {
+    if (handicap !== 0) {
+      lineas.push(handicap);
+    }
+  }
+
+  const etiquetaHandicap = (valor) => valor > 0 ? `+${valor}` : String(valor);
+  const crearFila = (handicap, resultadoEsperado, etiqueta, handicapVisible = handicap) => `
+    <tr>
+      <td>${escaparHTML(etiqueta)} ${etiquetaHandicap(handicapVisible)}</td>
+      ${columnas.map((columna) => `
+        <td>${porcentajeHandicapResultado(
+          columna.partidos,
+          columna.equipoId,
+          handicap,
+          resultadoEsperado,
+          periodo,
+          resultado,
+        )}</td>
+      `).join("")}
+    </tr>
+  `;
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr>
+        </thead>
+        <tbody>
+          ${lineas.map((handicap) => `
+            ${crearFila(handicap, "local", `${local}`)}
+            ${crearFila(handicap, "empate", "Empate")}
+            ${crearFila(handicap, "visitante", `${visitante}`)}
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function porcentajeHandicapResultado(
+  partidos,
+  equipoId,
+  handicap,
+  resultadoEsperado,
+  periodo,
+  resultadoMercado,
+) {
+  let validos = 0;
+  let acertados = 0;
+  (partidos || []).forEach((partido) => {
+    const goles = periodo === "FT"
+      ? { local: Number(partido?.marcador_local), visitante: Number(partido?.marcador_visitante) }
+      : obtenerGolesPorPeriodo(partido, periodo);
+
+    if (!goles || !Number.isFinite(goles.local) || !Number.isFinite(goles.visitante)) return;
+    validos += 1;
+    // En la columna de empate se conserva el hándicap del local, igual que
+    // en el mercado europeo de tres resultados.
+    const equipoConHandicap = resultadoEsperado === "visitante"
+      ? resultadoMercado?.equipo_visitante?.id
+      : resultadoMercado?.equipo_local?.id;
+
+    const esEquipoDelMercado = Number(equipoId) === Number(equipoConHandicap);
+
+    const esLocalHistorico = obtenerIdEquipoLocalPartido(partido) === Number(equipoId);
+    const golesEquipo = esLocalHistorico ? goles.local : goles.visitante;
+    const golesRival = esLocalHistorico ? goles.visitante : goles.local;
+
+    // El hándicap se aplica al equipo del mercado. Cuando la columna es del
+    // rival, el mismo ajuste se aplica al rival de ese historial.
+    const golesEquipoAjustados = golesEquipo + (esEquipoDelMercado ? handicap : 0);
+    const golesRivalAjustados = golesRival + (esEquipoDelMercado ? 0 : handicap);
+    const resultadoEquipo = golesEquipoAjustados > golesRivalAjustados
+      ? "gana"
+      : golesEquipoAjustados < golesRivalAjustados
+        ? "pierde"
+        : "empata";
+
+    const esperado = resultadoEsperado === "empate"
+      ? "empata"
+      : esEquipoDelMercado
+        ? "gana"
+        : "pierde";
+
+    if (resultadoEquipo === esperado) acertados += 1;
+  });
+  return porcentajeMercado(acertados, validos);
+}
+
+
+// ============================================================
+// MERCADOS ESPECIALES
+// ============================================================
+
+function crearMercadosEspeciales(resultado, local, visitante) {
+  const siNo = [["Sí", true], ["No", false]];
+  const margenes = [
+    [`${local} gana por exactamente 1 gol`, ["local", 1]],
+    [`${local} gana por 2 goles exactamente`, ["local", 2]],
+    [`${local} gana por 3 goles o más`, ["local", 3]],
+    ["Empate", ["empate", 0]],
+    [`${visitante} gana por exactamente 1 gol`, ["visitante", 1]],
+    [`${visitante} gana por 2 goles exactamente`, ["visitante", 2]],
+    [`${visitante} gana por 3 goles o más`, ["visitante", 3]],
+  ];
+  const curso = [
+    [`${local} anota primero y gana`, ["local", "equipo"]],
+    [`${local} anota primero y empata`, ["local", "empate"]],
+    [`${local} anota primero y pierde`, ["local", "rival"]],
+    [`${visitante} anota primero y gana`, ["visitante", "equipo"]],
+    [`${visitante} anota primero y empata`, ["visitante", "empate"]],
+    [`${visitante} anota primero y pierde`, ["visitante", "rival"]],
+    ["Sin goles", ["sin_goles", null]],
+  ];
+
+  return `
+    <h3 class="subtitulo-mercado">Penal concedido</h3>
+    ${crearTablaEspecial(resultado, local, visitante, siNo, (p, id, opcion) =>
+      (obtenerTotalEventoEspecial(p, "FT", "timeline:penales_causados") > 0) === opcion)}
+
+    <h3 class="subtitulo-mercado">Autogol</h3>
+    ${crearTablaEspecial(resultado, local, visitante, siNo, (p, id, opcion) =>
+      (obtenerTotalEventoEspecial(p, "FT", "timeline:autogoles") > 0) === opcion)}
+
+    <h3 class="subtitulo-mercado">Margen del Triunfo</h3>
+    ${crearTablaEspecial(resultado, local, visitante, margenes, (p, id, opcion) =>
+      coincideMargenTriunfo(p, opcion[0], opcion[1]))}
+
+    <h3 class="subtitulo-mercado">Penal concedido Primer Tiempo</h3>
+    ${crearTablaEspecial(resultado, local, visitante, siNo, (p, id, opcion) =>
+      (obtenerTotalEventoEspecial(p, "1ST", "timeline:penales_causados") > 0) === opcion)}
+
+    <h3 class="subtitulo-mercado">${escaparHTML(local)} Penal concedido</h3>
+    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
+      tienePenalConcedidoEquipo(p, id) === opcion, "local")}
+
+    <h3 class="subtitulo-mercado">${escaparHTML(visitante)} Penal concedido</h3>
+    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
+      tienePenalConcedidoEquipo(p, id) === opcion, "visitante")}
+
+    <h3 class="subtitulo-mercado">Dos penales concedidos</h3>
+    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
+      (obtenerTotalEventoEspecial(p, "FT", "timeline:penales_causados") >= 2) === opcion)}
+
+    <h3 class="subtitulo-mercado">Ambos equipos ganan un penal</h3>
+    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
+      ambosEquiposTienenPenal(p) === opcion)}
+
+    <h3 class="subtitulo-mercado">Curso del juego</h3>
+    ${crearTablaEspecial(resultado, local, visitante, curso, (p, id, opcion) =>
+      coincideCursoJuego(resultado, p, id, opcion))}
+  `;
+}
+
+
+function crearTablaEspecial(resultado, local, visitante, opciones, evaluar, objetivo) {
+  const todas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = objetivo === "local" ? todas.slice(0, 2) : objetivo === "visitante" ? todas.slice(2) : todas;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map(([etiqueta, opcion]) => `<tr><td>${escaparHTML(etiqueta)}</td>${columnas.map((columna) => `<td>${porcentajeEspecial(columna.partidos, columna.equipoId, opcion, evaluar)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+
+function porcentajeEspecial(partidos, equipoId, opcion, evaluar) {
+  let validos = 0;
+  let acertados = 0;
+  (partidos || []).forEach((partido) => {
+    if (!Array.isArray(partido?.estadisticas?.periodos)) return;
+    validos += 1;
+    if (evaluar(partido, equipoId, opcion)) acertados += 1;
+  });
+  return porcentajeMercado(acertados, validos);
+}
+
+
+function obtenerTotalEventoEspecial(partido, periodo, clave) {
+  const dato = obtenerEstadisticaPartido(partido, periodo, clave);
+  return dato ? dato.local + dato.visitante : 0;
+}
+
+
+function tienePenalConcedidoEquipo(partido, equipoId) {
+  const dato = obtenerEstadisticaPartido(partido, "FT", "timeline:penales_causados");
+  if (!dato) return false;
+  return obtenerIdEquipoLocalPartido(partido) === Number(equipoId) ? dato.local > 0 : dato.visitante > 0;
+}
+
+
+function ambosEquiposTienenPenal(partido) {
+  const dato = obtenerEstadisticaPartido(partido, "FT", "timeline:penales_causados");
+  return Boolean(dato && dato.local > 0 && dato.visitante > 0);
+}
+
+
+function coincideMargenTriunfo(partido, equipoMercado, margen) {
+  const local = Number(partido?.marcador_local);
+  const visitante = Number(partido?.marcador_visitante);
+  if (!Number.isFinite(local) || !Number.isFinite(visitante)) return false;
+  const diferencia = Math.abs(local - visitante);
+  if (equipoMercado === "empate") return diferencia === 0;
+  const ganaLocal = local > visitante;
+  const coincideGanador = (equipoMercado === "local" && ganaLocal) || (equipoMercado === "visitante" && !ganaLocal && diferencia > 0);
+  return coincideGanador && (margen === 3 ? diferencia >= 3 : diferencia === margen);
+}
+
+
+function coincideCursoJuego(resultado, partido, equipoId, opcion) {
+  const primero = obtenerEstadoPrimerGol(partido, equipoId);
+  if (opcion[0] === "sin_goles") return primero === "sin_goles";
+  const esperadoPrimero = resultadoEsperadoParaEquipo(resultado, equipoId, opcion[0]);
+  return primero === esperadoPrimero && partido?.resultado === ({ equipo: "Victoria", empate: "Empate", rival: "Derrota" }[opcion[1]]);
+}
+
+
+// ============================================================
+// MERCADOS DE MEDIO TIEMPO
+// ============================================================
+
+function crearMercadosMedioTiempo(resultado, local, visitante) {
+  const opcionesResultado = [
+    [local, "local"],
+    ["Empate", "empate"],
+    [visitante, "visitante"],
+  ];
+
+  const opcionesDoble = [
+    [`${local} o Empate`, ["local", "empate"]],
+    [`${local} o ${visitante}`, ["local", "visitante"]],
+    [`${visitante} o Empate`, ["visitante", "empate"]],
+  ];
+
+  const opcionesMedioCompleto = [
+    [`${local} / ${local}`, ["local", "local"]],
+    [`${local} / Empate`, ["local", "empate"]],
+    [`${local} / ${visitante}`, ["local", "visitante"]],
+    [`Empate / ${local}`, ["empate", "local"]],
+    ["Empate / Empate", ["empate", "empate"]],
+    [`Empate / ${visitante}`, ["empate", "visitante"]],
+    [`${visitante} / ${local}`, ["visitante", "local"]],
+    [`${visitante} / Empate`, ["visitante", "empate"]],
+    [`${visitante} / ${visitante}`, ["visitante", "visitante"]],
+  ];
+
+  const opcionesDobleMedioCompleto = opcionesDoble.flatMap(([etiqueta1, valores1]) =>
+    opcionesDoble.map(([etiqueta2, valores2]) => [
+      `${etiqueta1} / ${etiqueta2}`,
+      [valores1, valores2],
+    ])
+  );
+
+  return `
+    <h3 class="subtitulo-mercado">Resultado Primer Tiempo</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesResultado, (p, id, opcion) =>
+      obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperadoParaEquipo(resultado, id, opcion))}
+
+    <h3 class="subtitulo-mercado">Primer Tiempo - Doble Oportunidad</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesDoble, (p, id, opcion) =>
+      opcion
+        .map((resultadoMercado) => resultadoEsperadoParaEquipo(resultado, id, resultadoMercado))
+        .includes(obtenerResultadoPeriodoEquipo(p, id, "1ST")))}
+
+    <h3 class="subtitulo-mercado">Gana cualquiera de los tiempos</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [[local, "local"], [visitante, "visitante"]], (p, id, opcion) => {
+      const resultadoEsperado = resultadoEsperadoParaEquipo(resultado, id, opcion);
+      return obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperado ||
+        obtenerResultadoPeriodoEquipo(p, id, "2ND") === resultadoEsperado;
+    })}
+
+    <h3 class="subtitulo-mercado">Resultado Medio Tiempo o Tiempo Completo</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesMedioCompleto, (p, id, opcion) =>
+      obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperadoParaEquipo(resultado, id, opcion[0]) &&
+      obtenerResultadoPeriodoEquipo(p, id, "FT") === resultadoEsperadoParaEquipo(resultado, id, opcion[1]))}
+
+    <h3 class="subtitulo-mercado">Medio Tiempo/Tiempo Completo - Doble oportunidad</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesDobleMedioCompleto, (p, id, opcion) =>
+      opcion[0].map((valor) => resultadoEsperadoParaEquipo(resultado, id, valor)).includes(obtenerResultadoPeriodoEquipo(p, id, "1ST")) &&
+      opcion[1].map((valor) => resultadoEsperadoParaEquipo(resultado, id, valor)).includes(obtenerResultadoPeriodoEquipo(p, id, "FT")))}
+
+    <h3 class="subtitulo-mercado">Gol anotado en ambos tiempos</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
+      (obtenerTotalGolesPartido(p, "1ST") > 0 && obtenerTotalGolesPartido(p, "2ND") > 0) === opcion)}
+
+    <h3 class="subtitulo-mercado">Ambos equipos anotan en el Primer Tiempo/Segundo Tiempo</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí / Sí", [true, true]], ["Sí / No", [true, false]], ["No / Sí", [false, true]], ["No / No", [false, false]]], (p, id, opcion) =>
+      ambosAnotanPeriodo(p, "1ST") === opcion[0] && ambosAnotanPeriodo(p, "2ND") === opcion[1])}
+
+    <h3 class="subtitulo-mercado">Tiempo con Más Goles</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [["Primer Tiempo", "1ST"], ["Segundo Tiempo", "2ND"], ["Empate", "empate"]], (p, id, opcion) =>
+      obtenerTiempoConMasGoles(p) === opcion)}
+
+    <h3 class="subtitulo-mercado">${escaparHTML(local)} Gana Ambos Tiempos</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
+      (obtenerResultadoPeriodoEquipo(p, id, "1ST") === "equipo" && obtenerResultadoPeriodoEquipo(p, id, "2ND") === "equipo") === opcion, "local")}
+
+    <h3 class="subtitulo-mercado">${escaparHTML(visitante)} Gana Ambos Tiempos</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
+      (obtenerResultadoPeriodoEquipo(p, id, "1ST") === "equipo" && obtenerResultadoPeriodoEquipo(p, id, "2ND") === "equipo") === opcion, "visitante")}
+
+    <h3 class="subtitulo-mercado">Resultado Segundo Tiempo</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesResultado, (p, id, opcion) =>
+      obtenerResultadoPeriodoEquipo(p, id, "2ND") === resultadoEsperadoParaEquipo(resultado, id, opcion))}
+
+    <h3 class="subtitulo-mercado">Segundo Tiempo - Doble Oportunidad</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesDoble, (p, id, opcion) =>
+      opcion
+        .map((resultadoMercado) => resultadoEsperadoParaEquipo(resultado, id, resultadoMercado))
+        .includes(obtenerResultadoPeriodoEquipo(p, id, "2ND")))}
+
+    <h3 class="subtitulo-mercado">Ambos equipos anotan en el Segundo Tiempo</h3>
+    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
+      ambosAnotanPeriodo(p, "2ND") === opcion)}
+  `;
+}
+
+
+function crearTablaMedioTiempo(resultado, local, visitante, opciones, evaluar, objetivo) {
+  const todas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = objetivo === "local" ? todas.slice(0, 2) :
+    objetivo === "visitante" ? todas.slice(2) : todas;
+
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map(([etiqueta, opcion]) => `<tr><td>${escaparHTML(etiqueta)}</td>${columnas.map((columna) => `<td>${porcentajeMedioTiempo(columna.partidos, columna.equipoId, opcion, evaluar)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+
+
+function porcentajeMedioTiempo(partidos, equipoId, opcion, evaluar) {
+  let validos = 0;
+  let acertados = 0;
+  (partidos || []).forEach((partido) => {
+    if (!obtenerGolesPorPeriodo(partido, "1ST") || !obtenerGolesPorPeriodo(partido, "2ND")) return;
+    validos += 1;
+    if (evaluar(partido, equipoId, opcion)) acertados += 1;
+  });
+  return porcentajeMercado(acertados, validos);
+}
+
+
+function obtenerGolesPorPeriodo(partido, periodo) {
+  return obtenerEstadisticaPartido(partido, periodo, "timeline:goles");
+}
+
+
+function obtenerResultadoPeriodoEquipo(partido, equipoId, periodo) {
+  let goles = periodo === "FT"
+    ? { local: Number(partido?.marcador_local), visitante: Number(partido?.marcador_visitante) }
+    : obtenerGolesPorPeriodo(partido, periodo);
+  if (!goles || !Number.isFinite(goles.local) || !Number.isFinite(goles.visitante)) return null;
+  const esLocal = obtenerIdEquipoLocalPartido(partido) === Number(equipoId);
+  const propios = esLocal ? goles.local : goles.visitante;
+  const rival = esLocal ? goles.visitante : goles.local;
+  return propios > rival ? "equipo" : propios < rival ? "rival" : "empate";
+}
+
+
+// Convierte el resultado absoluto del enfrentamiento (local/empate/visitante)
+// a la perspectiva del equipo de cada columna histórica.
+function resultadoEsperadoParaEquipo(resultado, equipoId, resultadoMercado) {
+  if (resultadoMercado === "empate") return "empate";
+
+  const esEquipoLocal = Number(equipoId) === Number(resultado?.equipo_local?.id);
+  const ganaElEquipo =
+    (resultadoMercado === "local" && esEquipoLocal) ||
+    (resultadoMercado === "visitante" && !esEquipoLocal);
+
+  return ganaElEquipo ? "equipo" : "rival";
+}
+
+
+function ambosAnotanPeriodo(partido, periodo) {
+  const goles = obtenerGolesPorPeriodo(partido, periodo);
+  return goles ? goles.local > 0 && goles.visitante > 0 : null;
+}
+
+
+function obtenerTiempoConMasGoles(partido) {
+  const primero = obtenerTotalGolesPartido(partido, "1ST");
+  const segundo = obtenerTotalGolesPartido(partido, "2ND");
+  if (primero === null || segundo === null) return null;
+  return primero > segundo ? "1ST" : primero < segundo ? "2ND" : "empate";
 }
 
 
@@ -2996,6 +3474,8 @@ function crearTablaMasMenosTotal(
   resultado,
   nombreEquipoLocal,
   nombreEquipoVisitante,
+  periodo = "FT",
+  lineaMaxima = 9.5,
 ) {
   const partidosLocalGeneral =
     resultado?.equipo_local?.partidos_general || [];
@@ -3011,7 +3491,7 @@ function crearTablaMasMenosTotal(
 
   const lineas = [];
 
-  for (let linea = 0.5; linea <= 9.5; linea += 1) {
+  for (let linea = 0.5; linea <= lineaMaxima; linea += 1) {
     lineas.push(linea);
   }
 
@@ -3060,56 +3540,64 @@ function crearTablaMasMenosTotal(
               calcularPorcentajeTotalGoles(
                 partidosLocalGeneral,
                 linea,
-                true
+                true,
+                periodo,
               );
 
             const menosLocalGeneral =
               calcularPorcentajeTotalGoles(
                 partidosLocalGeneral,
                 linea,
-                false
+                false,
+                periodo,
               );
 
             const masLocalCasa =
               calcularPorcentajeTotalGoles(
                 partidosLocalCasa,
                 linea,
-                true
+                true,
+                periodo,
               );
 
             const menosLocalCasa =
               calcularPorcentajeTotalGoles(
                 partidosLocalCasa,
                 linea,
-                false
+                false,
+                periodo,
               );
 
             const masVisitanteFuera =
               calcularPorcentajeTotalGoles(
                 partidosVisitanteFuera,
                 linea,
-                true
+                true,
+                periodo,
               );
 
             const menosVisitanteFuera =
               calcularPorcentajeTotalGoles(
                 partidosVisitanteFuera,
                 linea,
-                false
+                false,
+                periodo,
               );
 
             const masVisitanteGeneral =
               calcularPorcentajeTotalGoles(
                 partidosVisitanteGeneral,
                 linea,
-                true
+                true,
+                periodo,
               );
 
             const menosVisitanteGeneral =
               calcularPorcentajeTotalGoles(
                 partidosVisitanteGeneral,
                 linea,
-                false
+                false,
+                periodo,
               );
 
             return `
@@ -4447,6 +4935,108 @@ function crearTablaMasMenosGolesVisitante(
 
 
 // ============================================================
+// MÁS / MENOS — GOLES DEL EQUIPO EN PRIMER TIEMPO
+// ============================================================
+
+function crearTablaMasMenosGolesEquipoPrimerTiempo(
+  resultado,
+  nombreEquipoLocal,
+  nombreEquipoVisitante,
+  equipoObjetivo,
+) {
+  const equipoLocalId = resultado?.equipo_local?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
+  const esLocal = equipoObjetivo === "local";
+
+  const columnas = esLocal
+    ? [
+        { partidos: resultado?.equipo_local?.partidos_general || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "General · Marcados", tipo: "marcados" },
+        { partidos: resultado?.equipo_local?.partidos_local || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "Casa · Marcados", tipo: "marcados" },
+        { partidos: resultado?.equipo_visitante?.partidos_visitante || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "Fuera · Recibidos", tipo: "recibidos" },
+        { partidos: resultado?.equipo_visitante?.partidos_general || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "General · Recibidos", tipo: "recibidos" },
+      ]
+    : [
+        { partidos: resultado?.equipo_visitante?.partidos_general || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "General · Marcados", tipo: "marcados" },
+        { partidos: resultado?.equipo_visitante?.partidos_visitante || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "Fuera · Marcados", tipo: "marcados" },
+        { partidos: resultado?.equipo_local?.partidos_local || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "Casa · Recibidos", tipo: "recibidos" },
+        { partidos: resultado?.equipo_local?.partidos_general || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "General · Recibidos", tipo: "recibidos" },
+      ];
+
+  const lineas = [0.5, 1.5, 2.5, 3.5];
+
+  const crearFila = (esMas, linea) => `
+    <tr>
+      <td>${esMas ? "Más" : "Menos"} ${formatearLinea(linea)}</td>
+      ${columnas.map((columna) => `
+        <td>${porcentajeGolesEquipoPrimerTiempo(
+          columna.partidos,
+          columna.equipoId,
+          columna.tipo,
+          linea,
+          esMas,
+        )}</td>
+      `).join("")}
+    </tr>
+  `;
+
+  return `
+    <div class="tabla-estadisticas-wrapper">
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Mercado</th>
+            ${columnas.map((columna) => `
+              <th>${escaparHTML(columna.nombre)}<br>${columna.condicion}</th>
+            `).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${lineas.map((linea) => `${crearFila(true, linea)}${crearFila(false, linea)}`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function porcentajeGolesEquipoPrimerTiempo(
+  partidos,
+  equipoId,
+  tipo,
+  linea,
+  esMas,
+) {
+  let validos = 0;
+  let acertados = 0;
+
+  (partidos || []).forEach((partido) => {
+    const goles = obtenerEstadisticaPartido(
+      partido,
+      "1ST",
+      "timeline:goles",
+    );
+
+    if (!goles) {
+      return;
+    }
+
+    const esEquipoLocal = obtenerIdEquipoLocalPartido(partido) === Number(equipoId);
+    const golesEquipo = esEquipoLocal ? goles.local : goles.visitante;
+    const golesRival = esEquipoLocal ? goles.visitante : goles.local;
+    const valor = tipo === "marcados" ? golesEquipo : golesRival;
+
+    validos += 1;
+
+    if (esMas ? valor > linea : valor < linea) {
+      acertados += 1;
+    }
+  });
+
+  return porcentajeMercado(acertados, validos);
+}
+
+
+// ============================================================
 // CALCULAR PORCENTAJE DE AMBOS EQUIPOS ANOTAN
 // ============================================================
 
@@ -5109,6 +5699,7 @@ function calcularPorcentajeTotalGoles(
   partidos,
   linea,
   esMas,
+  periodo = "FT",
 ) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
@@ -5119,21 +5710,14 @@ function calcularPorcentajeTotalGoles(
 
   partidos.forEach((partido) => {
 
-    const golesLocal =
-      Number(partido?.marcador_local);
+    const total = obtenerTotalGolesPartido(
+      partido,
+      periodo,
+    );
 
-    const golesVisitante =
-      Number(partido?.marcador_visitante);
-
-    if (
-      !Number.isFinite(golesLocal) ||
-      !Number.isFinite(golesVisitante)
-    ) {
+    if (total === null) {
       return;
     }
-
-    const total =
-      golesLocal + golesVisitante;
 
     validos += 1;
 
@@ -5295,6 +5879,32 @@ function porcentajeGolesEquipoRango(
     acertados,
     validos
   );
+}
+
+
+// ============================================================
+// TOTAL DE GOLES DE UN PARTIDO POR PERIODO
+// ============================================================
+
+function obtenerTotalGolesPartido(partido, periodo = "FT") {
+  if (periodo === "FT") {
+    const golesLocal = Number(partido?.marcador_local);
+    const golesVisitante = Number(partido?.marcador_visitante);
+
+    return Number.isFinite(golesLocal) && Number.isFinite(golesVisitante)
+      ? golesLocal + golesVisitante
+      : null;
+  }
+
+  const goles = obtenerEstadisticaPartido(
+    partido,
+    periodo,
+    "timeline:goles",
+  );
+
+  return goles
+    ? goles.local + goles.visitante
+    : null;
 }
 
 
