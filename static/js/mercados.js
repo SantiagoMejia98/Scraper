@@ -404,39 +404,10 @@ function renderizarMercados(
         Marcador correcto
       </h3>
 
-      <h4 class="subtitulo-mercado">
-        Victoria de ${escaparHTML(nombreEquipoLocal)}
-      </h4>
-
       ${crearTablaMarcadorCorrecto(
         resultado,
         nombreEquipoLocal,
         nombreEquipoVisitante,
-        "local",
-      )}
-
-
-      <h4 class="subtitulo-mercado">
-        Empates
-      </h4>
-
-      ${crearTablaMarcadorCorrecto(
-        resultado,
-        nombreEquipoLocal,
-        nombreEquipoVisitante,
-        "empate",
-      )}
-
-
-      <h4 class="subtitulo-mercado">
-        Victoria de ${escaparHTML(nombreEquipoVisitante)}
-      </h4>
-
-      ${crearTablaMarcadorCorrecto(
-        resultado,
-        nombreEquipoLocal,
-        nombreEquipoVisitante,
-        "visitante",
       )}
 
 
@@ -590,6 +561,140 @@ function renderizarMercados(
         nombreEquipoLocal,
         nombreEquipoVisitante,
       )}
+
+      <h4 class="subtitulo-mercado">
+        Faltas cometidas
+      </h4>
+
+      ${crearMercadoFaltasCometidasJugadores(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h4 class="subtitulo-mercado">
+        Faltas recibidas
+      </h4>
+
+      ${crearMercadoFaltasRecibidasJugadores(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h4 class="subtitulo-mercado">
+        Pases
+      </h4>
+
+      ${crearMercadoPasesJugadores(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h4 class="subtitulo-mercado">
+        Entradas
+      </h4>
+
+      ${crearMercadoEntradasJugadores(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h4 class="subtitulo-mercado">
+        Fueras de juego
+      </h4>
+
+      ${crearMercadoFuerasDeJuegoJugadores(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+      )}
+
+      <h3 class="subtitulo-mercado">
+        Goles
+      </h3>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Goleador</summary>
+        ${crearMercadoGolesJugadores(
+          resultado,
+          nombreEquipoLocal,
+          nombreEquipoVisitante,
+        )}
+      </details>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Anotar</summary>
+        ${crearMercadoAnotarJugadores(
+          resultado,
+          nombreEquipoLocal,
+          nombreEquipoVisitante,
+        )}
+      </details>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Jugador que anota o da una asistencia</summary>
+        ${crearMercadoAnotaOAsisteJugadores(
+          resultado,
+          nombreEquipoLocal,
+          nombreEquipoVisitante,
+        )}
+      </details>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Goleador múltiple</summary>
+        ${crearMercadoGoleadorMultiple(
+          resultado,
+          nombreEquipoLocal,
+          nombreEquipoVisitante,
+        )}
+      </details>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Primer anotador del equipo local</summary>
+        ${crearMercadoPrimerAnotadorEquipo(
+          nombreEquipoLocal,
+          resultado?.equipo_local?.partidos_general || [],
+          resultado?.equipo_local?.partidos_local || [],
+          resultado?.equipo_local?.id,
+          "Como local",
+        )}
+      </details>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Primer anotador del equipo visitante</summary>
+        ${crearMercadoPrimerAnotadorEquipo(
+          nombreEquipoVisitante,
+          resultado?.equipo_visitante?.partidos_general || [],
+          resultado?.equipo_visitante?.partidos_visitante || [],
+          resultado?.equipo_visitante?.id,
+          "Como visitante",
+        )}
+      </details>
+
+      <h3 class="subtitulo-mercado">
+        Tarjetas / Otros
+      </h3>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>Tarjetas del jugador</summary>
+        ${crearMercadoTarjetasJugadores(
+          resultado,
+          nombreEquipoLocal,
+          nombreEquipoVisitante,
+        )}
+      </details>
+
+      <details class="mercado-jugador-colapsable">
+        <summary>El jugador golpea al palo</summary>
+        ${crearMercadoGolpeaAlPaloJugadores(
+          resultado,
+          nombreEquipoLocal,
+          nombreEquipoVisitante,
+        )}
+      </details>
 
       <h2 class="titulo-seccion">
         Tiros de esquina
@@ -1022,6 +1127,10 @@ function renderizarMercados(
     </section>
   `;
 
+  configurarMercadosJugadoresColapsables(contenedor);
+  configurarSeccionJugadoresColapsable(contenedor, "Goles");
+  configurarSeccionJugadoresColapsable(contenedor, "Tarjetas / Otros");
+  configurarSubmercadosColapsables(contenedor);
   configurarSeccionesColapsables(contenedor);
 }
 
@@ -1052,6 +1161,662 @@ function crearMercadoTirosTotalesJugadores(resultado, nombreLocal, nombreVisitan
 }
 
 
+function crearMercadoFaltasCometidasJugadores(resultado, nombreLocal, nombreVisitante) {
+  return crearMercadoTirosJugadores(
+    resultado,
+    nombreLocal,
+    nombreVisitante,
+    "fouls",
+    [1, 2, 3, 4, 5, 6],
+  );
+}
+
+
+function crearMercadoFaltasRecibidasJugadores(resultado, nombreLocal, nombreVisitante) {
+  return crearMercadoTirosJugadores(
+    resultado,
+    nombreLocal,
+    nombreVisitante,
+    "wasFouled",
+    [1, 2, 3, 4, 5, 6],
+  );
+}
+
+
+function crearMercadoPasesJugadores(resultado, nombreLocal, nombreVisitante) {
+  return crearMercadoTirosJugadores(
+    resultado,
+    nombreLocal,
+    nombreVisitante,
+    "accuratePass",
+    [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150],
+  );
+}
+
+
+function crearMercadoEntradasJugadores(resultado, nombreLocal, nombreVisitante) {
+  return crearMercadoTirosJugadores(
+    resultado,
+    nombreLocal,
+    nombreVisitante,
+    "wonTackle",
+    [1, 2, 3, 4, 5, 6],
+  );
+}
+
+
+function crearMercadoFuerasDeJuegoJugadores(resultado, nombreLocal, nombreVisitante) {
+  return crearMercadoTirosJugadores(
+    resultado,
+    nombreLocal,
+    nombreVisitante,
+    "totalOffside",
+    [1, 2, 3, 4, 5, 6],
+  );
+}
+
+
+function crearMercadoGolesJugadores(resultado, nombreLocal, nombreVisitante) {
+  return `
+    ${crearTablaGoleadoresEquipo(
+      nombreLocal,
+      resultado?.equipo_local?.partidos_general || [],
+      resultado?.equipo_local?.partidos_local || [],
+      resultado?.equipo_local?.id,
+      "Como local",
+    )}
+    ${crearTablaGoleadoresEquipo(
+      nombreVisitante,
+      resultado?.equipo_visitante?.partidos_general || [],
+      resultado?.equipo_visitante?.partidos_visitante || [],
+      resultado?.equipo_visitante?.id,
+      "Como visitante",
+    )}
+  `;
+}
+
+
+function crearMercadoAnotarJugadores(resultado, nombreLocal, nombreVisitante) {
+  return `
+    ${crearTablaAnotarEquipo(
+      nombreLocal,
+      resultado?.equipo_local?.partidos_general || [],
+      resultado?.equipo_local?.partidos_local || [],
+      resultado?.equipo_local?.id,
+      "Como local",
+    )}
+    ${crearTablaAnotarEquipo(
+      nombreVisitante,
+      resultado?.equipo_visitante?.partidos_general || [],
+      resultado?.equipo_visitante?.partidos_visitante || [],
+      resultado?.equipo_visitante?.id,
+      "Como visitante",
+    )}
+  `;
+}
+
+
+function crearMercadoAnotaOAsisteJugadores(resultado, nombreLocal, nombreVisitante) {
+  return `
+    ${crearTablaAnotaOAsisteEquipo(
+      nombreLocal,
+      resultado?.equipo_local?.partidos_general || [],
+      resultado?.equipo_local?.partidos_local || [],
+      resultado?.equipo_local?.id,
+      "Como local",
+    )}
+    ${crearTablaAnotaOAsisteEquipo(
+      nombreVisitante,
+      resultado?.equipo_visitante?.partidos_general || [],
+      resultado?.equipo_visitante?.partidos_visitante || [],
+      resultado?.equipo_visitante?.id,
+      "Como visitante",
+    )}
+  `;
+}
+
+
+function crearTablaAnotaOAsisteEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+  const general = resumirAnotaOAsisteJugadores(partidosGeneral, equipoId);
+  const localidad = resumirAnotaOAsisteJugadores(partidosLocalidad, equipoId);
+  const porClave = new Map();
+
+  general.forEach((jugador) => {
+    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+  });
+  localidad.forEach((jugador) => {
+    const actual = porClave.get(jugador.clave) || {
+      nombre: jugador.nombre,
+      general: null,
+      localidad: null,
+    };
+    actual.localidad = jugador;
+    porClave.set(jugador.clave, actual);
+  });
+
+  const jugadores = [...porClave.values()]
+    .filter((jugador) => porcentajeTirosAlArcoJugadorNumero(jugador.general, 1) > 0
+      || porcentajeTirosAlArcoJugadorNumero(jugador.localidad, 1) > 0)
+    .sort((a, b) => porcentajeTirosAlArcoJugadorNumero(b.localidad, 1)
+      - porcentajeTirosAlArcoJugadorNumero(a.localidad, 1)
+      || porcentajeTirosAlArcoJugadorNumero(b.general, 1)
+        - porcentajeTirosAlArcoJugadorNumero(a.general, 1)
+      || a.nombre.localeCompare(b.nombre));
+
+  if (!jugadores.length) {
+    return `<div class="vacio">No hay goles ni asistencias de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper mercado-jugadores">
+      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>Anota o da una asistencia</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jugadores.map((jugador) => `
+            <tr>
+              <td>
+                ${escaparHTML(jugador.nombre)}<br>
+                <small>${escaparHTML(etiquetaLocalidad)}: ${jugador.localidad?.partidos || 0} partidos<br>General: ${jugador.general?.partidos || 0} partidos</small>
+              </td>
+              <td>${formatearProbabilidadAnotaOAsiste(jugador, etiquetaLocalidad)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function formatearProbabilidadAnotaOAsiste(jugador, etiquetaLocalidad) {
+  return `
+    <small>${escaparHTML(etiquetaLocalidad)}</small><br>
+    ${Math.round(porcentajeTirosAlArcoJugadorNumero(jugador.localidad, 1))}%<br>
+    <small>General</small><br>
+    ${Math.round(porcentajeTirosAlArcoJugadorNumero(jugador.general, 1))}%
+  `;
+}
+
+
+function crearMercadoGoleadorMultiple(resultado, nombreLocal, nombreVisitante) {
+  return `
+    ${crearTablaGoleadorMultipleEquipo(
+      nombreLocal,
+      resultado?.equipo_local?.partidos_general || [],
+      resultado?.equipo_local?.partidos_local || [],
+      resultado?.equipo_local?.id,
+      "Como local",
+    )}
+    ${crearTablaGoleadorMultipleEquipo(
+      nombreVisitante,
+      resultado?.equipo_visitante?.partidos_general || [],
+      resultado?.equipo_visitante?.partidos_visitante || [],
+      resultado?.equipo_visitante?.id,
+      "Como visitante",
+    )}
+  `;
+}
+
+
+function crearTablaGoleadorMultipleEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+  const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
+  const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
+  const porClave = new Map();
+
+  general.forEach((jugador) => {
+    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+  });
+  localidad.forEach((jugador) => {
+    const actual = porClave.get(jugador.clave) || {
+      nombre: jugador.nombre,
+      general: null,
+      localidad: null,
+    };
+    actual.localidad = jugador;
+    porClave.set(jugador.clave, actual);
+  });
+
+  const jugadores = [...porClave.values()]
+    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
+    .sort((a, b) => porcentajeGoleadorMultiple(b.localidad, 2) - porcentajeGoleadorMultiple(a.localidad, 2)
+      || porcentajeGoleadorMultiple(b.general, 2) - porcentajeGoleadorMultiple(a.general, 2)
+      || (b.general?.goles || 0) - (a.general?.goles || 0)
+      || a.nombre.localeCompare(b.nombre));
+
+  if (!jugadores.length) {
+    return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper mercado-jugadores">
+      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>2 o más goles</th>
+            <th>Triplete</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jugadores.map((jugador) => `
+            <tr>
+              <td>
+                ${escaparHTML(jugador.nombre)}<br>
+                <small>${escaparHTML(etiquetaLocalidad)}: ${jugador.localidad?.goles || 0} goles en ${jugador.localidad?.partidos || 0} partidos<br>General: ${jugador.general?.goles || 0} goles en ${jugador.general?.partidos || 0} partidos</small>
+              </td>
+              <td>${formatearProbabilidadGoleadorMultiple(jugador, 2, etiquetaLocalidad)}</td>
+              <td>${formatearProbabilidadGoleadorMultiple(jugador, 3, etiquetaLocalidad)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function porcentajeGoleadorMultiple(jugador, minimoGoles) {
+  if (!jugador?.partidos) return 0;
+
+  const partidosConMultiplete = (jugador.golesPorPartido || [])
+    .filter((goles) => goles >= minimoGoles)
+    .length;
+
+  return (partidosConMultiplete / jugador.partidos) * 100;
+}
+
+
+function formatearProbabilidadGoleadorMultiple(jugador, minimoGoles, etiquetaLocalidad) {
+  return `
+    <small>${escaparHTML(etiquetaLocalidad)}</small><br>
+    ${Math.round(porcentajeGoleadorMultiple(jugador.localidad, minimoGoles))}%<br>
+    <small>General</small><br>
+    ${Math.round(porcentajeGoleadorMultiple(jugador.general, minimoGoles))}%
+  `;
+}
+
+
+function crearMercadoPrimerAnotadorEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+  const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
+  const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
+  const porClave = new Map();
+
+  general.forEach((jugador) => {
+    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+  });
+  localidad.forEach((jugador) => {
+    const actual = porClave.get(jugador.clave) || {
+      nombre: jugador.nombre,
+      general: null,
+      localidad: null,
+    };
+    actual.localidad = jugador;
+    porClave.set(jugador.clave, actual);
+  });
+
+  const jugadores = [...porClave.values()]
+    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
+    .sort((a, b) => porcentajeGoleador(b.localidad, "primerGolEquipo")
+      - porcentajeGoleador(a.localidad, "primerGolEquipo")
+      || porcentajeGoleador(b.general, "primerGolEquipo")
+        - porcentajeGoleador(a.general, "primerGolEquipo")
+      || (b.general?.goles || 0) - (a.general?.goles || 0)
+      || a.nombre.localeCompare(b.nombre));
+
+  if (!jugadores.length) {
+    return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper mercado-jugadores">
+      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>Primer anotador del equipo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jugadores.map((jugador) => `
+            <tr>
+              <td>
+                ${escaparHTML(jugador.nombre)}<br>
+                <small>${escaparHTML(etiquetaLocalidad)}: ${jugador.localidad?.goles || 0} goles en ${jugador.localidad?.partidos || 0} partidos<br>General: ${jugador.general?.goles || 0} goles en ${jugador.general?.partidos || 0} partidos</small>
+              </td>
+              <td>${formatearProbabilidadGoleador(jugador, "primerGolEquipo", etiquetaLocalidad)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function crearMercadoTarjetasJugadores(resultado, nombreLocal, nombreVisitante) {
+  return `
+    ${crearTablaTarjetasJugadoresEquipo(
+      nombreLocal,
+      resultado?.equipo_local?.partidos_general || [],
+      resultado?.equipo_local?.partidos_local || [],
+      resultado?.equipo_local?.id,
+      "Como local",
+    )}
+    ${crearTablaTarjetasJugadoresEquipo(
+      nombreVisitante,
+      resultado?.equipo_visitante?.partidos_general || [],
+      resultado?.equipo_visitante?.partidos_visitante || [],
+      resultado?.equipo_visitante?.id,
+      "Como visitante",
+    )}
+  `;
+}
+
+
+function crearMercadoGolpeaAlPaloJugadores(resultado, nombreLocal, nombreVisitante) {
+  return crearMercadoTirosJugadores(
+    resultado,
+    nombreLocal,
+    nombreVisitante,
+    "hitWoodwork",
+    [1],
+  );
+}
+
+
+function crearTablaTarjetasJugadoresEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+  const general = resumirTarjetasJugadores(partidosGeneral, equipoId);
+  const localidad = resumirTarjetasJugadores(partidosLocalidad, equipoId);
+  const porClave = new Map();
+
+  general.forEach((jugador) => {
+    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+  });
+  localidad.forEach((jugador) => {
+    const actual = porClave.get(jugador.clave) || {
+      nombre: jugador.nombre,
+      general: null,
+      localidad: null,
+    };
+    actual.localidad = jugador;
+    porClave.set(jugador.clave, actual);
+  });
+
+  const jugadores = [...porClave.values()]
+    .filter((jugador) => (jugador.general?.tarjetas || 0) > 0 || (jugador.localidad?.tarjetas || 0) > 0)
+    .sort((a, b) => porcentajeGoleador(b.localidad, "tarjeta") - porcentajeGoleador(a.localidad, "tarjeta")
+      || porcentajeGoleador(b.general, "tarjeta") - porcentajeGoleador(a.general, "tarjeta")
+      || (b.general?.tarjetas || 0) - (a.general?.tarjetas || 0)
+      || a.nombre.localeCompare(b.nombre));
+
+  if (!jugadores.length) {
+    return `<div class="vacio">No hay tarjetas de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper mercado-jugadores">
+      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>Tarjeta</th>
+            <th>Tarjeta roja</th>
+            <th>1ra tarjeta</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jugadores.map((jugador) => `
+            <tr>
+              <td>
+                ${escaparHTML(jugador.nombre)}<br>
+                <small>${escaparHTML(etiquetaLocalidad)}: ${jugador.localidad?.tarjetas || 0} tarjetas en ${jugador.localidad?.partidos || 0} partidos<br>General: ${jugador.general?.tarjetas || 0} tarjetas en ${jugador.general?.partidos || 0} partidos</small>
+              </td>
+              <td>${formatearProbabilidadGoleador(jugador, "tarjeta", etiquetaLocalidad)}</td>
+              <td>${formatearProbabilidadGoleador(jugador, "roja", etiquetaLocalidad)}</td>
+              <td>${formatearProbabilidadGoleador(jugador, "primeraTarjetaPartido", etiquetaLocalidad)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function resumirTarjetasJugadores(partidos, equipoId) {
+  const jugadores = new Map();
+
+  (partidos || []).forEach((partido) => {
+    const lado = obtenerIdEquipoLocalPartido(partido) === Number(equipoId) ? "local" : "visitante";
+    const lista = partido?.estadisticas?.jugadores?.[lado];
+    if (!Array.isArray(lista)) return;
+
+    lista.forEach((jugador) => {
+      const minutos = Number(jugador?.minutesPlayed);
+      if (!Number.isFinite(minutos) || minutos <= 0) return;
+
+      const nombre = jugador?.jugador || "Jugador sin nombre";
+      const clave = jugador?.player_id != null
+        ? `id:${jugador.player_id}`
+        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const actual = jugadores.get(clave) || {
+        clave,
+        nombre,
+        partidos: 0,
+        tarjetas: 0,
+        tarjeta: 0,
+        roja: 0,
+        primeraTarjetaPartido: 0,
+      };
+      const tarjetas = Array.isArray(jugador?.tarjetas) ? jugador.tarjetas.length : 0;
+      const roja = Number(jugador?.rojas) || 0;
+
+      actual.partidos += 1;
+      actual.tarjetas += tarjetas;
+      actual.tarjeta += tarjetas > 0 ? 1 : 0;
+      actual.roja += roja > 0 ? 1 : 0;
+      actual.primeraTarjetaPartido += jugador?.primera_tarjeta_partido ? 1 : 0;
+      jugadores.set(clave, actual);
+    });
+  });
+
+  return [...jugadores.values()];
+}
+
+
+function crearTablaGoleadoresEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+  const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
+  const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
+  const porClave = new Map();
+
+  general.forEach((jugador) => {
+    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+  });
+  localidad.forEach((jugador) => {
+    const actual = porClave.get(jugador.clave) || {
+      nombre: jugador.nombre,
+      general: null,
+      localidad: null,
+    };
+    actual.localidad = jugador;
+    porClave.set(jugador.clave, actual);
+  });
+
+  const goleadores = [...porClave.values()]
+    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
+    .sort((a, b) => porcentajeGoleador(b.localidad, "anota") - porcentajeGoleador(a.localidad, "anota")
+      || porcentajeGoleador(b.general, "anota") - porcentajeGoleador(a.general, "anota")
+      || (b.general?.goles || 0) - (a.general?.goles || 0)
+      || a.nombre.localeCompare(b.nombre));
+
+  if (!goleadores.length) {
+    return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper mercado-jugadores">
+      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>Anota en cualquier momento</th>
+            <th>Primer gol</th>
+            <th>Último gol</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${goleadores.map((jugador) => `
+            <tr>
+              <td>
+                ${escaparHTML(jugador.nombre)}<br>
+                <small>${escaparHTML(etiquetaLocalidad)}: ${jugador.localidad?.goles || 0} goles en ${jugador.localidad?.partidos || 0} partidos<br>General: ${jugador.general?.goles || 0} goles en ${jugador.general?.partidos || 0} partidos</small>
+              </td>
+              <td>${formatearProbabilidadGoleador(jugador, "anota", etiquetaLocalidad)}</td>
+              <td>${formatearProbabilidadGoleador(jugador, "primerGol", etiquetaLocalidad)}</td>
+              <td>${formatearProbabilidadGoleador(jugador, "ultimoGol", etiquetaLocalidad)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function crearTablaAnotarEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+  const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
+  const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
+  const porClave = new Map();
+
+  general.forEach((jugador) => {
+    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+  });
+  localidad.forEach((jugador) => {
+    const actual = porClave.get(jugador.clave) || {
+      nombre: jugador.nombre,
+      general: null,
+      localidad: null,
+    };
+    actual.localidad = jugador;
+    porClave.set(jugador.clave, actual);
+  });
+
+  const jugadores = [...porClave.values()]
+    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
+    .sort((a, b) => porcentajeGoleador(b.localidad, "primerTiempo") - porcentajeGoleador(a.localidad, "primerTiempo")
+      || porcentajeGoleador(b.general, "primerTiempo") - porcentajeGoleador(a.general, "primerTiempo")
+      || a.nombre.localeCompare(b.nombre));
+
+  if (!jugadores.length) {
+    return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
+  }
+
+  return `
+    <div class="tabla-estadisticas-wrapper mercado-jugadores">
+      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <table class="tabla-estadisticas">
+        <thead>
+          <tr>
+            <th>Jugador</th>
+            <th>1er tiempo</th>
+            <th>En ambos tiempos</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${jugadores.map((jugador) => `
+            <tr>
+              <td>
+                ${escaparHTML(jugador.nombre)}<br>
+                <small>${escaparHTML(etiquetaLocalidad)}: ${jugador.localidad?.partidos || 0} partidos<br>General: ${jugador.general?.partidos || 0} partidos</small>
+              </td>
+              <td>${formatearProbabilidadGoleador(jugador, "primerTiempo", etiquetaLocalidad)}</td>
+              <td>${formatearProbabilidadGoleador(jugador, "ambosTiempos", etiquetaLocalidad)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+
+function resumirGoleadoresJugadores(partidos, equipoId) {
+  const jugadores = new Map();
+
+  (partidos || []).forEach((partido) => {
+    const lado = obtenerIdEquipoLocalPartido(partido) === Number(equipoId) ? "local" : "visitante";
+    const lista = partido?.estadisticas?.jugadores?.[lado];
+    if (!Array.isArray(lista)) return;
+
+    lista.forEach((jugador) => {
+      const minutos = Number(jugador?.minutesPlayed);
+      if (!Number.isFinite(minutos) || minutos <= 0) return;
+
+      const nombre = jugador?.jugador || "Jugador sin nombre";
+      const clave = jugador?.player_id != null
+        ? `id:${jugador.player_id}`
+        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const actual = jugadores.get(clave) || {
+        clave,
+        nombre,
+        partidos: 0,
+        goles: 0,
+        golesPorPartido: [],
+        anota: 0,
+        primerGol: 0,
+        primerGolEquipo: 0,
+        ultimoGol: 0,
+        primerTiempo: 0,
+        ambosTiempos: 0,
+      };
+
+      const goles = Number(jugador?.goles) || 0;
+      actual.partidos += 1;
+      actual.goles += goles;
+      actual.golesPorPartido.push(goles);
+      actual.anota += goles > 0 ? 1 : 0;
+      actual.primerGol += jugador?.primer_gol_partido ? 1 : 0;
+      actual.primerGolEquipo += jugador?.primer_gol_equipo ? 1 : 0;
+      actual.ultimoGol += jugador?.ultimo_gol_partido ? 1 : 0;
+      actual.primerTiempo += (Number(jugador?.goles_1T) || 0) > 0 ? 1 : 0;
+      actual.ambosTiempos += jugador?.anoto_ambos_tiempos ? 1 : 0;
+      jugadores.set(clave, actual);
+    });
+  });
+
+  return [...jugadores.values()];
+}
+
+
+function porcentajeGoleador(jugador, campo) {
+  if (!jugador?.partidos) return 0;
+  return (jugador[campo] / jugador.partidos) * 100;
+}
+
+
+function formatearProbabilidadGoleador(jugador, campo, etiquetaLocalidad) {
+  const localidad = jugador.localidad;
+  const general = jugador.general;
+
+  return `
+    <small>${escaparHTML(etiquetaLocalidad)}</small><br>
+    ${Math.round(porcentajeGoleador(localidad, campo))}%<br>
+    <small>General</small><br>
+    ${Math.round(porcentajeGoleador(general, campo))}%
+  `;
+}
+
+
 function crearMercadoAtajadasPorteros(resultado, nombreLocal, nombreVisitante) {
   return crearMercadoTirosJugadores(
     resultado,
@@ -1074,12 +1839,6 @@ function crearMercadoAsistenciasJugadores(resultado, nombreLocal, nombreVisitant
       [1, 2, 3, 4],
     )}
 
-    <h4 class="subtitulo-mercado">Cualquiera de los jugadores da una asistencia</h4>
-    ${crearMercadoCombinacionesAsistencias(
-      resultado,
-      nombreLocal,
-      nombreVisitante,
-    )}
   `;
 }
 
@@ -1111,15 +1870,13 @@ function crearTablaCombinacionesAsistenciasEquipo(
   equipoId,
   etiquetaLocalidad,
 ) {
-  const asistentesGeneral = resumirTirosAlArcoJugadores(
+  const asistentesGeneral = resumirAnotaOAsisteJugadores(
     partidosGeneral,
     equipoId,
-    "goalAssist",
   );
-  const asistentesLocalidad = resumirTirosAlArcoJugadores(
+  const asistentesLocalidad = resumirAnotaOAsisteJugadores(
     partidosLocalidad,
     equipoId,
-    "goalAssist",
   );
   const candidatos = obtenerCandidatosAsistencias(
     asistentesGeneral,
@@ -1161,7 +1918,10 @@ function crearTablaCombinacionesAsistenciasEquipo(
 
   return `
     <div class="tabla-estadisticas-wrapper mercado-jugadores">
-      <h4>${escaparHTML(nombreEquipo)}</h4>
+      <h4>
+        ${escaparHTML(nombreEquipo)}
+        <span>${escaparHTML(etiquetaLocalidad)}</span>
+      </h4>
       <table class="tabla-estadisticas">
         <thead>
           <tr>
@@ -1170,17 +1930,19 @@ function crearTablaCombinacionesAsistenciasEquipo(
           </tr>
         </thead>
         <tbody>
-          ${combinaciones.map((combinacion) => `
-            <tr>
-              <td>${escaparHTML(combinacion.etiqueta)}</td>
-              <td>
-                <small>${escaparHTML(etiquetaLocalidad)} · ${combinacion.localidad.partidos} partidos</small><br>
-                ${formatearPorcentajeEntero(combinacion.localidad.porcentaje)}<br>
-                <small>General · ${combinacion.general.partidos} partidos</small><br>
-                ${formatearPorcentajeEntero(combinacion.general.porcentaje)}
-              </td>
-            </tr>
-          `).join("")}
+        ${combinaciones.map((combinacion) => `
+          <tr><!--
+            title="${escaparHTML(etiquetaLocalidad)}: ${formatearPorcentajeEntero(combinacion.localidad.porcentaje)} en ${combinacion.localidad.partidos} partidos. General: ${formatearPorcentajeEntero(combinacion.general.porcentaje)} en ${combinacion.general.partidos} partidos."
+          >
+            --><td>${escaparHTML(combinacion.etiqueta)}</td>
+            <td>
+              <small>${escaparHTML(etiquetaLocalidad)} · ${combinacion.localidad.partidos} partidos</small><br>
+              ${formatearPorcentajeEntero(combinacion.localidad.porcentaje)}<br>
+              <small>General · ${combinacion.general.partidos} partidos</small><br>
+              ${formatearPorcentajeEntero(combinacion.general.porcentaje)}
+            </td>
+          </tr>
+        `).join("")}
         </tbody>
       </table>
     </div>
@@ -1225,6 +1987,53 @@ function obtenerCandidatosAsistencias(asistentesGeneral, asistentesLocalidad) {
 }
 
 
+function resumirAnotaOAsisteJugadores(partidos, equipoId) {
+  const jugadores = new Map();
+
+  (partidos || []).forEach((partido) => {
+    const lado = obtenerIdEquipoLocalPartido(partido) === Number(equipoId)
+      ? "local"
+      : "visitante";
+    const lista = partido?.estadisticas?.jugadores?.[lado];
+
+    if (!Array.isArray(lista)) {
+      return;
+    }
+
+    lista.forEach((jugador) => {
+      const minutos = Number(jugador?.minutesPlayed);
+
+      if (!Number.isFinite(minutos) || minutos <= 0) {
+        return;
+      }
+
+      const nombre = jugador?.jugador || "Jugador sin nombre";
+      const clave = jugador?.player_id != null
+        ? `id:${jugador.player_id}`
+        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const actual = jugadores.get(clave) || {
+        clave,
+        nombre,
+        partidos: 0,
+        tiros: [],
+      };
+
+      actual.partidos += 1;
+      actual.tiros.push(
+        Number(jugador?.goles) >= 1 ||
+        Number(jugador?.goalAssist) >= 1
+          ? 1
+          : 0,
+      );
+      jugadores.set(clave, actual);
+    });
+  });
+
+  return [...jugadores.values()]
+    .sort((a, b) => b.partidos - a.partidos || a.nombre.localeCompare(b.nombre));
+}
+
+
 function calcularCombinacionAsistencias(partidos, equipoId, clavesJugadores) {
   let validos = 0;
   let acertados = 0;
@@ -1249,7 +2058,10 @@ function calcularCombinacionAsistencias(partidos, equipoId, clavesJugadores) {
     if (!participantes.length) return;
 
     validos += 1;
-    if (participantes.some((jugador) => Number(jugador?.goalAssist) >= 1)) {
+    if (participantes.some((jugador) => (
+      Number(jugador?.goles) >= 1 ||
+      Number(jugador?.goalAssist) >= 1
+    ))) {
       acertados += 1;
     }
   });
@@ -1385,6 +2197,8 @@ function crearTablaTirosAlArcoEquipo(
   etiquetaLocalidad,
   lineas,
 ) {
+  const lineaOrden = lineas[0] || 1;
+
   const jugadoresPorClave = new Map();
 
   jugadoresGeneral.forEach((jugador) => {
@@ -1409,19 +2223,19 @@ function crearTablaTirosAlArcoEquipo(
     .sort((a, b) => {
       const porcentajeLocalidadA = porcentajeTirosAlArcoJugadorNumero(
         a.localidad,
-        1,
+        lineaOrden,
       );
       const porcentajeLocalidadB = porcentajeTirosAlArcoJugadorNumero(
         b.localidad,
-        1,
+        lineaOrden,
       );
       const porcentajeGeneralA = porcentajeTirosAlArcoJugadorNumero(
         a.general,
-        1,
+        lineaOrden,
       );
       const porcentajeGeneralB = porcentajeTirosAlArcoJugadorNumero(
         b.general,
-        1,
+        lineaOrden,
       );
       const partidosA = a.general?.partidos || 0;
       const partidosB = b.general?.partidos || 0;
@@ -1946,6 +2760,133 @@ function configurarSeccionesColapsables(contenedor) {
       }
     });
   });
+}
+
+
+function configurarSubmercadosColapsables(contenedor) {
+  const encabezados = [...contenedor.querySelectorAll(
+    ".mercados-seccion > .subtitulo-mercado",
+  )];
+
+  encabezados.forEach((encabezado) => {
+    const detalle = document.createElement("details");
+    detalle.className = "mercado-jugador-colapsable";
+
+    const resumen = document.createElement("summary");
+    resumen.textContent = encabezado.textContent.trim();
+    detalle.append(resumen);
+
+    encabezado.before(detalle);
+    let elemento = encabezado.nextElementSibling;
+    encabezado.remove();
+
+    while (
+      elemento
+      && elemento.tagName !== "H2"
+      && elemento.tagName !== "H3"
+    ) {
+      const siguiente = elemento.nextElementSibling;
+      detalle.append(elemento);
+      elemento = siguiente;
+    }
+  });
+}
+
+
+function configurarMercadosJugadoresColapsables(contenedor) {
+  const encabezadoJugadores = [...contenedor.querySelectorAll(
+    ".mercados-seccion > .titulo-seccion",
+  )].find((encabezado) => encabezado.textContent.trim() === "Jugadores");
+
+  if (!encabezadoJugadores) {
+    return;
+  }
+
+  const encabezadoEstadisticas = [...encabezadoJugadores.parentElement.children]
+    .find((elemento) => (
+      elemento.tagName === "H3"
+      && elemento.textContent.trim() === "Estadísticas"
+    ));
+
+  if (!encabezadoEstadisticas) {
+    return;
+  }
+
+  const seccionEstadisticas = document.createElement("details");
+  seccionEstadisticas.className = "jugadores-estadisticas-colapsable";
+
+  const resumenEstadisticas = document.createElement("summary");
+  resumenEstadisticas.textContent = encabezadoEstadisticas.textContent.trim();
+  seccionEstadisticas.append(resumenEstadisticas);
+
+  encabezadoEstadisticas.before(seccionEstadisticas);
+  let elemento = encabezadoEstadisticas.nextElementSibling;
+  encabezadoEstadisticas.remove();
+
+  while (
+    elemento
+    && elemento.tagName !== "H2"
+    && elemento.tagName !== "H3"
+  ) {
+    const siguiente = elemento.nextElementSibling;
+    seccionEstadisticas.append(elemento);
+    elemento = siguiente;
+  }
+
+  seccionEstadisticas.querySelectorAll(":scope > h4").forEach((encabezado) => {
+    const detalle = document.createElement("details");
+    detalle.className = "mercado-jugador-colapsable";
+
+    const resumen = document.createElement("summary");
+    resumen.textContent = encabezado.textContent.trim();
+    detalle.append(resumen);
+
+    encabezado.before(detalle);
+    elemento = encabezado.nextElementSibling;
+    encabezado.remove();
+
+    while (
+      elemento
+      && elemento.tagName !== "H2"
+      && elemento.tagName !== "H4"
+    ) {
+      const siguiente = elemento.nextElementSibling;
+      detalle.append(elemento);
+      elemento = siguiente;
+    }
+  });
+}
+
+
+function configurarSeccionJugadoresColapsable(contenedor, titulo) {
+  const encabezadoSeccion = [...contenedor.querySelectorAll(
+    ".mercados-seccion > .subtitulo-mercado",
+  )].find((encabezado) => encabezado.textContent.trim() === titulo);
+
+  if (!encabezadoSeccion) {
+    return;
+  }
+
+  const seccion = document.createElement("details");
+  seccion.className = "jugadores-estadisticas-colapsable";
+
+  const resumen = document.createElement("summary");
+  resumen.textContent = encabezadoSeccion.textContent.trim();
+  seccion.append(resumen);
+
+  encabezadoSeccion.before(seccion);
+  let elemento = encabezadoSeccion.nextElementSibling;
+  encabezadoSeccion.remove();
+
+  while (
+    elemento
+    && elemento.tagName !== "H2"
+    && elemento.tagName !== "H3"
+  ) {
+    const siguiente = elemento.nextElementSibling;
+    seccion.append(elemento);
+    elemento = siguiente;
+  }
 }
 
 
@@ -2569,7 +3510,7 @@ function crearTablaResultado(
 
           <tr>
 
-            <td>Victorias</td>
+            <td>${escaparHTML(nombreEquipoLocal)}</td>
 
             <td>
               ${porcentajeMercado(
@@ -2587,14 +3528,14 @@ function crearTablaResultado(
 
             <td>
               ${porcentajeMercado(
-                visitanteFuera.victorias,
+                visitanteFuera.derrotas,
                 visitanteFuera.partidos
               )}
             </td>
 
             <td>
               ${porcentajeMercado(
-                visitanteGeneral.victorias,
+                visitanteGeneral.derrotas,
                 visitanteGeneral.partidos
               )}
             </td>
@@ -2604,7 +3545,7 @@ function crearTablaResultado(
 
           <tr>
 
-            <td>Empates</td>
+            <td>Empate</td>
 
             <td>
               ${porcentajeMercado(
@@ -2639,7 +3580,7 @@ function crearTablaResultado(
 
           <tr>
 
-            <td>Derrotas</td>
+            <td>${escaparHTML(nombreEquipoVisitante)}</td>
 
             <td>
               ${porcentajeMercado(
@@ -2657,45 +3598,14 @@ function crearTablaResultado(
 
             <td>
               ${porcentajeMercado(
-                visitanteFuera.derrotas,
+                visitanteFuera.victorias,
                 visitanteFuera.partidos
               )}
             </td>
 
             <td>
               ${porcentajeMercado(
-                visitanteGeneral.derrotas,
-                visitanteGeneral.partidos
-              )}
-            </td>
-
-          </tr>
-
-
-          <tr>
-
-            <td>Partidos</td>
-
-            <td>
-              ${valorMercado(
-                localGeneral.partidos
-              )}
-            </td>
-
-            <td>
-              ${valorMercado(
-                localCasa.partidos
-              )}
-            </td>
-
-            <td>
-              ${valorMercado(
-                visitanteFuera.partidos
-              )}
-            </td>
-
-            <td>
-              ${valorMercado(
+                visitanteGeneral.victorias,
                 visitanteGeneral.partidos
               )}
             </td>
@@ -2773,7 +3683,7 @@ function crearTablaDobleOportunidad(
 
           <tr>
 
-            <td>1X - Local o Empate</td>
+            <td>${escaparHTML(nombreEquipoLocal)} o Empate</td>
 
             <td>
               ${porcentajeDobleOportunidad(
@@ -2812,7 +3722,7 @@ function crearTablaDobleOportunidad(
 
           <tr>
 
-            <td>X2 - Visitante o Empate</td>
+            <td>Empate o ${escaparHTML(nombreEquipoVisitante)}</td>
 
             <td>
               ${porcentajeDobleOportunidad(
@@ -2851,7 +3761,7 @@ function crearTablaDobleOportunidad(
 
           <tr>
 
-            <td>12 - Local o Visitante</td>
+            <td>${escaparHTML(nombreEquipoLocal)} o ${escaparHTML(nombreEquipoVisitante)}</td>
 
             <td>
               ${porcentajeDobleOportunidad(
@@ -3224,7 +4134,6 @@ function crearTablaMarcadorCorrecto(
   resultado,
   nombreEquipoLocal,
   nombreEquipoVisitante,
-  seccion,
 ) {
   const equipoLocalId =
     resultado?.equipo_local?.id;
@@ -3263,7 +4172,11 @@ function crearTablaMarcadorCorrecto(
     },
   ];
 
-  const marcadores = obtenerMarcadoresCorrectos(seccion);
+  const marcadores = [
+    ...obtenerMarcadoresCorrectos("local"),
+    ...obtenerMarcadoresCorrectos("empate"),
+    ...obtenerMarcadoresCorrectos("visitante"),
+  ];
 
   return `
     <div class="tabla-estadisticas-wrapper">

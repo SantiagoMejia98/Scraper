@@ -972,13 +972,13 @@ function renderizarTablaJugadoresCampo(
     },
 
     {
-      titulo: "Faltas",
+      titulo: "Faltas cometidas",
       campo: "fouls",
       tipo: "valor",
     },
 
     {
-      titulo: "Recib.",
+      titulo: "Faltas recibidas",
       campo: "wasFouled",
       tipo: "valor",
     },

@@ -254,7 +254,38 @@ button:disabled {
   user-select: none;
 }
 
+.mercado-jugador-colapsable {
+  margin: 14px 0;
+}
+
+.jugadores-estadisticas-colapsable {
+  margin: 12px 0;
+}
+
+.jugadores-estadisticas-colapsable > summary {
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+}
+
+.mercado-jugador-colapsable > summary {
+  cursor: pointer;
+  user-select: none;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
 .titulo-seccion-colapsable:focus-visible {
+  outline: 2px solid #1f6feb;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.jugadores-estadisticas-colapsable > summary:focus-visible,
+.mercado-jugador-colapsable > summary:focus-visible {
   outline: 2px solid #1f6feb;
   outline-offset: 4px;
   border-radius: 4px;
