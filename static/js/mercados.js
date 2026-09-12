@@ -2,7 +2,6 @@
 // MERCADOS
 // ============================================================
 
-
 // ============================================================
 // CARGAR MERCADOS
 // ============================================================
@@ -27,7 +26,6 @@ function cargarMercados(
       equipoLocalId,
       equipoVisitanteId,
     );
-
   } catch (error) {
     console.error("Error cargando mercados:", error);
 
@@ -42,7 +40,6 @@ function cargarMercados(
     }
   }
 }
-
 
 // ============================================================
 // OBTENER PARTIDOS HISTÓRICOS
@@ -59,7 +56,6 @@ function obtenerPartidosHistoricos(datos) {
 
   return [];
 }
-
 
 // ============================================================
 // OBTENER RESULTADOS HISTÓRICOS
@@ -87,11 +83,9 @@ function obtenerResultadosHistoricos(partidos) {
     if (tipoResultado === "Victoria") {
       resultado.victorias += 1;
       resultado.partidos += 1;
-
     } else if (tipoResultado === "Empate") {
       resultado.empates += 1;
       resultado.partidos += 1;
-
     } else if (tipoResultado === "Derrota") {
       resultado.derrotas += 1;
       resultado.partidos += 1;
@@ -101,24 +95,17 @@ function obtenerResultadosHistoricos(partidos) {
   return resultado;
 }
 
-
 // ============================================================
 // OBTENER ID DE EQUIPO DE UN PARTIDO
 // ============================================================
 
 function obtenerIdEquipoLocalPartido(partido) {
-  return Number(
-    partido?.home_team_id
-  );
+  return Number(partido?.home_team_id);
 }
-
 
 function obtenerIdEquipoVisitantePartido(partido) {
-  return Number(
-    partido?.away_team_id
-  );
+  return Number(partido?.away_team_id);
 }
-
 
 function obtenerLadoEquipoPartido(partido, equipoId) {
   const idEquipo = Number(equipoId);
@@ -140,7 +127,6 @@ function obtenerLadoEquipoPartido(partido, equipoId) {
   return null;
 }
 
-
 // ============================================================
 // OBTENER GOLES MARCADOS POR UN EQUIPO
 // ============================================================
@@ -158,10 +144,7 @@ function obtenerGolesEquipo(partido, equipoId) {
   const golesLocal = Number(partido?.marcador_local);
   const golesVisitante = Number(partido?.marcador_visitante);
 
-  if (
-    !Number.isFinite(golesLocal) ||
-    !Number.isFinite(golesVisitante)
-  ) {
+  if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
     return null;
   }
 
@@ -175,7 +158,6 @@ function obtenerGolesEquipo(partido, equipoId) {
 
   return null;
 }
-
 
 // ============================================================
 // OBTENER GOLES RECIBIDOS POR UN EQUIPO
@@ -194,10 +176,7 @@ function obtenerGolesRecibidosEquipo(partido, equipoId) {
   const golesLocal = Number(partido?.marcador_local);
   const golesVisitante = Number(partido?.marcador_visitante);
 
-  if (
-    !Number.isFinite(golesLocal) ||
-    !Number.isFinite(golesVisitante)
-  ) {
+  if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
     return null;
   }
 
@@ -212,7 +191,6 @@ function obtenerGolesRecibidosEquipo(partido, equipoId) {
   return null;
 }
 
-
 // ============================================================
 // OBTENER QUIÉN MARCÓ EL PRIMER GOL DEL PARTIDO
 // ============================================================
@@ -222,11 +200,9 @@ function obtenerEstadoPrimerGol(partido, equipoId) {
     return null;
   }
 
-  const flags =
-    partido?.estadisticas?.eventos_jugadores?.flags;
+  const flags = partido?.estadisticas?.eventos_jugadores?.flags;
 
-  const primerGol =
-    flags?.primer_gol_equipo;
+  const primerGol = flags?.primer_gol_equipo;
 
   const idEquipo = Number(equipoId);
   const idLocal = obtenerIdEquipoLocalPartido(partido);
@@ -236,9 +212,7 @@ function obtenerEstadoPrimerGol(partido, equipoId) {
     (primerGol === "local" || primerGol === "visitante") &&
     Number.isFinite(idEquipo)
   ) {
-    const equipoMarcoPrimero = primerGol === "local"
-      ? idLocal
-      : idVisitante;
+    const equipoMarcoPrimero = primerGol === "local" ? idLocal : idVisitante;
 
     if (equipoMarcoPrimero === idEquipo) {
       return "equipo";
@@ -254,10 +228,7 @@ function obtenerEstadoPrimerGol(partido, equipoId) {
 
   if (
     flags &&
-    Object.prototype.hasOwnProperty.call(
-      flags,
-      "primer_gol_equipo"
-    ) &&
+    Object.prototype.hasOwnProperty.call(flags, "primer_gol_equipo") &&
     primerGol === null
   ) {
     return "sin_goles";
@@ -278,58 +249,33 @@ function obtenerEstadoPrimerGol(partido, equipoId) {
   return null;
 }
 
-
 // ============================================================
 // CONSTRUIR RESULTADOS DEL MERCADO
 // ============================================================
 
-function construirResultadoMercado(
-  data,
-  equipoLocalId,
-  equipoVisitanteId,
-) {
+function construirResultadoMercado(data, equipoLocalId, equipoVisitanteId) {
   const equipo1 = data?.equipo_1 || {};
   const equipo2 = data?.equipo_2 || {};
 
-  const partidosLocalGeneral =
-    obtenerPartidosHistoricos(
-      equipo1.general
-    );
+  const partidosLocalGeneral = obtenerPartidosHistoricos(equipo1.general);
 
-  const partidosLocalCasa =
-    obtenerPartidosHistoricos(
-      equipo1.como_local
-    );
+  const partidosLocalCasa = obtenerPartidosHistoricos(equipo1.como_local);
 
-  const partidosVisitanteGeneral =
-    obtenerPartidosHistoricos(
-      equipo2.general
-    );
+  const partidosVisitanteGeneral = obtenerPartidosHistoricos(equipo2.general);
 
-  const partidosVisitanteFuera =
-    obtenerPartidosHistoricos(
-      equipo2.como_visitante
-    );
+  const partidosVisitanteFuera = obtenerPartidosHistoricos(
+    equipo2.como_visitante,
+  );
 
-  const generalLocal =
-    obtenerResultadosHistoricos(
-      partidosLocalGeneral
-    );
+  const generalLocal = obtenerResultadosHistoricos(partidosLocalGeneral);
 
-  const localCasa =
-    obtenerResultadosHistoricos(
-      partidosLocalCasa
-    );
+  const localCasa = obtenerResultadosHistoricos(partidosLocalCasa);
 
-  const generalVisitante =
-    obtenerResultadosHistoricos(
-      partidosVisitanteGeneral
-    );
+  const generalVisitante = obtenerResultadosHistoricos(
+    partidosVisitanteGeneral,
+  );
 
-  const visitanteFuera =
-    obtenerResultadosHistoricos(
-      partidosVisitanteFuera
-    );
+  const visitanteFuera = obtenerResultadosHistoricos(partidosVisitanteFuera);
 
   return {
     equipo_local: {
@@ -357,7 +303,6 @@ function construirResultadoMercado(
     },
   };
 }
-
 
 // ============================================================
 // RENDERIZAR MERCADOS
@@ -752,25 +697,35 @@ function renderizarMercados(
       ${crearTablaTiempoConMasCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
 
       <h3 class="subtitulo-mercado">Total de Tiros de esquina</h3>
-      ${crearTablaRangosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, [
-        { etiqueta: "0-5", minimo: 0, maximo: 5 },
-        { etiqueta: "6-8", minimo: 6, maximo: 8 },
-        { etiqueta: "9-11", minimo: 9, maximo: 11 },
-        { etiqueta: "12-14", minimo: 12, maximo: 14 },
-        { etiqueta: "15+", minimo: 15, maximo: null },
-      ])}
+      ${crearTablaRangosCorners(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+        [
+          { etiqueta: "0-5", minimo: 0, maximo: 5 },
+          { etiqueta: "6-8", minimo: 6, maximo: 8 },
+          { etiqueta: "9-11", minimo: 9, maximo: 11 },
+          { etiqueta: "12-14", minimo: 12, maximo: 14 },
+          { etiqueta: "15+", minimo: 15, maximo: null },
+        ],
+      )}
 
       <h3 class="subtitulo-mercado">Rango de Tiros de Esquina</h3>
-      ${crearTablaRangosCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante, [
-        { etiqueta: "0", minimo: 0, maximo: 0 },
-        { etiqueta: "1-3", minimo: 1, maximo: 3 },
-        { etiqueta: "4-6", minimo: 4, maximo: 6 },
-        { etiqueta: "7-9", minimo: 7, maximo: 9 },
-        { etiqueta: "10-12", minimo: 10, maximo: 12 },
-        { etiqueta: "13-15", minimo: 13, maximo: 15 },
-        { etiqueta: "16-18", minimo: 16, maximo: 18 },
-        { etiqueta: "19+", minimo: 19, maximo: null },
-      ])}
+      ${crearTablaRangosCorners(
+        resultado,
+        nombreEquipoLocal,
+        nombreEquipoVisitante,
+        [
+          { etiqueta: "0", minimo: 0, maximo: 0 },
+          { etiqueta: "1-3", minimo: 1, maximo: 3 },
+          { etiqueta: "4-6", minimo: 4, maximo: 6 },
+          { etiqueta: "7-9", minimo: 7, maximo: 9 },
+          { etiqueta: "10-12", minimo: 10, maximo: 12 },
+          { etiqueta: "13-15", minimo: 13, maximo: 15 },
+          { etiqueta: "16-18", minimo: 16, maximo: 18 },
+          { etiqueta: "19+", minimo: 19, maximo: null },
+        ],
+      )}
 
       <h3 class="subtitulo-mercado">Tiros de Esquina Marcador Correcto</h3>
       ${crearTablaMarcadorCorrectoCorners(resultado, nombreEquipoLocal, nombreEquipoVisitante)}
@@ -1156,12 +1111,15 @@ function renderizarMercados(
   configurarSeccionesColapsables(contenedor);
 }
 
-
 // ============================================================
 // MERCADOS DE JUGADORES
 // ============================================================
 
-function crearMercadoTirosAlArcoJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoTirosAlArcoJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1171,8 +1129,11 @@ function crearMercadoTirosAlArcoJugadores(resultado, nombreLocal, nombreVisitant
   );
 }
 
-
-function crearMercadoTirosTotalesJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoTirosTotalesJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1182,8 +1143,11 @@ function crearMercadoTirosTotalesJugadores(resultado, nombreLocal, nombreVisitan
   );
 }
 
-
-function crearMercadoFaltasCometidasJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoFaltasCometidasJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1193,8 +1157,11 @@ function crearMercadoFaltasCometidasJugadores(resultado, nombreLocal, nombreVisi
   );
 }
 
-
-function crearMercadoFaltasRecibidasJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoFaltasRecibidasJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1204,19 +1171,24 @@ function crearMercadoFaltasRecibidasJugadores(resultado, nombreLocal, nombreVisi
   );
 }
 
-
 function crearMercadoPasesJugadores(resultado, nombreLocal, nombreVisitante) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
     nombreVisitante,
     "accuratePass",
-    [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150],
+    [
+      50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130,
+      135, 140, 145, 150,
+    ],
   );
 }
 
-
-function crearMercadoEntradasJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoEntradasJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1226,8 +1198,11 @@ function crearMercadoEntradasJugadores(resultado, nombreLocal, nombreVisitante) 
   );
 }
 
-
-function crearMercadoFuerasDeJuegoJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoFuerasDeJuegoJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1236,7 +1211,6 @@ function crearMercadoFuerasDeJuegoJugadores(resultado, nombreLocal, nombreVisita
     [1, 2, 3, 4, 5, 6],
   );
 }
-
 
 function crearMercadoGolesJugadores(resultado, nombreLocal, nombreVisitante) {
   return `
@@ -1257,7 +1231,6 @@ function crearMercadoGolesJugadores(resultado, nombreLocal, nombreVisitante) {
   `;
 }
 
-
 function crearMercadoAnotarJugadores(resultado, nombreLocal, nombreVisitante) {
   return `
     ${crearTablaAnotarEquipo(
@@ -1277,8 +1250,11 @@ function crearMercadoAnotarJugadores(resultado, nombreLocal, nombreVisitante) {
   `;
 }
 
-
-function crearMercadoAnotaOAsisteJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoAnotaOAsisteJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return `
     ${crearTablaAnotaOAsisteEquipo(
       nombreLocal,
@@ -1297,14 +1273,23 @@ function crearMercadoAnotaOAsisteJugadores(resultado, nombreLocal, nombreVisitan
   `;
 }
 
-
-function crearTablaAnotaOAsisteEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+function crearTablaAnotaOAsisteEquipo(
+  nombreEquipo,
+  partidosGeneral,
+  partidosLocalidad,
+  equipoId,
+  etiquetaLocalidad,
+) {
   const general = resumirAnotaOAsisteJugadores(partidosGeneral, equipoId);
   const localidad = resumirAnotaOAsisteJugadores(partidosLocalidad, equipoId);
   const porClave = new Map();
 
   general.forEach((jugador) => {
-    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+    porClave.set(jugador.clave, {
+      nombre: jugador.nombre,
+      general: jugador,
+      localidad: null,
+    });
   });
   localidad.forEach((jugador) => {
     const actual = porClave.get(jugador.clave) || {
@@ -1317,13 +1302,23 @@ function crearTablaAnotaOAsisteEquipo(nombreEquipo, partidosGeneral, partidosLoc
   });
 
   const jugadores = [...porClave.values()]
-    .filter((jugador) => porcentajeTirosAlArcoJugadorNumero(jugador.general, 1) > 0
-      || porcentajeTirosAlArcoJugadorNumero(jugador.localidad, 1) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeTirosAlArcoJugadorNumero(dato, 1))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeTirosAlArcoJugadorNumero(dato, 1))
-      || porcentajeTirosAlArcoJugadorNumero(b.general, 1)
-        - porcentajeTirosAlArcoJugadorNumero(a.general, 1)
-      || a.nombre.localeCompare(b.nombre));
+    .filter(
+      (jugador) =>
+        porcentajeTirosAlArcoJugadorNumero(jugador.general, 1) > 0 ||
+        porcentajeTirosAlArcoJugadorNumero(jugador.localidad, 1) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeTirosAlArcoJugadorNumero(dato, 1),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeTirosAlArcoJugadorNumero(dato, 1),
+          ) ||
+        porcentajeTirosAlArcoJugadorNumero(b.general, 1) -
+          porcentajeTirosAlArcoJugadorNumero(a.general, 1) ||
+        a.nombre.localeCompare(b.nombre),
+    );
 
   if (!jugadores.length) {
     return `<div class="vacio">No hay goles ni asistencias de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1340,7 +1335,9 @@ function crearTablaAnotaOAsisteEquipo(nombreEquipo, partidosGeneral, partidosLoc
           </tr>
         </thead>
         <tbody>
-          ${jugadores.map((jugador) => `
+          ${jugadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -1348,13 +1345,14 @@ function crearTablaAnotaOAsisteEquipo(nombreEquipo, partidosGeneral, partidosLoc
               </td>
               <td>${formatearProbabilidadAnotaOAsiste(jugador, etiquetaLocalidad)}</td>
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
-
 
 function formatearProbabilidadAnotaOAsiste(jugador, etiquetaLocalidad) {
   return `
@@ -1366,7 +1364,6 @@ function formatearProbabilidadAnotaOAsiste(jugador, etiquetaLocalidad) {
     ${Math.round(porcentajeTirosAlArcoJugadorNumero(jugador.general, 1))}%
   `;
 }
-
 
 function crearMercadoGoleadorMultiple(resultado, nombreLocal, nombreVisitante) {
   return `
@@ -1387,14 +1384,23 @@ function crearMercadoGoleadorMultiple(resultado, nombreLocal, nombreVisitante) {
   `;
 }
 
-
-function crearTablaGoleadorMultipleEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+function crearTablaGoleadorMultipleEquipo(
+  nombreEquipo,
+  partidosGeneral,
+  partidosLocalidad,
+  equipoId,
+  etiquetaLocalidad,
+) {
   const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
   const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
   const porClave = new Map();
 
   general.forEach((jugador) => {
-    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+    porClave.set(jugador.clave, {
+      nombre: jugador.nombre,
+      general: jugador,
+      localidad: null,
+    });
   });
   localidad.forEach((jugador) => {
     const actual = porClave.get(jugador.clave) || {
@@ -1407,12 +1413,24 @@ function crearTablaGoleadorMultipleEquipo(nombreEquipo, partidosGeneral, partido
   });
 
   const jugadores = [...porClave.values()]
-    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeGoleadorMultiple(dato, 2))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeGoleadorMultiple(dato, 2))
-      || porcentajeGoleadorMultiple(b.general, 2) - porcentajeGoleadorMultiple(a.general, 2)
-      || (b.general?.goles || 0) - (a.general?.goles || 0)
-      || a.nombre.localeCompare(b.nombre));
+    .filter(
+      (jugador) =>
+        (jugador.general?.goles || 0) > 0 ||
+        (jugador.localidad?.goles || 0) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeGoleadorMultiple(dato, 2),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeGoleadorMultiple(dato, 2),
+          ) ||
+        porcentajeGoleadorMultiple(b.general, 2) -
+          porcentajeGoleadorMultiple(a.general, 2) ||
+        (b.general?.goles || 0) - (a.general?.goles || 0) ||
+        a.nombre.localeCompare(b.nombre),
+    );
 
   if (!jugadores.length) {
     return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1430,7 +1448,9 @@ function crearTablaGoleadorMultipleEquipo(nombreEquipo, partidosGeneral, partido
           </tr>
         </thead>
         <tbody>
-          ${jugadores.map((jugador) => `
+          ${jugadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -1439,26 +1459,30 @@ function crearTablaGoleadorMultipleEquipo(nombreEquipo, partidosGeneral, partido
               <td>${formatearProbabilidadGoleadorMultiple(jugador, 2, etiquetaLocalidad)}</td>
               <td>${formatearProbabilidadGoleadorMultiple(jugador, 3, etiquetaLocalidad)}</td>
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
 
-
 function porcentajeGoleadorMultiple(jugador, minimoGoles) {
   if (!jugador?.partidos) return 0;
 
-  const partidosConMultiplete = (jugador.golesPorPartido || [])
-    .filter((goles) => goles >= minimoGoles)
-    .length;
+  const partidosConMultiplete = (jugador.golesPorPartido || []).filter(
+    (goles) => goles >= minimoGoles,
+  ).length;
 
   return (partidosConMultiplete / jugador.partidos) * 100;
 }
 
-
-function formatearProbabilidadGoleadorMultiple(jugador, minimoGoles, etiquetaLocalidad) {
+function formatearProbabilidadGoleadorMultiple(
+  jugador,
+  minimoGoles,
+  etiquetaLocalidad,
+) {
   return `
     <small>Combinada</small><br>
     ${formatearPorcentajePonderadoJugador(jugador, (dato) => porcentajeGoleadorMultiple(dato, minimoGoles))}%<br>
@@ -1469,14 +1493,23 @@ function formatearProbabilidadGoleadorMultiple(jugador, minimoGoles, etiquetaLoc
   `;
 }
 
-
-function crearMercadoPrimerAnotadorEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+function crearMercadoPrimerAnotadorEquipo(
+  nombreEquipo,
+  partidosGeneral,
+  partidosLocalidad,
+  equipoId,
+  etiquetaLocalidad,
+) {
   const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
   const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
   const porClave = new Map();
 
   general.forEach((jugador) => {
-    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+    porClave.set(jugador.clave, {
+      nombre: jugador.nombre,
+      general: jugador,
+      localidad: null,
+    });
   });
   localidad.forEach((jugador) => {
     const actual = porClave.get(jugador.clave) || {
@@ -1489,13 +1522,24 @@ function crearMercadoPrimerAnotadorEquipo(nombreEquipo, partidosGeneral, partido
   });
 
   const jugadores = [...porClave.values()]
-    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeGoleador(dato, "primerGolEquipo"))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeGoleador(dato, "primerGolEquipo"))
-      || porcentajeGoleador(b.general, "primerGolEquipo")
-        - porcentajeGoleador(a.general, "primerGolEquipo")
-      || (b.general?.goles || 0) - (a.general?.goles || 0)
-      || a.nombre.localeCompare(b.nombre));
+    .filter(
+      (jugador) =>
+        (jugador.general?.goles || 0) > 0 ||
+        (jugador.localidad?.goles || 0) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeGoleador(dato, "primerGolEquipo"),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeGoleador(dato, "primerGolEquipo"),
+          ) ||
+        porcentajeGoleador(b.general, "primerGolEquipo") -
+          porcentajeGoleador(a.general, "primerGolEquipo") ||
+        (b.general?.goles || 0) - (a.general?.goles || 0) ||
+        a.nombre.localeCompare(b.nombre),
+    );
 
   if (!jugadores.length) {
     return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1512,7 +1556,9 @@ function crearMercadoPrimerAnotadorEquipo(nombreEquipo, partidosGeneral, partido
           </tr>
         </thead>
         <tbody>
-          ${jugadores.map((jugador) => `
+          ${jugadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -1520,15 +1566,20 @@ function crearMercadoPrimerAnotadorEquipo(nombreEquipo, partidosGeneral, partido
               </td>
               <td>${formatearProbabilidadGoleador(jugador, "primerGolEquipo", etiquetaLocalidad)}</td>
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
 
-
-function crearMercadoTarjetasJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoTarjetasJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return `
     ${crearTablaTarjetasJugadoresEquipo(
       nombreLocal,
@@ -1547,8 +1598,11 @@ function crearMercadoTarjetasJugadores(resultado, nombreLocal, nombreVisitante) 
   `;
 }
 
-
-function crearMercadoGolpeaAlPaloJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoGolpeaAlPaloJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -1558,14 +1612,23 @@ function crearMercadoGolpeaAlPaloJugadores(resultado, nombreLocal, nombreVisitan
   );
 }
 
-
-function crearTablaTarjetasJugadoresEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+function crearTablaTarjetasJugadoresEquipo(
+  nombreEquipo,
+  partidosGeneral,
+  partidosLocalidad,
+  equipoId,
+  etiquetaLocalidad,
+) {
   const general = resumirTarjetasJugadores(partidosGeneral, equipoId);
   const localidad = resumirTarjetasJugadores(partidosLocalidad, equipoId);
   const porClave = new Map();
 
   general.forEach((jugador) => {
-    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+    porClave.set(jugador.clave, {
+      nombre: jugador.nombre,
+      general: jugador,
+      localidad: null,
+    });
   });
   localidad.forEach((jugador) => {
     const actual = porClave.get(jugador.clave) || {
@@ -1578,12 +1641,24 @@ function crearTablaTarjetasJugadoresEquipo(nombreEquipo, partidosGeneral, partid
   });
 
   const jugadores = [...porClave.values()]
-    .filter((jugador) => (jugador.general?.tarjetas || 0) > 0 || (jugador.localidad?.tarjetas || 0) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeGoleador(dato, "tarjeta"))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeGoleador(dato, "tarjeta"))
-      || porcentajeGoleador(b.general, "tarjeta") - porcentajeGoleador(a.general, "tarjeta")
-      || (b.general?.tarjetas || 0) - (a.general?.tarjetas || 0)
-      || a.nombre.localeCompare(b.nombre));
+    .filter(
+      (jugador) =>
+        (jugador.general?.tarjetas || 0) > 0 ||
+        (jugador.localidad?.tarjetas || 0) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeGoleador(dato, "tarjeta"),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeGoleador(dato, "tarjeta"),
+          ) ||
+        porcentajeGoleador(b.general, "tarjeta") -
+          porcentajeGoleador(a.general, "tarjeta") ||
+        (b.general?.tarjetas || 0) - (a.general?.tarjetas || 0) ||
+        a.nombre.localeCompare(b.nombre),
+    );
 
   if (!jugadores.length) {
     return `<div class="vacio">No hay tarjetas de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1602,7 +1677,9 @@ function crearTablaTarjetasJugadoresEquipo(nombreEquipo, partidosGeneral, partid
           </tr>
         </thead>
         <tbody>
-          ${jugadores.map((jugador) => `
+          ${jugadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -1612,13 +1689,14 @@ function crearTablaTarjetasJugadoresEquipo(nombreEquipo, partidosGeneral, partid
               <td>${formatearProbabilidadGoleador(jugador, "roja", etiquetaLocalidad)}</td>
               <td>${formatearProbabilidadGoleador(jugador, "primeraTarjetaPartido", etiquetaLocalidad)}</td>
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
-
 
 function resumirTarjetasJugadores(partidos, equipoId) {
   const jugadores = new Map();
@@ -1634,9 +1712,10 @@ function resumirTarjetasJugadores(partidos, equipoId) {
       if (!Number.isFinite(minutos) || minutos <= 0) return;
 
       const nombre = jugador?.jugador || "Jugador sin nombre";
-      const clave = jugador?.player_id != null
-        ? `id:${jugador.player_id}`
-        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const clave =
+        jugador?.player_id != null
+          ? `id:${jugador.player_id}`
+          : `nombre:${normalizarTextoJugador(nombre)}`;
       const actual = jugadores.get(clave) || {
         clave,
         nombre,
@@ -1646,7 +1725,9 @@ function resumirTarjetasJugadores(partidos, equipoId) {
         roja: 0,
         primeraTarjetaPartido: 0,
       };
-      const tarjetas = Array.isArray(jugador?.tarjetas) ? jugador.tarjetas.length : 0;
+      const tarjetas = Array.isArray(jugador?.tarjetas)
+        ? jugador.tarjetas.length
+        : 0;
       const roja = Number(jugador?.rojas) || 0;
 
       actual.partidos += 1;
@@ -1661,14 +1742,23 @@ function resumirTarjetasJugadores(partidos, equipoId) {
   return [...jugadores.values()];
 }
 
-
-function crearTablaGoleadoresEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+function crearTablaGoleadoresEquipo(
+  nombreEquipo,
+  partidosGeneral,
+  partidosLocalidad,
+  equipoId,
+  etiquetaLocalidad,
+) {
   const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
   const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
   const porClave = new Map();
 
   general.forEach((jugador) => {
-    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+    porClave.set(jugador.clave, {
+      nombre: jugador.nombre,
+      general: jugador,
+      localidad: null,
+    });
   });
   localidad.forEach((jugador) => {
     const actual = porClave.get(jugador.clave) || {
@@ -1681,12 +1771,24 @@ function crearTablaGoleadoresEquipo(nombreEquipo, partidosGeneral, partidosLocal
   });
 
   const goleadores = [...porClave.values()]
-    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeGoleador(dato, "anota"))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeGoleador(dato, "anota"))
-      || porcentajeGoleador(b.general, "anota") - porcentajeGoleador(a.general, "anota")
-      || (b.general?.goles || 0) - (a.general?.goles || 0)
-      || a.nombre.localeCompare(b.nombre));
+    .filter(
+      (jugador) =>
+        (jugador.general?.goles || 0) > 0 ||
+        (jugador.localidad?.goles || 0) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeGoleador(dato, "anota"),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeGoleador(dato, "anota"),
+          ) ||
+        porcentajeGoleador(b.general, "anota") -
+          porcentajeGoleador(a.general, "anota") ||
+        (b.general?.goles || 0) - (a.general?.goles || 0) ||
+        a.nombre.localeCompare(b.nombre),
+    );
 
   if (!goleadores.length) {
     return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1705,7 +1807,9 @@ function crearTablaGoleadoresEquipo(nombreEquipo, partidosGeneral, partidosLocal
           </tr>
         </thead>
         <tbody>
-          ${goleadores.map((jugador) => `
+          ${goleadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -1715,21 +1819,32 @@ function crearTablaGoleadoresEquipo(nombreEquipo, partidosGeneral, partidosLocal
               <td>${formatearProbabilidadGoleador(jugador, "primerGol", etiquetaLocalidad)}</td>
               <td>${formatearProbabilidadGoleador(jugador, "ultimoGol", etiquetaLocalidad)}</td>
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
 
-
-function crearTablaAnotarEquipo(nombreEquipo, partidosGeneral, partidosLocalidad, equipoId, etiquetaLocalidad) {
+function crearTablaAnotarEquipo(
+  nombreEquipo,
+  partidosGeneral,
+  partidosLocalidad,
+  equipoId,
+  etiquetaLocalidad,
+) {
   const general = resumirGoleadoresJugadores(partidosGeneral, equipoId);
   const localidad = resumirGoleadoresJugadores(partidosLocalidad, equipoId);
   const porClave = new Map();
 
   general.forEach((jugador) => {
-    porClave.set(jugador.clave, { nombre: jugador.nombre, general: jugador, localidad: null });
+    porClave.set(jugador.clave, {
+      nombre: jugador.nombre,
+      general: jugador,
+      localidad: null,
+    });
   });
   localidad.forEach((jugador) => {
     const actual = porClave.get(jugador.clave) || {
@@ -1742,11 +1857,23 @@ function crearTablaAnotarEquipo(nombreEquipo, partidosGeneral, partidosLocalidad
   });
 
   const jugadores = [...porClave.values()]
-    .filter((jugador) => (jugador.general?.goles || 0) > 0 || (jugador.localidad?.goles || 0) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeGoleador(dato, "primerTiempo"))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeGoleador(dato, "primerTiempo"))
-      || porcentajeGoleador(b.general, "primerTiempo") - porcentajeGoleador(a.general, "primerTiempo")
-      || a.nombre.localeCompare(b.nombre));
+    .filter(
+      (jugador) =>
+        (jugador.general?.goles || 0) > 0 ||
+        (jugador.localidad?.goles || 0) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeGoleador(dato, "primerTiempo"),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeGoleador(dato, "primerTiempo"),
+          ) ||
+        porcentajeGoleador(b.general, "primerTiempo") -
+          porcentajeGoleador(a.general, "primerTiempo") ||
+        a.nombre.localeCompare(b.nombre),
+    );
 
   if (!jugadores.length) {
     return `<div class="vacio">No hay goles de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1764,7 +1891,9 @@ function crearTablaAnotarEquipo(nombreEquipo, partidosGeneral, partidosLocalidad
           </tr>
         </thead>
         <tbody>
-          ${jugadores.map((jugador) => `
+          ${jugadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -1773,13 +1902,14 @@ function crearTablaAnotarEquipo(nombreEquipo, partidosGeneral, partidosLocalidad
               <td>${formatearProbabilidadGoleador(jugador, "primerTiempo", etiquetaLocalidad)}</td>
               <td>${formatearProbabilidadGoleador(jugador, "ambosTiempos", etiquetaLocalidad)}</td>
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
-
 
 function resumirGoleadoresJugadores(partidos, equipoId) {
   const jugadores = new Map();
@@ -1795,9 +1925,10 @@ function resumirGoleadoresJugadores(partidos, equipoId) {
       if (!Number.isFinite(minutos) || minutos <= 0) return;
 
       const nombre = jugador?.jugador || "Jugador sin nombre";
-      const clave = jugador?.player_id != null
-        ? `id:${jugador.player_id}`
-        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const clave =
+        jugador?.player_id != null
+          ? `id:${jugador.player_id}`
+          : `nombre:${normalizarTextoJugador(nombre)}`;
       const actual = jugadores.get(clave) || {
         clave,
         nombre,
@@ -1829,12 +1960,10 @@ function resumirGoleadoresJugadores(partidos, equipoId) {
   return [...jugadores.values()];
 }
 
-
 function porcentajeGoleador(jugador, campo) {
   if (!jugador?.partidos) return 0;
   return (jugador[campo] / jugador.partidos) * 100;
 }
-
 
 function formatearProbabilidadGoleador(jugador, campo, etiquetaLocalidad) {
   const localidad = jugador.localidad;
@@ -1850,7 +1979,6 @@ function formatearProbabilidadGoleador(jugador, campo, etiquetaLocalidad) {
   `;
 }
 
-
 function crearMercadoAtajadasPorteros(resultado, nombreLocal, nombreVisitante) {
   return crearMercadoTirosJugadores(
     resultado,
@@ -1862,8 +1990,11 @@ function crearMercadoAtajadasPorteros(resultado, nombreLocal, nombreVisitante) {
   );
 }
 
-
-function crearMercadoAsistenciasJugadores(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoAsistenciasJugadores(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return `
     ${crearMercadoTirosJugadores(
       resultado,
@@ -1876,8 +2007,11 @@ function crearMercadoAsistenciasJugadores(resultado, nombreLocal, nombreVisitant
   `;
 }
 
-
-function crearMercadoCombinacionesAsistencias(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoCombinacionesAsistencias(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return `
     ${crearTablaCombinacionesAsistenciasEquipo(
       nombreLocal,
@@ -1895,7 +2029,6 @@ function crearMercadoCombinacionesAsistencias(resultado, nombreLocal, nombreVisi
     )}
   `;
 }
-
 
 function crearTablaCombinacionesAsistenciasEquipo(
   nombreEquipo,
@@ -1940,12 +2073,15 @@ function crearTablaCombinacionesAsistenciasEquipo(
     }
   }
 
-  combinaciones.sort((a, b) => porcentajePonderadoMuestras(b.localidad, b.general)
-    - porcentajePonderadoMuestras(a.localidad, a.general)
-    || b.general.porcentaje - a.general.porcentaje
-    || b.localidad.partidos - a.localidad.partidos
-    || b.general.partidos - a.general.partidos
-    || a.etiqueta.localeCompare(b.etiqueta));
+  combinaciones.sort(
+    (a, b) =>
+      porcentajePonderadoMuestras(b.localidad, b.general) -
+        porcentajePonderadoMuestras(a.localidad, a.general) ||
+      b.general.porcentaje - a.general.porcentaje ||
+      b.localidad.partidos - a.localidad.partidos ||
+      b.general.partidos - a.general.partidos ||
+      a.etiqueta.localeCompare(b.etiqueta),
+  );
 
   if (!combinaciones.length) {
     return `<div class="vacio">No hay suficientes asistentes con historial para crear combinaciones de ${escaparHTML(nombreEquipo)}.</div>`;
@@ -1965,7 +2101,9 @@ function crearTablaCombinacionesAsistenciasEquipo(
           </tr>
         </thead>
         <tbody>
-        ${combinaciones.map((combinacion) => `
+        ${combinaciones
+          .map(
+            (combinacion) => `
           <tr><!--
             title="${escaparHTML(etiquetaLocalidad)}: ${formatearPorcentajeEntero(combinacion.localidad.porcentaje)} en ${combinacion.localidad.partidos} partidos. General: ${formatearPorcentajeEntero(combinacion.general.porcentaje)} en ${combinacion.general.partidos} partidos."
           >
@@ -1979,13 +2117,14 @@ function crearTablaCombinacionesAsistenciasEquipo(
               ${formatearPorcentajeEntero(combinacion.general.porcentaje)}
             </td>
           </tr>
-        `).join("")}
+        `,
+          )
+          .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
-
 
 function obtenerCandidatosAsistencias(asistentesGeneral, asistentesLocalidad) {
   const candidatosPorClave = new Map();
@@ -2011,18 +2150,27 @@ function obtenerCandidatosAsistencias(asistentesGeneral, asistentesLocalidad) {
   });
 
   return [...candidatosPorClave.values()]
-    .filter((jugador) => porcentajeTirosAlArcoJugadorNumero(jugador.general, 1) > 0
-      || porcentajeTirosAlArcoJugadorNumero(jugador.localidad, 1) > 0)
-    .sort((a, b) => porcentajePonderadoJugador(b, (dato) => porcentajeTirosAlArcoJugadorNumero(dato, 1))
-      - porcentajePonderadoJugador(a, (dato) => porcentajeTirosAlArcoJugadorNumero(dato, 1))
-      || porcentajeTirosAlArcoJugadorNumero(b.general, 1)
-      - porcentajeTirosAlArcoJugadorNumero(a.general, 1)
-      || (b.localidad?.partidos || 0) - (a.localidad?.partidos || 0)
-      || (b.general?.partidos || 0) - (a.general?.partidos || 0)
-      || a.nombre.localeCompare(b.nombre))
+    .filter(
+      (jugador) =>
+        porcentajeTirosAlArcoJugadorNumero(jugador.general, 1) > 0 ||
+        porcentajeTirosAlArcoJugadorNumero(jugador.localidad, 1) > 0,
+    )
+    .sort(
+      (a, b) =>
+        porcentajePonderadoJugador(b, (dato) =>
+          porcentajeTirosAlArcoJugadorNumero(dato, 1),
+        ) -
+          porcentajePonderadoJugador(a, (dato) =>
+            porcentajeTirosAlArcoJugadorNumero(dato, 1),
+          ) ||
+        porcentajeTirosAlArcoJugadorNumero(b.general, 1) -
+          porcentajeTirosAlArcoJugadorNumero(a.general, 1) ||
+        (b.localidad?.partidos || 0) - (a.localidad?.partidos || 0) ||
+        (b.general?.partidos || 0) - (a.general?.partidos || 0) ||
+        a.nombre.localeCompare(b.nombre),
+    )
     .slice(0, 5);
 }
-
 
 function resumirAnotaOAsisteJugadores(partidos, equipoId) {
   const jugadores = new Map();
@@ -2047,9 +2195,10 @@ function resumirAnotaOAsisteJugadores(partidos, equipoId) {
       }
 
       const nombre = jugador?.jugador || "Jugador sin nombre";
-      const clave = jugador?.player_id != null
-        ? `id:${jugador.player_id}`
-        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const clave =
+        jugador?.player_id != null
+          ? `id:${jugador.player_id}`
+          : `nombre:${normalizarTextoJugador(nombre)}`;
       const actual = jugadores.get(clave) || {
         clave,
         nombre,
@@ -2059,19 +2208,16 @@ function resumirAnotaOAsisteJugadores(partidos, equipoId) {
 
       actual.partidos += 1;
       actual.tiros.push(
-        Number(jugador?.goles) >= 1 ||
-        Number(jugador?.goalAssist) >= 1
-          ? 1
-          : 0,
+        Number(jugador?.goles) >= 1 || Number(jugador?.goalAssist) >= 1 ? 1 : 0,
       );
       jugadores.set(clave, actual);
     });
   });
 
-  return [...jugadores.values()]
-    .sort((a, b) => b.partidos - a.partidos || a.nombre.localeCompare(b.nombre));
+  return [...jugadores.values()].sort(
+    (a, b) => b.partidos - a.partidos || a.nombre.localeCompare(b.nombre),
+  );
 }
-
 
 function calcularCombinacionAsistencias(partidos, equipoId, clavesJugadores) {
   let validos = 0;
@@ -2087,19 +2233,22 @@ function calcularCombinacionAsistencias(partidos, equipoId, clavesJugadores) {
       const minutos = Number(jugador?.minutesPlayed);
       if (!Number.isFinite(minutos) || minutos <= 0) return false;
 
-      const clave = jugador?.player_id != null
-        ? `id:${jugador.player_id}`
-        : `nombre:${normalizarTextoJugador(jugador?.jugador)}`;
+      const clave =
+        jugador?.player_id != null
+          ? `id:${jugador.player_id}`
+          : `nombre:${normalizarTextoJugador(jugador?.jugador)}`;
       return clavesJugadores.includes(clave);
     });
 
     if (!participantes.length) return;
 
     validos += 1;
-    if (participantes.some((jugador) => (
-      Number(jugador?.goles) >= 1 ||
-      Number(jugador?.goalAssist) >= 1
-    ))) {
+    if (
+      participantes.some(
+        (jugador) =>
+          Number(jugador?.goles) >= 1 || Number(jugador?.goalAssist) >= 1,
+      )
+    ) {
       acertados += 1;
     }
   });
@@ -2110,13 +2259,15 @@ function calcularCombinacionAsistencias(partidos, equipoId, clavesJugadores) {
   };
 }
 
-
 function formatearPorcentajeEntero(porcentaje) {
   return `${Math.round(porcentaje || 0)}%`;
 }
 
-
-function crearMercadoAsistenciasJugadoresAnterior(resultado, nombreLocal, nombreVisitante) {
+function crearMercadoAsistenciasJugadoresAnterior(
+  resultado,
+  nombreLocal,
+  nombreVisitante,
+) {
   return crearMercadoTirosJugadores(
     resultado,
     nombreLocal,
@@ -2125,7 +2276,6 @@ function crearMercadoAsistenciasJugadoresAnterior(resultado, nombreLocal, nombre
     [1, 2, 3, 4],
   );
 }
-
 
 function crearMercadoTirosJugadores(
   resultado,
@@ -2178,7 +2328,6 @@ function crearMercadoTirosJugadores(
   `;
 }
 
-
 function resumirTirosAlArcoJugadores(
   partidos,
   equipoId,
@@ -2201,9 +2350,10 @@ function resumirTirosAlArcoJugadores(
       if (!Number.isFinite(minutos) || minutos <= 0) return;
 
       const nombre = jugador?.jugador || "Jugador sin nombre";
-      const clave = jugador?.player_id != null
-        ? `id:${jugador.player_id}`
-        : `nombre:${normalizarTextoJugador(nombre)}`;
+      const clave =
+        jugador?.player_id != null
+          ? `id:${jugador.player_id}`
+          : `nombre:${normalizarTextoJugador(nombre)}`;
       const actual = jugadores.get(clave) || {
         clave,
         nombre,
@@ -2217,15 +2367,16 @@ function resumirTirosAlArcoJugadores(
     });
   });
 
-  return [...jugadores.values()]
-    .sort((a, b) => b.partidos - a.partidos || a.nombre.localeCompare(b.nombre));
+  return [...jugadores.values()].sort(
+    (a, b) => b.partidos - a.partidos || a.nombre.localeCompare(b.nombre),
+  );
 }
-
 
 function normalizarTextoJugador(texto) {
-  return String(texto || "").trim().toLocaleLowerCase();
+  return String(texto || "")
+    .trim()
+    .toLocaleLowerCase();
 }
-
 
 function crearTablaTirosAlArcoEquipo(
   nombreEquipo,
@@ -2256,35 +2407,34 @@ function crearTablaTirosAlArcoEquipo(
     jugadoresPorClave.set(jugador.clave, actual);
   });
 
-  const jugadores = [...jugadoresPorClave.values()]
-    .sort((a, b) => {
-      const porcentajePonderadoA = porcentajePonderadoJugador(
-        a,
-        (dato) => porcentajeTirosAlArcoJugadorNumero(dato, lineaOrden),
-      );
-      const porcentajePonderadoB = porcentajePonderadoJugador(
-        b,
-        (dato) => porcentajeTirosAlArcoJugadorNumero(dato, lineaOrden),
-      );
-      const porcentajeGeneralA = porcentajeTirosAlArcoJugadorNumero(
-        a.general,
-        lineaOrden,
-      );
-      const porcentajeGeneralB = porcentajeTirosAlArcoJugadorNumero(
-        b.general,
-        lineaOrden,
-      );
-      const partidosA = a.general?.partidos || 0;
-      const partidosB = b.general?.partidos || 0;
-      const partidosLocalidadA = a.localidad?.partidos || 0;
-      const partidosLocalidadB = b.localidad?.partidos || 0;
+  const jugadores = [...jugadoresPorClave.values()].sort((a, b) => {
+    const porcentajePonderadoA = porcentajePonderadoJugador(a, (dato) =>
+      porcentajeTirosAlArcoJugadorNumero(dato, lineaOrden),
+    );
+    const porcentajePonderadoB = porcentajePonderadoJugador(b, (dato) =>
+      porcentajeTirosAlArcoJugadorNumero(dato, lineaOrden),
+    );
+    const porcentajeGeneralA = porcentajeTirosAlArcoJugadorNumero(
+      a.general,
+      lineaOrden,
+    );
+    const porcentajeGeneralB = porcentajeTirosAlArcoJugadorNumero(
+      b.general,
+      lineaOrden,
+    );
+    const partidosA = a.general?.partidos || 0;
+    const partidosB = b.general?.partidos || 0;
+    const partidosLocalidadA = a.localidad?.partidos || 0;
+    const partidosLocalidadB = b.localidad?.partidos || 0;
 
-      return porcentajePonderadoB - porcentajePonderadoA
-        || porcentajeGeneralB - porcentajeGeneralA
-        || partidosLocalidadB - partidosLocalidadA
-        || partidosB - partidosA
-        || a.nombre.localeCompare(b.nombre);
-    });
+    return (
+      porcentajePonderadoB - porcentajePonderadoA ||
+      porcentajeGeneralB - porcentajeGeneralA ||
+      partidosLocalidadB - partidosLocalidadA ||
+      partidosB - partidosA ||
+      a.nombre.localeCompare(b.nombre)
+    );
+  });
 
   if (!jugadores.length) {
     return `<div class="vacio">No hay estadísticas de jugadores disponibles para ${escaparHTML(nombreEquipo)}.</div>`;
@@ -2301,7 +2451,9 @@ function crearTablaTirosAlArcoEquipo(
           </tr>
         </thead>
         <tbody>
-          ${jugadores.map((jugador) => `
+          ${jugadores
+            .map(
+              (jugador) => `
             <tr>
               <td>
                 ${escaparHTML(jugador.nombre)}<br>
@@ -2310,45 +2462,45 @@ function crearTablaTirosAlArcoEquipo(
                   General: ${jugador.general?.partidos || 0} partidos
                 </small>
               </td>
-              ${lineas.map((linea) => `
+              ${lineas
+                .map(
+                  (linea) => `
                 <td>
                   <small>Combinada</small><br>
-                  ${formatearPorcentajePonderadoJugador(
-                    jugador,
-                    (dato) => porcentajeTirosAlArcoJugadorNumero(dato, linea),
+                  ${formatearPorcentajePonderadoJugador(jugador, (dato) =>
+                    porcentajeTirosAlArcoJugadorNumero(dato, linea),
                   )}%<br>
                   <small>${escaparHTML(etiquetaLocalidad)}</small><br>
                   ${porcentajeTirosAlArcoJugador(jugador.localidad, linea)}<br>
                   <small>General</small><br>
                   ${porcentajeTirosAlArcoJugador(jugador.general, linea)}
                 </td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
 
-
 function porcentajeTirosAlArcoJugador(jugador, linea) {
   return `${Math.round(porcentajeTirosAlArcoJugadorNumero(jugador, linea))}%`;
 }
-
 
 function porcentajeTirosAlArcoJugadorNumero(jugador, linea) {
   if (!jugador || !jugador.partidos) {
     return 0;
   }
 
-  const acertados = jugador.tiros
-    .filter((tiros) => tiros >= linea)
-    .length;
+  const acertados = jugador.tiros.filter((tiros) => tiros >= linea).length;
 
   return (acertados / jugador.partidos) * 100;
 }
-
 
 function porcentajePonderadoJugador(jugador, obtenerPorcentaje) {
   const porcentajeGeneral = obtenerPorcentaje(jugador?.general);
@@ -2364,7 +2516,6 @@ function porcentajePonderadoJugador(jugador, obtenerPorcentaje) {
     },
   );
 }
-
 
 function porcentajePonderadoMuestras(localidad, general) {
   const porcentajeGeneral = Number(general?.porcentaje) || 0;
@@ -2391,21 +2542,19 @@ function porcentajePonderadoMuestras(localidad, general) {
     0,
     aciertosGeneral - aciertosLocalidad,
   );
-  const porcentajeGeneralExclusivo = (
-    aciertosGeneralExclusivos / partidosGeneralExclusivos
-  ) * 100;
+  const porcentajeGeneralExclusivo =
+    (aciertosGeneralExclusivos / partidosGeneralExclusivos) * 100;
 
   return (
-    (porcentajeLocalidad * partidosLocalidad)
-    + (porcentajeGeneralExclusivo * partidosGeneralExclusivos)
-  ) / (partidosLocalidad + partidosGeneralExclusivos);
+    (porcentajeLocalidad * partidosLocalidad +
+      porcentajeGeneralExclusivo * partidosGeneralExclusivos) /
+    (partidosLocalidad + partidosGeneralExclusivos)
+  );
 }
-
 
 function formatearPorcentajePonderadoJugador(jugador, obtenerPorcentaje) {
   return Math.round(porcentajePonderadoJugador(jugador, obtenerPorcentaje));
 }
-
 
 // ============================================================
 // MERCADOS DE HÁNDICAP
@@ -2421,9 +2570,18 @@ function crearMercadosHandicap(resultado, local, visitante) {
   `;
 }
 
-
-function crearTablaHandicapResultado(resultado, local, visitante, periodo, maximo) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+function crearTablaHandicapResultado(
+  resultado,
+  local,
+  visitante,
+  periodo,
+  maximo,
+) {
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
   const lineas = [];
   for (let handicap = -maximo; handicap <= maximo; handicap += 1) {
     if (handicap !== 0) {
@@ -2431,11 +2589,18 @@ function crearTablaHandicapResultado(resultado, local, visitante, periodo, maxim
     }
   }
 
-  const etiquetaHandicap = (valor) => valor > 0 ? `+${valor}` : String(valor);
-  const crearFila = (handicap, resultadoEsperado, etiqueta, handicapVisible = handicap) => `
+  const etiquetaHandicap = (valor) => (valor > 0 ? `+${valor}` : String(valor));
+  const crearFila = (
+    handicap,
+    resultadoEsperado,
+    etiqueta,
+    handicapVisible = handicap,
+  ) => `
     <tr>
       <td>${escaparHTML(etiqueta)} ${etiquetaHandicap(handicapVisible)}</td>
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>${porcentajeHandicapResultado(
           columna.partidos,
           columna.equipoId,
@@ -2444,7 +2609,9 @@ function crearTablaHandicapResultado(resultado, local, visitante, periodo, maxim
           periodo,
           resultado,
         )}</td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -2455,17 +2622,20 @@ function crearTablaHandicapResultado(resultado, local, visitante, periodo, maxim
           <tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr>
         </thead>
         <tbody>
-          ${lineas.map((handicap) => `
+          ${lineas
+            .map(
+              (handicap) => `
             ${crearFila(handicap, "local", `${local}`)}
             ${crearFila(handicap, "empate", "Empate")}
             ${crearFila(handicap, "visitante", `${visitante}`)}
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
-
 
 function porcentajeHandicapResultado(
   partidos,
@@ -2478,17 +2648,27 @@ function porcentajeHandicapResultado(
   let validos = 0;
   let acertados = 0;
   (partidos || []).forEach((partido) => {
-    const goles = periodo === "FT"
-      ? { local: Number(partido?.marcador_local), visitante: Number(partido?.marcador_visitante) }
-      : obtenerGolesPorPeriodo(partido, periodo);
+    const goles =
+      periodo === "FT"
+        ? {
+            local: Number(partido?.marcador_local),
+            visitante: Number(partido?.marcador_visitante),
+          }
+        : obtenerGolesPorPeriodo(partido, periodo);
 
-    if (!goles || !Number.isFinite(goles.local) || !Number.isFinite(goles.visitante)) return;
+    if (
+      !goles ||
+      !Number.isFinite(goles.local) ||
+      !Number.isFinite(goles.visitante)
+    )
+      return;
     validos += 1;
     // En la columna de empate se conserva el hándicap del local, igual que
     // en el mercado europeo de tres resultados.
-    const equipoConHandicap = resultadoEsperado === "visitante"
-      ? resultadoMercado?.equipo_visitante?.id
-      : resultadoMercado?.equipo_local?.id;
+    const equipoConHandicap =
+      resultadoEsperado === "visitante"
+        ? resultadoMercado?.equipo_visitante?.id
+        : resultadoMercado?.equipo_local?.id;
 
     const esEquipoDelMercado = Number(equipoId) === Number(equipoConHandicap);
 
@@ -2500,32 +2680,38 @@ function porcentajeHandicapResultado(
 
     // El hándicap se aplica al equipo del mercado. Cuando la columna es del
     // rival, el mismo ajuste se aplica al rival de ese historial.
-    const golesEquipoAjustados = golesEquipo + (esEquipoDelMercado ? handicap : 0);
-    const golesRivalAjustados = golesRival + (esEquipoDelMercado ? 0 : handicap);
-    const resultadoEquipo = golesEquipoAjustados > golesRivalAjustados
-      ? "gana"
-      : golesEquipoAjustados < golesRivalAjustados
-        ? "pierde"
-        : "empata";
-
-    const esperado = resultadoEsperado === "empate"
-      ? "empata"
-      : esEquipoDelMercado
+    const golesEquipoAjustados =
+      golesEquipo + (esEquipoDelMercado ? handicap : 0);
+    const golesRivalAjustados =
+      golesRival + (esEquipoDelMercado ? 0 : handicap);
+    const resultadoEquipo =
+      golesEquipoAjustados > golesRivalAjustados
         ? "gana"
-        : "pierde";
+        : golesEquipoAjustados < golesRivalAjustados
+          ? "pierde"
+          : "empata";
+
+    const esperado =
+      resultadoEsperado === "empate"
+        ? "empata"
+        : esEquipoDelMercado
+          ? "gana"
+          : "pierde";
 
     if (resultadoEquipo === esperado) acertados += 1;
   });
   return porcentajeMercado(acertados, validos);
 }
 
-
 // ============================================================
 // MERCADOS ESPECIALES
 // ============================================================
 
 function crearMercadosEspeciales(resultado, local, visitante) {
-  const siNo = [["Sí", true], ["No", false]];
+  const siNo = [
+    ["Sí", true],
+    ["No", false],
+  ];
   const margenes = [
     [`${local} gana por exactamente 1 gol`, ["local", 1]],
     [`${local} gana por 2 goles exactamente`, ["local", 2]],
@@ -2547,50 +2733,114 @@ function crearMercadosEspeciales(resultado, local, visitante) {
 
   return `
     <h3 class="subtitulo-mercado">Penal concedido</h3>
-    ${crearTablaEspecial(resultado, local, visitante, siNo, (p, id, opcion) =>
-      (obtenerTotalEventoEspecial(p, "FT", "timeline:penales_causados") > 0) === opcion)}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      siNo,
+      (p, id, opcion) =>
+        obtenerTotalEventoEspecial(p, "FT", "timeline:penales_causados") > 0 ===
+        opcion,
+    )}
 
     <h3 class="subtitulo-mercado">Autogol</h3>
-    ${crearTablaEspecial(resultado, local, visitante, siNo, (p, id, opcion) =>
-      (obtenerTotalEventoEspecial(p, "FT", "timeline:autogoles") > 0) === opcion)}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      siNo,
+      (p, id, opcion) =>
+        obtenerTotalEventoEspecial(p, "FT", "timeline:autogoles") > 0 ===
+        opcion,
+    )}
 
     <h3 class="subtitulo-mercado">Margen del Triunfo</h3>
-    ${crearTablaEspecial(resultado, local, visitante, margenes, (p, id, opcion) =>
-      coincideMargenTriunfo(resultado, p, id, opcion[0], opcion[1]))}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      margenes,
+      (p, id, opcion) =>
+        coincideMargenTriunfo(resultado, p, id, opcion[0], opcion[1]),
+    )}
 
     <h3 class="subtitulo-mercado">Penal concedido Primer Tiempo</h3>
-    ${crearTablaEspecial(resultado, local, visitante, siNo, (p, id, opcion) =>
-      (obtenerTotalEventoEspecial(p, "1ST", "timeline:penales_causados") > 0) === opcion)}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      siNo,
+      (p, id, opcion) =>
+        obtenerTotalEventoEspecial(p, "1ST", "timeline:penales_causados") >
+          0 ===
+        opcion,
+    )}
 
     <h3 class="subtitulo-mercado">${escaparHTML(local)} Penal concedido</h3>
-    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
-      tienePenalConcedidoEquipo(p, id) === opcion, "local")}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      [["Sí", true]],
+      (p, id, opcion) => tienePenalConcedidoEquipo(p, id) === opcion,
+      "local",
+    )}
 
     <h3 class="subtitulo-mercado">${escaparHTML(visitante)} Penal concedido</h3>
-    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
-      tienePenalConcedidoEquipo(p, id) === opcion, "visitante")}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      [["Sí", true]],
+      (p, id, opcion) => tienePenalConcedidoEquipo(p, id) === opcion,
+      "visitante",
+    )}
 
     <h3 class="subtitulo-mercado">Dos penales concedidos</h3>
-    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
-      (obtenerTotalEventoEspecial(p, "FT", "timeline:penales_causados") >= 2) === opcion)}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      [["Sí", true]],
+      (p, id, opcion) =>
+        obtenerTotalEventoEspecial(p, "FT", "timeline:penales_causados") >=
+          2 ===
+        opcion,
+    )}
 
     <h3 class="subtitulo-mercado">Ambos equipos ganan un penal</h3>
-    ${crearTablaEspecial(resultado, local, visitante, [["Sí", true]], (p, id, opcion) =>
-      ambosEquiposTienenPenal(p) === opcion)}
+    ${crearTablaEspecial(
+      resultado,
+      local,
+      visitante,
+      [["Sí", true]],
+      (p, id, opcion) => ambosEquiposTienenPenal(p) === opcion,
+    )}
 
     <h3 class="subtitulo-mercado">Curso del juego</h3>
     ${crearTablaEspecial(resultado, local, visitante, curso, (p, id, opcion) =>
-      coincideCursoJuego(resultado, p, id, opcion))}
+      coincideCursoJuego(resultado, p, id, opcion),
+    )}
   `;
 }
 
-
-function crearTablaEspecial(resultado, local, visitante, opciones, evaluar, objetivo) {
+function crearTablaEspecial(
+  resultado,
+  local,
+  visitante,
+  opciones,
+  evaluar,
+  objetivo,
+) {
   const todas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
-  const columnas = objetivo === "local" ? todas.slice(0, 2) : objetivo === "visitante" ? todas.slice(2) : todas;
+  const columnas =
+    objetivo === "local"
+      ? todas.slice(0, 2)
+      : objetivo === "visitante"
+        ? todas.slice(2)
+        : todas;
   return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map(([etiqueta, opcion]) => `<tr><td>${escaparHTML(etiqueta)}</td>${columnas.map((columna) => `<td>${porcentajeEspecial(columna.partidos, columna.equipoId, opcion, evaluar)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
-
 
 function porcentajeEspecial(partidos, equipoId, opcion, evaluar) {
   let validos = 0;
@@ -2603,28 +2853,38 @@ function porcentajeEspecial(partidos, equipoId, opcion, evaluar) {
   return porcentajeMercado(acertados, validos);
 }
 
-
 function obtenerTotalEventoEspecial(partido, periodo, clave) {
   const dato = obtenerEstadisticaPartido(partido, periodo, clave);
   return dato ? dato.local + dato.visitante : 0;
 }
 
-
 function tienePenalConcedidoEquipo(partido, equipoId) {
-  const dato = obtenerEstadisticaPartido(partido, "FT", "timeline:penales_causados");
+  const dato = obtenerEstadisticaPartido(
+    partido,
+    "FT",
+    "timeline:penales_causados",
+  );
   const lado = obtenerLadoEquipoPartido(partido, equipoId);
   if (!dato || !lado) return false;
   return dato[lado] > 0;
 }
 
-
 function ambosEquiposTienenPenal(partido) {
-  const dato = obtenerEstadisticaPartido(partido, "FT", "timeline:penales_causados");
+  const dato = obtenerEstadisticaPartido(
+    partido,
+    "FT",
+    "timeline:penales_causados",
+  );
   return Boolean(dato && dato.local > 0 && dato.visitante > 0);
 }
 
-
-function coincideMargenTriunfo(resultadoMercado, partido, equipoId, equipoMercado, margen) {
+function coincideMargenTriunfo(
+  resultadoMercado,
+  partido,
+  equipoId,
+  equipoMercado,
+  margen,
+) {
   const golesEquipo = obtenerGolesEquipo(partido, equipoId);
   const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
@@ -2640,13 +2900,13 @@ function coincideMargenTriunfo(resultadoMercado, partido, equipoId, equipoMercad
     equipoId,
     equipoMercado,
   );
-  const sujetoGana = ladoDelSujeto === "equipo"
-    ? golesEquipo > golesRival
-    : golesRival > golesEquipo;
+  const sujetoGana =
+    ladoDelSujeto === "equipo"
+      ? golesEquipo > golesRival
+      : golesRival > golesEquipo;
 
   return sujetoGana && (margen === 3 ? diferencia >= 3 : diferencia === margen);
 }
-
 
 function coincideCursoJuego(resultado, partido, equipoId, opcion) {
   const primero = obtenerEstadoPrimerGol(partido, equipoId);
@@ -2667,16 +2927,13 @@ function coincideCursoJuego(resultado, partido, equipoId, opcion) {
     resultadoEsperado = "Empate";
   } else {
     const sujetoGana = opcion[1] === "equipo";
-    const equipoDeLaColumnaGana = ladoDelSujeto === "equipo"
-      ? sujetoGana
-      : !sujetoGana;
+    const equipoDeLaColumnaGana =
+      ladoDelSujeto === "equipo" ? sujetoGana : !sujetoGana;
     resultadoEsperado = equipoDeLaColumnaGana ? "Victoria" : "Derrota";
   }
 
-  return primero === ladoDelSujeto
-    && partido?.resultado === resultadoEsperado;
+  return primero === ladoDelSujeto && partido?.resultado === resultadoEsperado;
 }
-
 
 // ============================================================
 // MERCADOS DE MEDIO TIEMPO
@@ -2707,109 +2964,254 @@ function crearMercadosMedioTiempo(resultado, local, visitante) {
     [`${visitante} / ${visitante}`, ["visitante", "visitante"]],
   ];
 
-  const opcionesDobleMedioCompleto = opcionesDoble.flatMap(([etiqueta1, valores1]) =>
-    opcionesDoble.map(([etiqueta2, valores2]) => [
-      `${etiqueta1} / ${etiqueta2}`,
-      [valores1, valores2],
-    ])
+  const opcionesDobleMedioCompleto = opcionesDoble.flatMap(
+    ([etiqueta1, valores1]) =>
+      opcionesDoble.map(([etiqueta2, valores2]) => [
+        `${etiqueta1} / ${etiqueta2}`,
+        [valores1, valores2],
+      ]),
   );
 
   return `
     <h3 class="subtitulo-mercado">Resultado Primer Tiempo</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesResultado, (p, id, opcion) =>
-      obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperadoParaEquipo(resultado, id, opcion))}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      opcionesResultado,
+      (p, id, opcion) =>
+        obtenerResultadoPeriodoEquipo(p, id, "1ST") ===
+        resultadoEsperadoParaEquipo(resultado, id, opcion),
+    )}
 
     <h3 class="subtitulo-mercado">Primer Tiempo - Doble Oportunidad</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesDoble, (p, id, opcion) =>
-      opcion
-        .map((resultadoMercado) => resultadoEsperadoParaEquipo(resultado, id, resultadoMercado))
-        .includes(obtenerResultadoPeriodoEquipo(p, id, "1ST")))}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      opcionesDoble,
+      (p, id, opcion) =>
+        opcion
+          .map((resultadoMercado) =>
+            resultadoEsperadoParaEquipo(resultado, id, resultadoMercado),
+          )
+          .includes(obtenerResultadoPeriodoEquipo(p, id, "1ST")),
+    )}
 
     <h3 class="subtitulo-mercado">Gana cualquiera de los tiempos</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [[local, "local"], [visitante, "visitante"]], (p, id, opcion) => {
-      const resultadoEsperado = resultadoEsperadoParaEquipo(resultado, id, opcion);
-      return obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperado ||
-        obtenerResultadoPeriodoEquipo(p, id, "2ND") === resultadoEsperado;
-    })}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        [local, "local"],
+        [visitante, "visitante"],
+      ],
+      (p, id, opcion) => {
+        const resultadoEsperado = resultadoEsperadoParaEquipo(
+          resultado,
+          id,
+          opcion,
+        );
+        return (
+          obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperado ||
+          obtenerResultadoPeriodoEquipo(p, id, "2ND") === resultadoEsperado
+        );
+      },
+    )}
 
     <h3 class="subtitulo-mercado">Resultado Medio Tiempo o Tiempo Completo</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesMedioCompleto, (p, id, opcion) =>
-      obtenerResultadoPeriodoEquipo(p, id, "1ST") === resultadoEsperadoParaEquipo(resultado, id, opcion[0]) &&
-      obtenerResultadoPeriodoEquipo(p, id, "FT") === resultadoEsperadoParaEquipo(resultado, id, opcion[1]))}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      opcionesMedioCompleto,
+      (p, id, opcion) =>
+        obtenerResultadoPeriodoEquipo(p, id, "1ST") ===
+          resultadoEsperadoParaEquipo(resultado, id, opcion[0]) &&
+        obtenerResultadoPeriodoEquipo(p, id, "FT") ===
+          resultadoEsperadoParaEquipo(resultado, id, opcion[1]),
+    )}
 
     <h3 class="subtitulo-mercado">Medio Tiempo/Tiempo Completo - Doble oportunidad</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesDobleMedioCompleto, (p, id, opcion) =>
-      opcion[0].map((valor) => resultadoEsperadoParaEquipo(resultado, id, valor)).includes(obtenerResultadoPeriodoEquipo(p, id, "1ST")) &&
-      opcion[1].map((valor) => resultadoEsperadoParaEquipo(resultado, id, valor)).includes(obtenerResultadoPeriodoEquipo(p, id, "FT")))}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      opcionesDobleMedioCompleto,
+      (p, id, opcion) =>
+        opcion[0]
+          .map((valor) => resultadoEsperadoParaEquipo(resultado, id, valor))
+          .includes(obtenerResultadoPeriodoEquipo(p, id, "1ST")) &&
+        opcion[1]
+          .map((valor) => resultadoEsperadoParaEquipo(resultado, id, valor))
+          .includes(obtenerResultadoPeriodoEquipo(p, id, "FT")),
+    )}
 
     <h3 class="subtitulo-mercado">Gol anotado en ambos tiempos</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
-      (obtenerTotalGolesPartido(p, "1ST") > 0 && obtenerTotalGolesPartido(p, "2ND") > 0) === opcion)}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        ["Sí", true],
+        ["No", false],
+      ],
+      (p, id, opcion) =>
+        (obtenerTotalGolesPartido(p, "1ST") > 0 &&
+          obtenerTotalGolesPartido(p, "2ND") > 0) === opcion,
+    )}
 
     <h3 class="subtitulo-mercado">Ambos equipos anotan en el Primer Tiempo/Segundo Tiempo</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí / Sí", [true, true]], ["Sí / No", [true, false]], ["No / Sí", [false, true]], ["No / No", [false, false]]], (p, id, opcion) =>
-      ambosAnotanPeriodo(p, "1ST") === opcion[0] && ambosAnotanPeriodo(p, "2ND") === opcion[1])}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        ["Sí / Sí", [true, true]],
+        ["Sí / No", [true, false]],
+        ["No / Sí", [false, true]],
+        ["No / No", [false, false]],
+      ],
+      (p, id, opcion) =>
+        ambosAnotanPeriodo(p, "1ST") === opcion[0] &&
+        ambosAnotanPeriodo(p, "2ND") === opcion[1],
+    )}
 
     <h3 class="subtitulo-mercado">Tiempo con Más Goles</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [["Primer Tiempo", "1ST"], ["Segundo Tiempo", "2ND"], ["Empate", "empate"]], (p, id, opcion) =>
-      obtenerTiempoConMasGoles(p) === opcion)}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        ["Primer Tiempo", "1ST"],
+        ["Segundo Tiempo", "2ND"],
+        ["Empate", "empate"],
+      ],
+      (p, id, opcion) => obtenerTiempoConMasGoles(p) === opcion,
+    )}
 
     <h3 class="subtitulo-mercado">${escaparHTML(local)} Gana Ambos Tiempos</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
-      (obtenerResultadoPeriodoEquipo(p, id, "1ST") === "equipo" && obtenerResultadoPeriodoEquipo(p, id, "2ND") === "equipo") === opcion, "local")}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        ["Sí", true],
+        ["No", false],
+      ],
+      (p, id, opcion) =>
+        (obtenerResultadoPeriodoEquipo(p, id, "1ST") === "equipo" &&
+          obtenerResultadoPeriodoEquipo(p, id, "2ND") === "equipo") === opcion,
+      "local",
+    )}
 
     <h3 class="subtitulo-mercado">${escaparHTML(visitante)} Gana Ambos Tiempos</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
-      (obtenerResultadoPeriodoEquipo(p, id, "1ST") === "equipo" && obtenerResultadoPeriodoEquipo(p, id, "2ND") === "equipo") === opcion, "visitante")}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        ["Sí", true],
+        ["No", false],
+      ],
+      (p, id, opcion) =>
+        (obtenerResultadoPeriodoEquipo(p, id, "1ST") === "equipo" &&
+          obtenerResultadoPeriodoEquipo(p, id, "2ND") === "equipo") === opcion,
+      "visitante",
+    )}
 
     <h3 class="subtitulo-mercado">Resultado Segundo Tiempo</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesResultado, (p, id, opcion) =>
-      obtenerResultadoPeriodoEquipo(p, id, "2ND") === resultadoEsperadoParaEquipo(resultado, id, opcion))}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      opcionesResultado,
+      (p, id, opcion) =>
+        obtenerResultadoPeriodoEquipo(p, id, "2ND") ===
+        resultadoEsperadoParaEquipo(resultado, id, opcion),
+    )}
 
     <h3 class="subtitulo-mercado">Segundo Tiempo - Doble Oportunidad</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, opcionesDoble, (p, id, opcion) =>
-      opcion
-        .map((resultadoMercado) => resultadoEsperadoParaEquipo(resultado, id, resultadoMercado))
-        .includes(obtenerResultadoPeriodoEquipo(p, id, "2ND")))}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      opcionesDoble,
+      (p, id, opcion) =>
+        opcion
+          .map((resultadoMercado) =>
+            resultadoEsperadoParaEquipo(resultado, id, resultadoMercado),
+          )
+          .includes(obtenerResultadoPeriodoEquipo(p, id, "2ND")),
+    )}
 
     <h3 class="subtitulo-mercado">Ambos equipos anotan en el Segundo Tiempo</h3>
-    ${crearTablaMedioTiempo(resultado, local, visitante, [["Sí", true], ["No", false]], (p, id, opcion) =>
-      ambosAnotanPeriodo(p, "2ND") === opcion)}
+    ${crearTablaMedioTiempo(
+      resultado,
+      local,
+      visitante,
+      [
+        ["Sí", true],
+        ["No", false],
+      ],
+      (p, id, opcion) => ambosAnotanPeriodo(p, "2ND") === opcion,
+    )}
   `;
 }
 
-
-function crearTablaMedioTiempo(resultado, local, visitante, opciones, evaluar, objetivo) {
+function crearTablaMedioTiempo(
+  resultado,
+  local,
+  visitante,
+  opciones,
+  evaluar,
+  objetivo,
+) {
   const todas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
-  const columnas = objetivo === "local" ? todas.slice(0, 2) :
-    objetivo === "visitante" ? todas.slice(2) : todas;
+  const columnas =
+    objetivo === "local"
+      ? todas.slice(0, 2)
+      : objetivo === "visitante"
+        ? todas.slice(2)
+        : todas;
 
   return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map(([etiqueta, opcion]) => `<tr><td>${escaparHTML(etiqueta)}</td>${columnas.map((columna) => `<td>${porcentajeMedioTiempo(columna.partidos, columna.equipoId, opcion, evaluar)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
-
 
 function porcentajeMedioTiempo(partidos, equipoId, opcion, evaluar) {
   let validos = 0;
   let acertados = 0;
   (partidos || []).forEach((partido) => {
-    if (!obtenerGolesPorPeriodo(partido, "1ST") || !obtenerGolesPorPeriodo(partido, "2ND")) return;
+    if (
+      !obtenerGolesPorPeriodo(partido, "1ST") ||
+      !obtenerGolesPorPeriodo(partido, "2ND")
+    )
+      return;
     validos += 1;
     if (evaluar(partido, equipoId, opcion)) acertados += 1;
   });
   return porcentajeMercado(acertados, validos);
 }
 
-
 function obtenerGolesPorPeriodo(partido, periodo) {
   return obtenerEstadisticaPartido(partido, periodo, "timeline:goles");
 }
 
-
 function obtenerResultadoPeriodoEquipo(partido, equipoId, periodo) {
-  let goles = periodo === "FT"
-    ? { local: Number(partido?.marcador_local), visitante: Number(partido?.marcador_visitante) }
-    : obtenerGolesPorPeriodo(partido, periodo);
-  if (!goles || !Number.isFinite(goles.local) || !Number.isFinite(goles.visitante)) return null;
+  let goles =
+    periodo === "FT"
+      ? {
+          local: Number(partido?.marcador_local),
+          visitante: Number(partido?.marcador_visitante),
+        }
+      : obtenerGolesPorPeriodo(partido, periodo);
+  if (
+    !goles ||
+    !Number.isFinite(goles.local) ||
+    !Number.isFinite(goles.visitante)
+  )
+    return null;
   const lado = obtenerLadoEquipoPartido(partido, equipoId);
   if (!lado) return null;
   const ladoRival = lado === "local" ? "visitante" : "local";
@@ -2818,13 +3220,13 @@ function obtenerResultadoPeriodoEquipo(partido, equipoId, periodo) {
   return propios > rival ? "equipo" : propios < rival ? "rival" : "empate";
 }
 
-
 // Convierte el resultado absoluto del enfrentamiento (local/empate/visitante)
 // a la perspectiva del equipo de cada columna histórica.
 function resultadoEsperadoParaEquipo(resultado, equipoId, resultadoMercado) {
   if (resultadoMercado === "empate") return "empate";
 
-  const esEquipoLocal = Number(equipoId) === Number(resultado?.equipo_local?.id);
+  const esEquipoLocal =
+    Number(equipoId) === Number(resultado?.equipo_local?.id);
   const ganaElEquipo =
     (resultadoMercado === "local" && esEquipoLocal) ||
     (resultadoMercado === "visitante" && !esEquipoLocal);
@@ -2832,12 +3234,10 @@ function resultadoEsperadoParaEquipo(resultado, equipoId, resultadoMercado) {
   return ganaElEquipo ? "equipo" : "rival";
 }
 
-
 function ambosAnotanPeriodo(partido, periodo) {
   const goles = obtenerGolesPorPeriodo(partido, periodo);
   return goles ? goles.local > 0 && goles.visitante > 0 : null;
 }
-
 
 function obtenerTiempoConMasGoles(partido) {
   const primero = obtenerTotalGolesPartido(partido, "1ST");
@@ -2845,7 +3245,6 @@ function obtenerTiempoConMasGoles(partido) {
   if (primero === null || segundo === null) return null;
   return primero > segundo ? "1ST" : primero < segundo ? "2ND" : "empate";
 }
-
 
 // ============================================================
 // PROBABILIDAD COMBINADA
@@ -2879,19 +3278,17 @@ function agregarProbabilidadCombinada(contenedor, resultado) {
       celda.className = "probabilidad-combinada";
       const porcentajes = [...fila.cells]
         .slice(1, 5)
-        .map((celdaHistorica) => extraerPorcentajesCelda(celdaHistorica.textContent)[0]);
+        .map(
+          (celdaHistorica) =>
+            extraerPorcentajesCelda(celdaHistorica.textContent)[0],
+        );
 
-      const probabilidad = calcularProbabilidadCombinada(
-        porcentajes,
-        pesos,
-      );
+      const probabilidad = calcularProbabilidadCombinada(porcentajes, pesos);
 
-      celda.textContent = probabilidad === null
-        ? "N/D"
-        : `${formatearPorcentaje(probabilidad)}`;
-      celda.dataset.probabilidadCombinada = probabilidad === null
-        ? ""
-        : String(probabilidad);
+      celda.textContent =
+        probabilidad === null ? "N/D" : `${formatearPorcentaje(probabilidad)}`;
+      celda.dataset.probabilidadCombinada =
+        probabilidad === null ? "" : String(probabilidad);
       fila.append(celda);
     });
 
@@ -2900,12 +3297,10 @@ function agregarProbabilidadCombinada(contenedor, resultado) {
     if (cuerpo) {
       filas
         .sort((filaA, filaB) => {
-          const textoA = filaA.querySelector(
-            ".probabilidad-combinada",
-          )?.dataset.probabilidadCombinada;
-          const textoB = filaB.querySelector(
-            ".probabilidad-combinada",
-          )?.dataset.probabilidadCombinada;
+          const textoA = filaA.querySelector(".probabilidad-combinada")?.dataset
+            .probabilidadCombinada;
+          const textoB = filaB.querySelector(".probabilidad-combinada")?.dataset
+            .probabilidadCombinada;
           const valorA = textoA ? Number(textoA) : Number.NaN;
           const valorB = textoB ? Number(textoB) : Number.NaN;
           const probabilidadA = Number.isFinite(valorA) ? valorA : -1;
@@ -2918,15 +3313,16 @@ function agregarProbabilidadCombinada(contenedor, resultado) {
   });
 }
 
-
 function obtenerPesosHistoricosUnicos(resultado) {
-  const ids = (partidos) => new Set((partidos || [])
-    .map((partido) => partido?.event_id)
-    .filter((eventId) => eventId !== null && eventId !== undefined)
-    .map(Number));
-  const cantidadExclusiva = (general, localidad) => [...general]
-    .filter((eventId) => !localidad.has(eventId))
-    .length;
+  const ids = (partidos) =>
+    new Set(
+      (partidos || [])
+        .map((partido) => partido?.event_id)
+        .filter((eventId) => eventId !== null && eventId !== undefined)
+        .map(Number),
+    );
+  const cantidadExclusiva = (general, localidad) =>
+    [...general].filter((eventId) => !localidad.has(eventId)).length;
 
   const localGeneral = ids(resultado?.equipo_local?.partidos_general);
   const localCasa = ids(resultado?.equipo_local?.partidos_local);
@@ -2944,9 +3340,9 @@ function obtenerPesosHistoricosUnicos(resultado) {
   };
 }
 
-
 function calcularProbabilidadCombinada(porcentajes, pesos) {
-  const [localGeneral, localCasa, visitanteFuera, visitanteGeneral] = porcentajes;
+  const [localGeneral, localCasa, visitanteFuera, visitanteGeneral] =
+    porcentajes;
   const probabilidadLocal = combinarPorcentajesHistoricos(
     localCasa,
     pesos.localCasa,
@@ -2970,35 +3366,33 @@ function calcularProbabilidadCombinada(porcentajes, pesos) {
   return (probabilidadLocal + probabilidadVisitante) / 2;
 }
 
-
 function combinarPorcentajesHistoricos(
   porcentajeLocalidad,
   partidosLocalidad,
   porcentajeGeneral,
   partidosGeneralExclusivos,
 ) {
-  const tieneLocalidad = Number.isFinite(porcentajeLocalidad)
-    && partidosLocalidad > 0;
-  const tieneGeneral = Number.isFinite(porcentajeGeneral)
-    && partidosGeneralExclusivos > 0;
+  const tieneLocalidad =
+    Number.isFinite(porcentajeLocalidad) && partidosLocalidad > 0;
+  const tieneGeneral =
+    Number.isFinite(porcentajeGeneral) && partidosGeneralExclusivos > 0;
 
   if (!tieneLocalidad && !tieneGeneral) return null;
   if (!tieneLocalidad) return porcentajeGeneral;
   if (!tieneGeneral) return porcentajeLocalidad;
 
   return (
-    (porcentajeLocalidad * partidosLocalidad)
-    + (porcentajeGeneral * partidosGeneralExclusivos)
-  ) / (partidosLocalidad + partidosGeneralExclusivos);
+    (porcentajeLocalidad * partidosLocalidad +
+      porcentajeGeneral * partidosGeneralExclusivos) /
+    (partidosLocalidad + partidosGeneralExclusivos)
+  );
 }
-
 
 function extraerPorcentajesCelda(texto) {
   return [...String(texto || "").matchAll(/(\d+(?:[.,]\d+)?)%/g)]
     .map((coincidencia) => Number(coincidencia[1].replace(",", ".")))
     .filter(Number.isFinite);
 }
-
 
 function configurarSeccionesColapsables(contenedor) {
   const encabezados = contenedor.querySelectorAll(
@@ -3053,11 +3447,10 @@ function configurarSeccionesColapsables(contenedor) {
   });
 }
 
-
 function configurarSubmercadosColapsables(contenedor) {
-  const encabezados = [...contenedor.querySelectorAll(
-    ".mercados-seccion > .subtitulo-mercado",
-  )];
+  const encabezados = [
+    ...contenedor.querySelectorAll(".mercados-seccion > .subtitulo-mercado"),
+  ];
 
   encabezados.forEach((encabezado) => {
     const detalle = document.createElement("details");
@@ -3071,11 +3464,7 @@ function configurarSubmercadosColapsables(contenedor) {
     let elemento = encabezado.nextElementSibling;
     encabezado.remove();
 
-    while (
-      elemento
-      && elemento.tagName !== "H2"
-      && elemento.tagName !== "H3"
-    ) {
+    while (elemento && elemento.tagName !== "H2" && elemento.tagName !== "H3") {
       const siguiente = elemento.nextElementSibling;
       detalle.append(elemento);
       elemento = siguiente;
@@ -3083,21 +3472,22 @@ function configurarSubmercadosColapsables(contenedor) {
   });
 }
 
-
 function configurarMercadosJugadoresColapsables(contenedor) {
-  const encabezadoJugadores = [...contenedor.querySelectorAll(
-    ".mercados-seccion > .titulo-seccion",
-  )].find((encabezado) => encabezado.textContent.trim() === "Jugadores");
+  const encabezadoJugadores = [
+    ...contenedor.querySelectorAll(".mercados-seccion > .titulo-seccion"),
+  ].find((encabezado) => encabezado.textContent.trim() === "Jugadores");
 
   if (!encabezadoJugadores) {
     return;
   }
 
-  const encabezadoEstadisticas = [...encabezadoJugadores.parentElement.children]
-    .find((elemento) => (
-      elemento.tagName === "H3"
-      && elemento.textContent.trim() === "Estadísticas"
-    ));
+  const encabezadoEstadisticas = [
+    ...encabezadoJugadores.parentElement.children,
+  ].find(
+    (elemento) =>
+      elemento.tagName === "H3" &&
+      elemento.textContent.trim() === "Estadísticas",
+  );
 
   if (!encabezadoEstadisticas) {
     return;
@@ -3114,11 +3504,7 @@ function configurarMercadosJugadoresColapsables(contenedor) {
   let elemento = encabezadoEstadisticas.nextElementSibling;
   encabezadoEstadisticas.remove();
 
-  while (
-    elemento
-    && elemento.tagName !== "H2"
-    && elemento.tagName !== "H3"
-  ) {
+  while (elemento && elemento.tagName !== "H2" && elemento.tagName !== "H3") {
     const siguiente = elemento.nextElementSibling;
     seccionEstadisticas.append(elemento);
     elemento = siguiente;
@@ -3136,11 +3522,7 @@ function configurarMercadosJugadoresColapsables(contenedor) {
     elemento = encabezado.nextElementSibling;
     encabezado.remove();
 
-    while (
-      elemento
-      && elemento.tagName !== "H2"
-      && elemento.tagName !== "H4"
-    ) {
+    while (elemento && elemento.tagName !== "H2" && elemento.tagName !== "H4") {
       const siguiente = elemento.nextElementSibling;
       detalle.append(elemento);
       elemento = siguiente;
@@ -3148,11 +3530,10 @@ function configurarMercadosJugadoresColapsables(contenedor) {
   });
 }
 
-
 function configurarSeccionJugadoresColapsable(contenedor, titulo) {
-  const encabezadoSeccion = [...contenedor.querySelectorAll(
-    ".mercados-seccion > .subtitulo-mercado",
-  )].find((encabezado) => encabezado.textContent.trim() === titulo);
+  const encabezadoSeccion = [
+    ...contenedor.querySelectorAll(".mercados-seccion > .subtitulo-mercado"),
+  ].find((encabezado) => encabezado.textContent.trim() === titulo);
 
   if (!encabezadoSeccion) {
     return;
@@ -3169,28 +3550,44 @@ function configurarSeccionJugadoresColapsable(contenedor, titulo) {
   let elemento = encabezadoSeccion.nextElementSibling;
   encabezadoSeccion.remove();
 
-  while (
-    elemento
-    && elemento.tagName !== "H2"
-    && elemento.tagName !== "H3"
-  ) {
+  while (elemento && elemento.tagName !== "H2" && elemento.tagName !== "H3") {
     const siguiente = elemento.nextElementSibling;
     seccion.append(elemento);
     elemento = siguiente;
   }
 }
 
-
-function crearTablaMasMenosCorners(resultado, local, visitante, periodo, tipo, maximo, objetivo) {
-  const base=obtenerColumnasHistoricasMercados(resultado,local,visitante);
-  const columnas=tipo==="equipo"
-    ? obtenerColumnasEquipoYRival(resultado,local,visitante,objetivo)
-    : base;
-  const lineas=[];for(let linea=.5;linea<=maximo;linea+=1)lineas.push(linea);
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeCorners(c.partidos,periodo,c.tipoEstadistica||tipo,linea,true,c.equipoId)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeCorners(c.partidos,periodo,c.tipoEstadistica||tipo,linea,false,c.equipoId)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+function crearTablaMasMenosCorners(
+  resultado,
+  local,
+  visitante,
+  periodo,
+  tipo,
+  maximo,
+  objetivo,
+) {
+  const base = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas =
+    tipo === "equipo"
+      ? obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo)
+      : base;
+  const lineas = [];
+  for (let linea = 0.5; linea <= maximo; linea += 1) lineas.push(linea);
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map((linea) => `<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeCorners(c.partidos, periodo, c.tipoEstadistica || tipo, linea, true, c.equipoId)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeCorners(c.partidos, periodo, c.tipoEstadistica || tipo, linea, false, c.equipoId)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
-function crearTablaMasMenosEstadistica(resultado, local, visitante, estadisticaKey, minimo, maximo, objetivo, contarFaltantesComoCero = false, periodo = "FT", paso = 1) {
+function crearTablaMasMenosEstadistica(
+  resultado,
+  local,
+  visitante,
+  estadisticaKey,
+  minimo,
+  maximo,
+  objetivo,
+  contarFaltantesComoCero = false,
+  periodo = "FT",
+  paso = 1,
+) {
   const base = obtenerColumnasHistoricasMercados(resultado, local, visitante);
   const columnas = objetivo
     ? obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo)
@@ -3206,44 +3603,59 @@ function crearTablaMasMenosEstadistica(resultado, local, visitante, estadisticaK
       <table class="tabla-estadisticas">
         <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
         <tbody>
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             <tr>
               <td>Más ${formatearLinea(linea)}</td>
-              ${columnas.map((columna) => `<td>${porcentajeEstadistica(
-                columna.partidos,
-                estadisticaKey,
-                linea,
-                true,
-                columna.equipoId,
-                columna.tipoEstadistica || objetivo,
-                contarFaltantesComoCero,
-                periodo,
-              )}</td>`).join("")}
+              ${columnas
+                .map(
+                  (columna) =>
+                    `<td>${porcentajeEstadistica(
+                      columna.partidos,
+                      estadisticaKey,
+                      linea,
+                      true,
+                      columna.equipoId,
+                      columna.tipoEstadistica || objetivo,
+                      contarFaltantesComoCero,
+                      periodo,
+                    )}</td>`,
+                )
+                .join("")}
             </tr>
             <tr>
               <td>Menos ${formatearLinea(linea)}</td>
-              ${columnas.map((columna) => `<td>${porcentajeEstadistica(
-                columna.partidos,
-                estadisticaKey,
-                linea,
-                false,
-                columna.equipoId,
-                columna.tipoEstadistica || objetivo,
-                contarFaltantesComoCero,
-                periodo,
-              )}</td>`).join("")}
+              ${columnas
+                .map(
+                  (columna) =>
+                    `<td>${porcentajeEstadistica(
+                      columna.partidos,
+                      estadisticaKey,
+                      linea,
+                      false,
+                      columna.equipoId,
+                      columna.tipoEstadistica || objetivo,
+                      contarFaltantesComoCero,
+                      periodo,
+                    )}</td>`,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
 
-
 function obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo) {
   const esLocal = objetivo === "local";
-  const equipo = esLocal ? resultado?.equipo_local : resultado?.equipo_visitante;
+  const equipo = esLocal
+    ? resultado?.equipo_local
+    : resultado?.equipo_visitante;
   const rival = esLocal ? resultado?.equipo_visitante : resultado?.equipo_local;
   const nombreEquipo = esLocal ? local : visitante;
   const nombreRival = esLocal ? visitante : local;
@@ -3289,13 +3701,25 @@ function obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo) {
 }
 
 function crearTablaEquipoMasCorners(resultado, local, visitante, periodo) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
   const equipoLocalId = Number(resultado?.equipo_local?.id);
 
   const filas = [
     { etiqueta: local, resultadoLocal: "equipo", resultadoVisitante: "rival" },
-    { etiqueta: "Empate", resultadoLocal: "empate", resultadoVisitante: "empate" },
-    { etiqueta: visitante, resultadoLocal: "rival", resultadoVisitante: "equipo" },
+    {
+      etiqueta: "Empate",
+      resultadoLocal: "empate",
+      resultadoVisitante: "empate",
+    },
+    {
+      etiqueta: visitante,
+      resultadoLocal: "rival",
+      resultadoVisitante: "equipo",
+    },
   ];
 
   return `
@@ -3308,24 +3732,31 @@ function crearTablaEquipoMasCorners(resultado, local, visitante, periodo) {
           </tr>
         </thead>
         <tbody>
-          ${filas.map((fila) => `
+          ${filas
+            .map(
+              (fila) => `
             <tr>
               <td>${escaparHTML(fila.etiqueta)}</td>
-              ${columnas.map((columna) => {
-                const esEquipoLocal = Number(columna.equipoId) === equipoLocalId;
-                const esperado = esEquipoLocal
-                  ? fila.resultadoLocal
-                  : fila.resultadoVisitante;
+              ${columnas
+                .map((columna) => {
+                  const esEquipoLocal =
+                    Number(columna.equipoId) === equipoLocalId;
+                  const esperado = esEquipoLocal
+                    ? fila.resultadoLocal
+                    : fila.resultadoVisitante;
 
-                return `<td>${porcentajeEquipoMasCorners(
-                  columna.partidos,
-                  periodo,
-                  columna.equipoId,
-                  esperado,
-                )}</td>`;
-              }).join("")}
+                  return `<td>${porcentajeEquipoMasCorners(
+                    columna.partidos,
+                    periodo,
+                    columna.equipoId,
+                    esperado,
+                  )}</td>`;
+                })
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
@@ -3333,7 +3764,11 @@ function crearTablaEquipoMasCorners(resultado, local, visitante, periodo) {
 }
 
 function crearTablaTiempoConMasCorners(resultado, local, visitante) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
   const filas = [
     { etiqueta: "Primer Tiempo", esperado: "primer_tiempo" },
     { etiqueta: "Empate", esperado: "empate" },
@@ -3345,12 +3780,16 @@ function crearTablaTiempoConMasCorners(resultado, local, visitante) {
       <table class="tabla-estadisticas">
         <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
         <tbody>
-          ${filas.map((fila) => `
+          ${filas
+            .map(
+              (fila) => `
             <tr>
               <td>${fila.etiqueta}</td>
               ${columnas.map((columna) => `<td>${porcentajeTiempoConMasCorners(columna.partidos, fila.esperado)}</td>`).join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
@@ -3358,19 +3797,27 @@ function crearTablaTiempoConMasCorners(resultado, local, visitante) {
 }
 
 function crearTablaRangosCorners(resultado, local, visitante, rangos) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
 
   return `
     <div class="tabla-estadisticas-wrapper">
       <table class="tabla-estadisticas">
         <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
         <tbody>
-          ${rangos.map((rango) => `
+          ${rangos
+            .map(
+              (rango) => `
             <tr>
               <td>${rango.etiqueta}</td>
               ${columnas.map((columna) => `<td>${porcentajeRangoTotalCorners(columna.partidos, rango.minimo, rango.maximo)}</td>`).join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
@@ -3378,12 +3825,20 @@ function crearTablaRangosCorners(resultado, local, visitante, rangos) {
 }
 
 function crearTablaMarcadorCorrectoCorners(resultado, local, visitante) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
   const equipoLocalId = Number(resultado?.equipo_local?.id);
   const marcadores = [];
 
   for (let cornersLocal = 0; cornersLocal <= 10; cornersLocal += 1) {
-    for (let cornersVisitante = 0; cornersVisitante <= 10; cornersVisitante += 1) {
+    for (
+      let cornersVisitante = 0;
+      cornersVisitante <= 10;
+      cornersVisitante += 1
+    ) {
       marcadores.push({ local: cornersLocal, visitante: cornersVisitante });
     }
   }
@@ -3393,23 +3848,33 @@ function crearTablaMarcadorCorrectoCorners(resultado, local, visitante) {
       <table class="tabla-estadisticas">
         <thead><tr><th>Marcador</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
         <tbody>
-          ${marcadores.map((marcador) => `
+          ${marcadores
+            .map(
+              (marcador) => `
             <tr>
               <td>${marcador.local}-${marcador.visitante}</td>
-              ${columnas.map((columna) => {
-                const invertir = Number(columna.equipoId) !== equipoLocalId;
-                const cornersEquipo = invertir ? marcador.visitante : marcador.local;
-                const cornersRival = invertir ? marcador.local : marcador.visitante;
+              ${columnas
+                .map((columna) => {
+                  const invertir = Number(columna.equipoId) !== equipoLocalId;
+                  const cornersEquipo = invertir
+                    ? marcador.visitante
+                    : marcador.local;
+                  const cornersRival = invertir
+                    ? marcador.local
+                    : marcador.visitante;
 
-                return `<td>${porcentajeMarcadorCorrectoCorners(
-                  columna.partidos,
-                  columna.equipoId,
-                  cornersEquipo,
-                  cornersRival,
-                )}</td>`;
-              }).join("")}
+                  return `<td>${porcentajeMarcadorCorrectoCorners(
+                    columna.partidos,
+                    columna.equipoId,
+                    cornersEquipo,
+                    cornersRival,
+                  )}</td>`;
+                })
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
@@ -3417,30 +3882,115 @@ function crearTablaMarcadorCorrectoCorners(resultado, local, visitante) {
 }
 
 function crearTablaMarcadorCorrectoTarjetas(resultado, local, visitante) {
-  const columnas=[
-    {partidos:resultado?.equipo_local?.partidos_general||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>General`,invertir:false},
-    {partidos:resultado?.equipo_local?.partidos_local||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>Casa`,invertir:false},
-    {partidos:resultado?.equipo_visitante?.partidos_visitante||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>Fuera`,invertir:true},
-    {partidos:resultado?.equipo_visitante?.partidos_general||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>General`,invertir:true},
+  const columnas = [
+    {
+      partidos: resultado?.equipo_local?.partidos_general || [],
+      equipoId: resultado?.equipo_local?.id,
+      titulo: `${local}<br>General`,
+      invertir: false,
+    },
+    {
+      partidos: resultado?.equipo_local?.partidos_local || [],
+      equipoId: resultado?.equipo_local?.id,
+      titulo: `${local}<br>Casa`,
+      invertir: false,
+    },
+    {
+      partidos: resultado?.equipo_visitante?.partidos_visitante || [],
+      equipoId: resultado?.equipo_visitante?.id,
+      titulo: `${visitante}<br>Fuera`,
+      invertir: true,
+    },
+    {
+      partidos: resultado?.equipo_visitante?.partidos_general || [],
+      equipoId: resultado?.equipo_visitante?.id,
+      titulo: `${visitante}<br>General`,
+      invertir: true,
+    },
   ];
-  const marcadores=[[1,0],[2,0],[2,1],[3,1],[3,2],[4,2],[4,3],[0,0],[1,1],[2,2],[3,3],[0,1],[0,2],[1,2],[0,3],[1,3],[2,3],[0,4],[1,4],[2,4],[3,4],[1,5],[2,5],[3,5]];
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Marcador</th>${columnas.map(c=>`<th>${formatearTituloTarjetas(c.titulo)}</th>`).join("")}</tr></thead><tbody>${marcadores.map(([tarjetasLocal,tarjetasVisitante])=>`<tr><td>${tarjetasLocal}-${tarjetasVisitante}</td>${columnas.map(c=>`<td>${porcentajeMarcadorCorrectoTarjetas(c.partidos,c.equipoId,c.invertir?tarjetasVisitante:tarjetasLocal,c.invertir?tarjetasLocal:tarjetasVisitante)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const marcadores = [
+    [1, 0],
+    [2, 0],
+    [2, 1],
+    [3, 1],
+    [3, 2],
+    [4, 2],
+    [4, 3],
+    [0, 0],
+    [1, 1],
+    [2, 2],
+    [3, 3],
+    [0, 1],
+    [0, 2],
+    [1, 2],
+    [0, 3],
+    [1, 3],
+    [2, 3],
+    [0, 4],
+    [1, 4],
+    [2, 4],
+    [3, 4],
+    [1, 5],
+    [2, 5],
+    [3, 5],
+  ];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Marcador</th>${columnas.map((c) => `<th>${formatearTituloTarjetas(c.titulo)}</th>`).join("")}</tr></thead><tbody>${marcadores.map(([tarjetasLocal, tarjetasVisitante]) => `<tr><td>${tarjetasLocal}-${tarjetasVisitante}</td>${columnas.map((c) => `<td>${porcentajeMarcadorCorrectoTarjetas(c.partidos, c.equipoId, c.invertir ? tarjetasVisitante : tarjetasLocal, c.invertir ? tarjetasLocal : tarjetasVisitante)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function crearTablaRangosTarjetas(resultado, local, visitante) {
-  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
-  const rangos=[{etiqueta:"0",min:0,max:0},{etiqueta:"1-2",min:1,max:2},{etiqueta:"3-4",min:3,max:4},{etiqueta:"5-6",min:5,max:6},{etiqueta:"7-8",min:7,max:8},{etiqueta:"9-10",min:9,max:10},{etiqueta:"11+",min:11,max:null}];
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${rangos.map(r=>`<tr><td>${r.etiqueta}</td>${columnas.map(c=>`<td>${porcentajeRangoTarjetas(c.partidos,r.min,r.max)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
+  const rangos = [
+    { etiqueta: "0", min: 0, max: 0 },
+    { etiqueta: "1-2", min: 1, max: 2 },
+    { etiqueta: "3-4", min: 3, max: 4 },
+    { etiqueta: "5-6", min: 5, max: 6 },
+    { etiqueta: "7-8", min: 7, max: 8 },
+    { etiqueta: "9-10", min: 9, max: 10 },
+    { etiqueta: "11+", min: 11, max: null },
+  ];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${rangos.map((r) => `<tr><td>${r.etiqueta}</td>${columnas.map((c) => `<td>${porcentajeRangoTarjetas(c.partidos, r.min, r.max)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
-function crearTablaMedioTiempoTiempoCompletoTarjetas(resultado,local,visitante) {
-  const columnas=[
-    {partidos:resultado?.equipo_local?.partidos_general||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>General`,equipo:"local",rival:"visitante"},
-    {partidos:resultado?.equipo_local?.partidos_local||[],equipoId:resultado?.equipo_local?.id,titulo:`${local}<br>Casa`,equipo:"local",rival:"visitante"},
-    {partidos:resultado?.equipo_visitante?.partidos_visitante||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>Fuera`,equipo:"visitante",rival:"local"},
-    {partidos:resultado?.equipo_visitante?.partidos_general||[],equipoId:resultado?.equipo_visitante?.id,titulo:`${visitante}<br>General`,equipo:"visitante",rival:"local"},
+function crearTablaMedioTiempoTiempoCompletoTarjetas(
+  resultado,
+  local,
+  visitante,
+) {
+  const columnas = [
+    {
+      partidos: resultado?.equipo_local?.partidos_general || [],
+      equipoId: resultado?.equipo_local?.id,
+      titulo: `${local}<br>General`,
+      equipo: "local",
+      rival: "visitante",
+    },
+    {
+      partidos: resultado?.equipo_local?.partidos_local || [],
+      equipoId: resultado?.equipo_local?.id,
+      titulo: `${local}<br>Casa`,
+      equipo: "local",
+      rival: "visitante",
+    },
+    {
+      partidos: resultado?.equipo_visitante?.partidos_visitante || [],
+      equipoId: resultado?.equipo_visitante?.id,
+      titulo: `${visitante}<br>Fuera`,
+      equipo: "visitante",
+      rival: "local",
+    },
+    {
+      partidos: resultado?.equipo_visitante?.partidos_general || [],
+      equipoId: resultado?.equipo_visitante?.id,
+      titulo: `${visitante}<br>General`,
+      equipo: "visitante",
+      rival: "local",
+    },
   ];
-  const opciones=[local,"Empate",visitante];
+  const opciones = [local, "Empate", visitante];
   const resultadoEsperado = (columna, opcion) => {
     if (opcion === "Empate") return "empate";
 
@@ -3451,51 +4001,137 @@ function crearTablaMedioTiempoTiempoCompletoTarjetas(resultado,local,visitante) 
     );
   };
 
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Medio tiempo / Tiempo completo</th>${columnas.map(c=>`<th>${formatearTituloTarjetas(c.titulo)}</th>`).join("")}</tr></thead><tbody>${opciones.flatMap(primero=>opciones.map(completo=>`<tr><td>${escaparHTML(primero)} / ${escaparHTML(completo)}</td>${columnas.map(c=>`<td>${porcentajeMedioTiempoTiempoCompletoTarjetas(c.partidos,c.equipoId,resultadoEsperado(c,primero),resultadoEsperado(c,completo))}</td>`).join("")}</tr>`)).join("")}</tbody></table></div>`;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Medio tiempo / Tiempo completo</th>${columnas.map((c) => `<th>${formatearTituloTarjetas(c.titulo)}</th>`).join("")}</tr></thead><tbody>${opciones.flatMap((primero) => opciones.map((completo) => `<tr><td>${escaparHTML(primero)} / ${escaparHTML(completo)}</td>${columnas.map((c) => `<td>${porcentajeMedioTiempoTiempoCompletoTarjetas(c.partidos, c.equipoId, resultadoEsperado(c, primero), resultadoEsperado(c, completo))}</td>`).join("")}</tr>`)).join("")}</tbody></table></div>`;
 }
 
-function crearTablaEventoTarjetas(resultado, local, visitante, tipo, incluirNo) {
-  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
-  const filas=incluirNo?["Sí","No"]:["Sí"];
-  return tablaTarjetasSimple(columnas,filas,(partidos,opcion)=>porcentajeEventoTarjetas(partidos,tipo,opcion==="Sí"));
+function crearTablaEventoTarjetas(
+  resultado,
+  local,
+  visitante,
+  tipo,
+  incluirNo,
+) {
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
+  const filas = incluirNo ? ["Sí", "No"] : ["Sí"];
+  return tablaTarjetasSimple(columnas, filas, (partidos, opcion) =>
+    porcentajeEventoTarjetas(partidos, tipo, opcion === "Sí"),
+  );
 }
 
 function crearTablaTarjetasAmbosTiempos(resultado, local, visitante) {
-  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
-  return tablaTarjetasSimple(columnas,["Sí","No"],(p,opcion)=>porcentajeTarjetasAmbosTiempos(p,opcion==="Sí"));
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
+  return tablaTarjetasSimple(columnas, ["Sí", "No"], (p, opcion) =>
+    porcentajeTarjetasAmbosTiempos(p, opcion === "Sí"),
+  );
 }
 
-function crearTablaAmbosEquiposTarjetasAmbosTiempos(resultado, local, visitante) {
-  const columnas=obtenerColumnasHistoricasMercados(resultado,local,visitante);
-  return tablaTarjetasSimple(columnas,["Sí"],p=>porcentajeAmbosEquiposTarjetasAmbosTiempos(p));
+function crearTablaAmbosEquiposTarjetasAmbosTiempos(
+  resultado,
+  local,
+  visitante,
+) {
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
+  return tablaTarjetasSimple(columnas, ["Sí"], (p) =>
+    porcentajeAmbosEquiposTarjetasAmbosTiempos(p),
+  );
 }
 
-function crearTablaTarjetasEquipoSegundoTiempo(resultado,local,visitante,objetivo) {
-  const columnas=obtenerColumnasEquipoYRival(resultado,local,visitante,objetivo);
-  const lineas=[]; for(let linea=.5;linea<=4.5;linea+=1)lineas.push(linea);
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoSegundoTiempo(c.partidos,c.equipoId,linea,true,c.tipoEstadistica)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoSegundoTiempo(c.partidos,c.equipoId,linea,false,c.tipoEstadistica)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+function crearTablaTarjetasEquipoSegundoTiempo(
+  resultado,
+  local,
+  visitante,
+  objetivo,
+) {
+  const columnas = obtenerColumnasEquipoYRival(
+    resultado,
+    local,
+    visitante,
+    objetivo,
+  );
+  const lineas = [];
+  for (let linea = 0.5; linea <= 4.5; linea += 1) lineas.push(linea);
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map((linea) => `<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeTarjetasEquipoSegundoTiempo(c.partidos, c.equipoId, linea, true, c.tipoEstadistica)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeTarjetasEquipoSegundoTiempo(c.partidos, c.equipoId, linea, false, c.tipoEstadistica)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function crearTablaProximaTarjeta(resultado, local, visitante) {
   const columnas = [
-    { partidos: resultado?.equipo_local?.partidos_general || [], equipoId: resultado?.equipo_local?.id, titulo: `${local}<br>General` },
-    { partidos: resultado?.equipo_local?.partidos_local || [], equipoId: resultado?.equipo_local?.id, titulo: `${local}<br>Casa` },
-    { partidos: resultado?.equipo_visitante?.partidos_visitante || [], equipoId: resultado?.equipo_visitante?.id, titulo: `${visitante}<br>Fuera` },
-    { partidos: resultado?.equipo_visitante?.partidos_general || [], equipoId: resultado?.equipo_visitante?.id, titulo: `${visitante}<br>General` },
+    {
+      partidos: resultado?.equipo_local?.partidos_general || [],
+      equipoId: resultado?.equipo_local?.id,
+      titulo: `${local}<br>General`,
+    },
+    {
+      partidos: resultado?.equipo_local?.partidos_local || [],
+      equipoId: resultado?.equipo_local?.id,
+      titulo: `${local}<br>Casa`,
+    },
+    {
+      partidos: resultado?.equipo_visitante?.partidos_visitante || [],
+      equipoId: resultado?.equipo_visitante?.id,
+      titulo: `${visitante}<br>Fuera`,
+    },
+    {
+      partidos: resultado?.equipo_visitante?.partidos_general || [],
+      equipoId: resultado?.equipo_visitante?.id,
+      titulo: `${visitante}<br>General`,
+    },
   ];
-  const filas = [[local, "local"], ["Sin amonestaciones", "sin_tarjetas"], [visitante, "visitante"]];
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${c.titulo}</th>`).join("")}</tr></thead><tbody>${filas.map(([etiqueta,estado])=>`<tr><td>${escaparHTML(etiqueta)}</td>${columnas.map(c=>{const esperado=estado==="sin_tarjetas"?estado:resultadoEsperadoParaEquipo(resultado,c.equipoId,estado);return `<td>${porcentajeProximaTarjeta(c.partidos,c.equipoId,esperado)}</td>`;}).join("")}</tr>`).join("")}</tbody></table></div>`;
+  const filas = [
+    [local, "local"],
+    ["Sin amonestaciones", "sin_tarjetas"],
+    [visitante, "visitante"],
+  ];
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map((c) => `<th>${c.titulo}</th>`).join("")}</tr></thead><tbody>${filas
+    .map(
+      ([etiqueta, estado]) =>
+        `<tr><td>${escaparHTML(etiqueta)}</td>${columnas
+          .map((c) => {
+            const esperado =
+              estado === "sin_tarjetas"
+                ? estado
+                : resultadoEsperadoParaEquipo(resultado, c.equipoId, estado);
+            return `<td>${porcentajeProximaTarjeta(c.partidos, c.equipoId, esperado)}</td>`;
+          })
+          .join("")}</tr>`,
+    )
+    .join("")}</tbody></table></div>`;
 }
 
-function crearTablaTarjetasEquipoPrimerTiempo(resultado, local, visitante, objetivo) {
-  const columnas = obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo);
+function crearTablaTarjetasEquipoPrimerTiempo(
+  resultado,
+  local,
+  visitante,
+  objetivo,
+) {
+  const columnas = obtenerColumnasEquipoYRival(
+    resultado,
+    local,
+    visitante,
+    objetivo,
+  );
   const lineas = [];
   for (let linea = 0.5; linea <= 4.5; linea += 1) lineas.push(linea);
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea=>`<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoPrimerTiempo(c.partidos,c.equipoId,linea,true,c.tipoEstadistica)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c=>`<td>${porcentajeTarjetasEquipoPrimerTiempo(c.partidos,c.equipoId,linea,false,c.tipoEstadistica)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map((linea) => `<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeTarjetasEquipoPrimerTiempo(c.partidos, c.equipoId, linea, true, c.tipoEstadistica)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeTarjetasEquipoPrimerTiempo(c.partidos, c.equipoId, linea, false, c.tipoEstadistica)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function crearTablaHandicapTarjetas(resultado, local, visitante) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
   const opciones = [
     { etiqueta: `${local} -0.5`, equipo: "local", handicap: -0.5 },
     { etiqueta: `${visitante} +0.5`, equipo: "visitante", handicap: 0.5 },
@@ -3509,33 +4145,44 @@ function crearTablaHandicapTarjetas(resultado, local, visitante) {
     { etiqueta: `${visitante} -3.5`, equipo: "visitante", handicap: -3.5 },
   ];
 
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map(opcion => `<tr><td>${escaparHTML(opcion.etiqueta)}</td>${columnas.map(columna => `<td>${porcentajeHandicapTarjetas(columna.partidos, columna.equipoId, opcion.equipo === "local" ? resultado?.equipo_local?.id : resultado?.equipo_visitante?.id, opcion.handicap)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${opciones.map((opcion) => `<tr><td>${escaparHTML(opcion.etiqueta)}</td>${columnas.map((columna) => `<td>${porcentajeHandicapTarjetas(columna.partidos, columna.equipoId, opcion.equipo === "local" ? resultado?.equipo_local?.id : resultado?.equipo_visitante?.id, opcion.handicap)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
-
 function crearTablaMasTarjetas(resultado, local, visitante) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
-  return tablaTarjetasSimple(columnas, [local, "Empate", visitante], (partidos, opcion, columna) => {
-    const resultadoMercado = opcion === local
-      ? "local"
-      : opcion === visitante
-        ? "visitante"
-        : "empate";
-    const esperado = resultadoEsperadoParaEquipo(
-      resultado,
-      columna.equipoId,
-      resultadoMercado,
-    );
-    return porcentajeResultadoTarjetas(partidos, columna.equipoId, esperado);
-  });
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
+  return tablaTarjetasSimple(
+    columnas,
+    [local, "Empate", visitante],
+    (partidos, opcion, columna) => {
+      const resultadoMercado =
+        opcion === local
+          ? "local"
+          : opcion === visitante
+            ? "visitante"
+            : "empate";
+      const esperado = resultadoEsperadoParaEquipo(
+        resultado,
+        columna.equipoId,
+        resultadoMercado,
+      );
+      return porcentajeResultadoTarjetas(partidos, columna.equipoId, esperado);
+    },
+  );
 }
 
 function crearTablaTarjetaRojaEquipo(resultado, local, visitante, objetivo) {
-  const columnas = obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo);
-  return tablaTarjetasSimple(
-    columnas,
-    ["Sí", "No"],
-    (p, opcion, columna) => porcentajeRojaEquipo(
+  const columnas = obtenerColumnasEquipoYRival(
+    resultado,
+    local,
+    visitante,
+    objetivo,
+  );
+  return tablaTarjetasSimple(columnas, ["Sí", "No"], (p, opcion, columna) =>
+    porcentajeRojaEquipo(
       p,
       columna.equipoId,
       opcion === "Sí",
@@ -3545,14 +4192,11 @@ function crearTablaTarjetaRojaEquipo(resultado, local, visitante, objetivo) {
 }
 
 function tablaTarjetasSimple(columnas, filas, calcular) {
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map(c=>`<th>${formatearTituloTarjetas(c.titulo || `${c.nombre}<br>${c.condicion}`)}</th>`).join("")}</tr></thead><tbody>${filas.map(f=>`<tr><td>${escaparHTML(f)}</td>${columnas.map(c=>`<td>${calcular(c.partidos,f,c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${columnas.map((c) => `<th>${formatearTituloTarjetas(c.titulo || `${c.nombre}<br>${c.condicion}`)}</th>`).join("")}</tr></thead><tbody>${filas.map((f) => `<tr><td>${escaparHTML(f)}</td>${columnas.map((c) => `<td>${calcular(c.partidos, f, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
 
 function formatearTituloTarjetas(titulo) {
-  return String(titulo)
-    .split("<br>")
-    .map(escaparHTML)
-    .join("<br>");
+  return String(titulo).split("<br>").map(escaparHTML).join("<br>");
 }
 
 // ============================================================
@@ -3591,23 +4235,35 @@ function crearTablaMasMenosTarjetas(
 
         <tbody>
 
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             <tr>
               <td>Más ${formatearLinea(linea)}</td>
 
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>${porcentajeTotalTarjetas(columna.partidos, linea, true)}</td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
 
             <tr>
               <td>Menos ${formatearLinea(linea)}</td>
 
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>${porcentajeTotalTarjetas(columna.partidos, linea, false)}</td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -3617,9 +4273,18 @@ function crearTablaMasMenosTarjetas(
   `;
 }
 
-
-function crearTablaMasMenosTarjetasEquipo(resultado, local, visitante, objetivo) {
-  const columnas = obtenerColumnasEquipoYRival(resultado, local, visitante, objetivo);
+function crearTablaMasMenosTarjetasEquipo(
+  resultado,
+  local,
+  visitante,
+  objetivo,
+) {
+  const columnas = obtenerColumnasEquipoYRival(
+    resultado,
+    local,
+    visitante,
+    objetivo,
+  );
   const lineas = [];
   for (let linea = 0.5; linea <= 4.5; linea += 1) lineas.push(linea);
 
@@ -3627,17 +4292,26 @@ function crearTablaMasMenosTarjetasEquipo(resultado, local, visitante, objetivo)
     <div class="tabla-estadisticas-wrapper">
       <table class="tabla-estadisticas">
         <thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead>
-        <tbody>${lineas.map((linea) => `
+        <tbody>${lineas
+          .map(
+            (linea) => `
           <tr><td>Más ${formatearLinea(linea)}</td>${columnas.map((columna) => `<td>${porcentajeTarjetasEquipo(columna.partidos, columna.equipoId, linea, true, columna.tipoEstadistica)}</td>`).join("")}</tr>
           <tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map((columna) => `<td>${porcentajeTarjetasEquipo(columna.partidos, columna.equipoId, linea, false, columna.tipoEstadistica)}</td>`).join("")}</tr>
-        `).join("")}</tbody>
+        `,
+          )
+          .join("")}</tbody>
       </table>
     </div>
   `;
 }
 
-
-function porcentajeTarjetasEquipo(partidos, equipoId, linea, esMas, tipo = "equipo") {
+function porcentajeTarjetasEquipo(
+  partidos,
+  equipoId,
+  linea,
+  esMas,
+  tipo = "equipo",
+) {
   if (!Array.isArray(partidos) || partidos.length === 0) return "N/D";
   let validos = 0;
   let acertados = 0;
@@ -3647,10 +4321,11 @@ function porcentajeTarjetasEquipo(partidos, equipoId, linea, esMas, tipo = "equi
     const lado = obtenerLadoEquipoPartido(partido, equipoId);
     if (!Array.isArray(tarjetas) || !lado) return;
     validos += 1;
-    const ladoObjetivo = tipo === "rival"
-      ? lado === "local" ? "visitante" : "local"
-      : lado;
-    const total = tarjetas.filter((tarjeta) => tarjeta?.equipo === ladoObjetivo).length;
+    const ladoObjetivo =
+      tipo === "rival" ? (lado === "local" ? "visitante" : "local") : lado;
+    const total = tarjetas.filter(
+      (tarjeta) => tarjeta?.equipo === ladoObjetivo,
+    ).length;
     if (esMas ? total > linea : total < linea) acertados += 1;
   });
 
@@ -3680,7 +4355,12 @@ function porcentajeResultadoTarjetas(partidos, equipoId, esperado) {
   return porcentajeMercado(acertados, validos);
 }
 
-function porcentajeHandicapTarjetas(partidos, equipoId, equipoMercadoId, handicap) {
+function porcentajeHandicapTarjetas(
+  partidos,
+  equipoId,
+  equipoMercadoId,
+  handicap,
+) {
   let validos = 0;
   let acertados = 0;
   (partidos || []).forEach((partido) => {
@@ -3693,10 +4373,10 @@ function porcentajeHandicapTarjetas(partidos, equipoId, equipoMercadoId, handica
     const esEquipoDelMercado = Number(equipoId) === Number(equipoMercadoId);
     const tarjetasEquipo = resumen[ladoEquipo];
     const tarjetasRival = resumen[ladoRival];
-    const tarjetasEquipoAjustadas = tarjetasEquipo
-      + (esEquipoDelMercado ? handicap : 0);
-    const tarjetasRivalAjustadas = tarjetasRival
-      + (esEquipoDelMercado ? 0 : handicap);
+    const tarjetasEquipoAjustadas =
+      tarjetasEquipo + (esEquipoDelMercado ? handicap : 0);
+    const tarjetasRivalAjustadas =
+      tarjetasRival + (esEquipoDelMercado ? 0 : handicap);
 
     validos += 1;
     const ganaEquipoDelMercado = esEquipoDelMercado
@@ -3708,17 +4388,35 @@ function porcentajeHandicapTarjetas(partidos, equipoId, equipoMercadoId, handica
 }
 
 function porcentajeRojaEquipo(partidos, equipoId, si, tipo = "equipo") {
-  let v=0,a=0; (partidos||[]).forEach(p=>{const t=p?.estadisticas?.eventos_jugadores?.tarjetas; const lado=obtenerLadoEquipoPartido(p,equipoId); if(!Array.isArray(t)||!lado)return; v++; const ladoObjetivo=tipo==="rival"?(lado==="local"?"visitante":"local"):lado; const roja=t.some(x=>x?.equipo===ladoObjetivo&&(x?.tipo==="Roja"||x?.tipo==="Segunda amarilla")); if(roja===si)a++;}); return porcentajeMercado(a,v);
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = p?.estadisticas?.eventos_jugadores?.tarjetas;
+    const lado = obtenerLadoEquipoPartido(p, equipoId);
+    if (!Array.isArray(t) || !lado) return;
+    v++;
+    const ladoObjetivo =
+      tipo === "rival" ? (lado === "local" ? "visitante" : "local") : lado;
+    const roja = t.some(
+      (x) =>
+        x?.equipo === ladoObjetivo &&
+        (x?.tipo === "Roja" || x?.tipo === "Segunda amarilla"),
+    );
+    if (roja === si) a++;
+  });
+  return porcentajeMercado(a, v);
 }
-
 
 function crearTablaMasMenosTarjetasPrimerTiempo(resultado, local, visitante) {
-  const columnas = obtenerColumnasHistoricasMercados(resultado, local, visitante);
+  const columnas = obtenerColumnasHistoricasMercados(
+    resultado,
+    local,
+    visitante,
+  );
   const lineas = [];
   for (let linea = 0.5; linea <= 4.5; linea += 1) lineas.push(linea);
-  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map(linea => `<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map(c => `<td>${porcentajeTarjetasPrimerTiempo(c.partidos,linea,true)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map(c => `<td>${porcentajeTarjetasPrimerTiempo(c.partidos,linea,false)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return `<div class="tabla-estadisticas-wrapper"><table class="tabla-estadisticas"><thead><tr><th>Mercado</th>${crearEncabezadosColumnasMercados(columnas)}</tr></thead><tbody>${lineas.map((linea) => `<tr><td>Más ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeTarjetasPrimerTiempo(c.partidos, linea, true)}</td>`).join("")}</tr><tr><td>Menos ${formatearLinea(linea)}</td>${columnas.map((c) => `<td>${porcentajeTarjetasPrimerTiempo(c.partidos, linea, false)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 }
-
 
 // ============================================================
 // TARJETAS ROJAS TOTALES MÁS / MENOS
@@ -3751,26 +4449,37 @@ function crearTablaMasMenosTarjetasRojas(
           </tr>
         </thead>
         <tbody>
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             <tr>
               <td>Más ${formatearLinea(linea)}</td>
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>${porcentajeTarjetasRojas(columna.partidos, linea, true)}</td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
             <tr>
               <td>Menos ${formatearLinea(linea)}</td>
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>${porcentajeTarjetasRojas(columna.partidos, linea, false)}</td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </tbody>
       </table>
     </div>
   `;
 }
-
 
 // ============================================================
 // AMBOS EQUIPOS RECIBEN TARJETAS
@@ -3806,7 +4515,9 @@ function crearTablaAmbosEquiposTarjetas(
           <tr>
             <td>Sí</td>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <td>
                 ${porcentajeAmbosEquiposTarjetas(
                   columna.partidos,
@@ -3814,13 +4525,17 @@ function crearTablaAmbosEquiposTarjetas(
                   true,
                 )}
               </td>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
 
           <tr>
             <td>No</td>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <td>
                 ${porcentajeAmbosEquiposTarjetas(
                   columna.partidos,
@@ -3828,7 +4543,9 @@ function crearTablaAmbosEquiposTarjetas(
                   false,
                 )}
               </td>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
 
         </tbody>
@@ -3839,7 +4556,6 @@ function crearTablaAmbosEquiposTarjetas(
   `;
 }
 
-
 // ============================================================
 // RESULTADO DEL PARTIDO
 // ============================================================
@@ -3849,17 +4565,13 @@ function crearTablaResultado(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const localGeneral =
-    resultado?.equipo_local?.general || {};
+  const localGeneral = resultado?.equipo_local?.general || {};
 
-  const localCasa =
-    resultado?.equipo_local?.local || {};
+  const localCasa = resultado?.equipo_local?.local || {};
 
-  const visitanteGeneral =
-    resultado?.equipo_visitante?.general || {};
+  const visitanteGeneral = resultado?.equipo_visitante?.general || {};
 
-  const visitanteFuera =
-    resultado?.equipo_visitante?.visitante || {};
+  const visitanteFuera = resultado?.equipo_visitante?.visitante || {};
 
   return `
     <div class="tabla-estadisticas-wrapper">
@@ -3907,28 +4619,25 @@ function crearTablaResultado(
             <td>
               ${porcentajeMercado(
                 localGeneral.victorias,
-                localGeneral.partidos
+                localGeneral.partidos,
               )}
             </td>
 
             <td>
-              ${porcentajeMercado(
-                localCasa.victorias,
-                localCasa.partidos
-              )}
+              ${porcentajeMercado(localCasa.victorias, localCasa.partidos)}
             </td>
 
             <td>
               ${porcentajeMercado(
                 visitanteFuera.derrotas,
-                visitanteFuera.partidos
+                visitanteFuera.partidos,
               )}
             </td>
 
             <td>
               ${porcentajeMercado(
                 visitanteGeneral.derrotas,
-                visitanteGeneral.partidos
+                visitanteGeneral.partidos,
               )}
             </td>
 
@@ -3940,30 +4649,24 @@ function crearTablaResultado(
             <td>Empate</td>
 
             <td>
-              ${porcentajeMercado(
-                localGeneral.empates,
-                localGeneral.partidos
-              )}
+              ${porcentajeMercado(localGeneral.empates, localGeneral.partidos)}
             </td>
 
             <td>
-              ${porcentajeMercado(
-                localCasa.empates,
-                localCasa.partidos
-              )}
+              ${porcentajeMercado(localCasa.empates, localCasa.partidos)}
             </td>
 
             <td>
               ${porcentajeMercado(
                 visitanteFuera.empates,
-                visitanteFuera.partidos
+                visitanteFuera.partidos,
               )}
             </td>
 
             <td>
               ${porcentajeMercado(
                 visitanteGeneral.empates,
-                visitanteGeneral.partidos
+                visitanteGeneral.partidos,
               )}
             </td>
 
@@ -3975,30 +4678,24 @@ function crearTablaResultado(
             <td>${escaparHTML(nombreEquipoVisitante)}</td>
 
             <td>
-              ${porcentajeMercado(
-                localGeneral.derrotas,
-                localGeneral.partidos
-              )}
+              ${porcentajeMercado(localGeneral.derrotas, localGeneral.partidos)}
             </td>
 
             <td>
-              ${porcentajeMercado(
-                localCasa.derrotas,
-                localCasa.partidos
-              )}
+              ${porcentajeMercado(localCasa.derrotas, localCasa.partidos)}
             </td>
 
             <td>
               ${porcentajeMercado(
                 visitanteFuera.victorias,
-                visitanteFuera.partidos
+                visitanteFuera.partidos,
               )}
             </td>
 
             <td>
               ${porcentajeMercado(
                 visitanteGeneral.victorias,
-                visitanteGeneral.partidos
+                visitanteGeneral.partidos,
               )}
             </td>
 
@@ -4012,7 +4709,6 @@ function crearTablaResultado(
   `;
 }
 
-
 // ============================================================
 // DOBLE OPORTUNIDAD
 // ============================================================
@@ -4022,17 +4718,13 @@ function crearTablaDobleOportunidad(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const localGeneral =
-    resultado?.equipo_local?.general || {};
+  const localGeneral = resultado?.equipo_local?.general || {};
 
-  const localCasa =
-    resultado?.equipo_local?.local || {};
+  const localCasa = resultado?.equipo_local?.local || {};
 
-  const visitanteGeneral =
-    resultado?.equipo_visitante?.general || {};
+  const visitanteGeneral = resultado?.equipo_visitante?.general || {};
 
-  const visitanteFuera =
-    resultado?.equipo_visitante?.visitante || {};
+  const visitanteFuera = resultado?.equipo_visitante?.visitante || {};
 
   return `
     <div class="tabla-estadisticas-wrapper">
@@ -4081,7 +4773,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 localGeneral.victorias,
                 localGeneral.empates,
-                localGeneral.partidos
+                localGeneral.partidos,
               )}
             </td>
 
@@ -4089,7 +4781,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 localCasa.victorias,
                 localCasa.empates,
-                localCasa.partidos
+                localCasa.partidos,
               )}
             </td>
 
@@ -4097,7 +4789,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 visitanteFuera.derrotas,
                 visitanteFuera.empates,
-                visitanteFuera.partidos
+                visitanteFuera.partidos,
               )}
             </td>
 
@@ -4105,7 +4797,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 visitanteGeneral.derrotas,
                 visitanteGeneral.empates,
-                visitanteGeneral.partidos
+                visitanteGeneral.partidos,
               )}
             </td>
 
@@ -4120,7 +4812,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 localGeneral.derrotas,
                 localGeneral.empates,
-                localGeneral.partidos
+                localGeneral.partidos,
               )}
             </td>
 
@@ -4128,7 +4820,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 localCasa.derrotas,
                 localCasa.empates,
-                localCasa.partidos
+                localCasa.partidos,
               )}
             </td>
 
@@ -4136,7 +4828,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 visitanteFuera.victorias,
                 visitanteFuera.empates,
-                visitanteFuera.partidos
+                visitanteFuera.partidos,
               )}
             </td>
 
@@ -4144,7 +4836,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 visitanteGeneral.victorias,
                 visitanteGeneral.empates,
-                visitanteGeneral.partidos
+                visitanteGeneral.partidos,
               )}
             </td>
 
@@ -4159,7 +4851,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 localGeneral.victorias,
                 localGeneral.derrotas,
-                localGeneral.partidos
+                localGeneral.partidos,
               )}
             </td>
 
@@ -4167,7 +4859,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 localCasa.victorias,
                 localCasa.derrotas,
-                localCasa.partidos
+                localCasa.partidos,
               )}
             </td>
 
@@ -4175,7 +4867,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 visitanteFuera.victorias,
                 visitanteFuera.derrotas,
-                visitanteFuera.partidos
+                visitanteFuera.partidos,
               )}
             </td>
 
@@ -4183,7 +4875,7 @@ function crearTablaDobleOportunidad(
               ${porcentajeDobleOportunidad(
                 visitanteGeneral.victorias,
                 visitanteGeneral.derrotas,
-                visitanteGeneral.partidos
+                visitanteGeneral.partidos,
               )}
             </td>
 
@@ -4196,7 +4888,6 @@ function crearTablaDobleOportunidad(
     </div>
   `;
 }
-
 
 // ============================================================
 // RANGOS DE TOTAL DE GOLES
@@ -4232,7 +4923,6 @@ function crearTablaRangosTotalGoles(
   );
 }
 
-
 // ============================================================
 // RANGOS EXTRA DE TOTAL DE GOLES
 // ============================================================
@@ -4256,7 +4946,6 @@ function crearTablaRangosExtraTotalGoles(
     rangos,
   );
 }
-
 
 // ============================================================
 // TABLA REUTILIZABLE DE RANGOS DE GOLES
@@ -4289,11 +4978,15 @@ function crearTablaRangosGoles(
 
         <tbody>
 
-          ${rangos.map((rango) => `
+          ${rangos
+            .map(
+              (rango) => `
             <tr>
               <td>${rango.etiqueta}</td>
 
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>
                   ${porcentajeTotalGolesRango(
                     columna.partidos,
@@ -4301,9 +4994,13 @@ function crearTablaRangosGoles(
                     rango.maximo,
                   )}
                 </td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -4312,7 +5009,6 @@ function crearTablaRangosGoles(
     </div>
   `;
 }
-
 
 // ============================================================
 // TOTAL DE GOLES PAR / IMPAR
@@ -4347,17 +5043,25 @@ function crearTablaParidadTotalGoles(
           <tr>
             <td>Impar</td>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <td>${porcentajeTotalGolesParidad(columna.partidos, "impar")}</td>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
 
           <tr>
             <td>Par</td>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <td>${porcentajeTotalGolesParidad(columna.partidos, "par")}</td>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
 
         </tbody>
@@ -4367,7 +5071,6 @@ function crearTablaParidadTotalGoles(
     </div>
   `;
 }
-
 
 // ============================================================
 // COLUMNAS ESTÁNDAR DE HISTORIAL PARA MERCADOS
@@ -4406,17 +5109,19 @@ function obtenerColumnasHistoricasMercados(
   ];
 }
 
-
 function crearEncabezadosColumnasMercados(columnas) {
-  return columnas.map((columna) => `
+  return columnas
+    .map(
+      (columna) => `
     <th>
       ${escaparHTML(columna.nombre)}
       <br>
       ${columna.condicion}
     </th>
-  `).join("");
+  `,
+    )
+    .join("");
 }
-
 
 // ============================================================
 // PRÓXIMO GOL (GOL 1)
@@ -4427,11 +5132,9 @@ function crearTablaProximoGol(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const columnas = [
     {
@@ -4472,7 +5175,9 @@ function crearTablaProximoGol(
     <tr>
       <td>${escaparHTML(etiqueta)}</td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeProximoGol(
             columna.partidos,
@@ -4482,7 +5187,9 @@ function crearTablaProximoGol(
               : columna[tipoResultado],
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -4495,13 +5202,17 @@ function crearTablaProximoGol(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
@@ -4517,7 +5228,6 @@ function crearTablaProximoGol(
   `;
 }
 
-
 // ============================================================
 // MARCADOR CORRECTO
 // ============================================================
@@ -4527,11 +5237,9 @@ function crearTablaMarcadorCorrecto(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const columnas = [
     {
@@ -4579,23 +5287,31 @@ function crearTablaMarcadorCorrecto(
           <tr>
             <th>Marcador</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${marcadores.map((marcador) => `
+          ${marcadores
+            .map(
+              (marcador) => `
             <tr>
               <td>${marcador.local}-${marcador.visitante}</td>
 
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>
                   ${porcentajeMarcadorCorrecto(
                     columna.partidos,
@@ -4608,9 +5324,13 @@ function crearTablaMarcadorCorrecto(
                       : marcador.visitante,
                   )}
                 </td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -4619,7 +5339,6 @@ function crearTablaMarcadorCorrecto(
     </div>
   `;
 }
-
 
 function obtenerMarcadoresCorrectos(seccion) {
   const marcadores = [];
@@ -4666,7 +5385,6 @@ function obtenerMarcadoresCorrectos(seccion) {
   return marcadores;
 }
 
-
 // ============================================================
 // DOBLE OPORTUNIDAD / AMBOS EQUIPOS ANOTAN
 // ============================================================
@@ -4676,11 +5394,9 @@ function crearTablaDobleOportunidadAmbosAnotan(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const columnas = [
     {
@@ -4739,7 +5455,9 @@ function crearTablaDobleOportunidadAmbosAnotan(
         ${ambosAnotan ? "Sí" : "No"}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeDobleOportunidadAmbosAnotan(
             columna.partidos,
@@ -4750,7 +5468,9 @@ function crearTablaDobleOportunidadAmbosAnotan(
             ambosAnotan,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -4763,22 +5483,30 @@ function crearTablaDobleOportunidadAmbosAnotan(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${opciones.map((opcion) => `
+          ${opciones
+            .map(
+              (opcion) => `
             ${crearFila(opcion, true)}
             ${crearFila(opcion, false)}
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -4787,7 +5515,6 @@ function crearTablaDobleOportunidadAmbosAnotan(
     </div>
   `;
 }
-
 
 // ============================================================
 // DOBLE OPORTUNIDAD CON MÁS / MENOS
@@ -4798,11 +5525,9 @@ function crearTablaDobleOportunidadMasMenos(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const columnas = [
     {
@@ -4867,7 +5592,9 @@ function crearTablaDobleOportunidadMasMenos(
         ${formatearLinea(linea)}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeDobleOportunidadMasMenos(
             columna.partidos,
@@ -4879,7 +5606,9 @@ function crearTablaDobleOportunidadMasMenos(
             esMas,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -4892,22 +5621,34 @@ function crearTablaDobleOportunidadMasMenos(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${lineas.map((linea) => opciones.map((opcion) => `
+          ${lineas
+            .map((linea) =>
+              opciones
+                .map(
+                  (opcion) => `
             ${crearFila(opcion, true, linea)}
             ${crearFila(opcion, false, linea)}
-          `).join("")).join("")}
+          `,
+                )
+                .join(""),
+            )
+            .join("")}
 
         </tbody>
 
@@ -4916,7 +5657,6 @@ function crearTablaDobleOportunidadMasMenos(
     </div>
   `;
 }
-
 
 // ============================================================
 // RESULTADO DEL PARTIDO Y/O AMBOS EQUIPOS ANOTAN
@@ -4928,11 +5668,9 @@ function crearTablaResultadoAmbosAnotan(
   nombreEquipoVisitante,
   operador,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const columnas = [
     {
@@ -4982,7 +5720,9 @@ function crearTablaResultadoAmbosAnotan(
         ${ambosAnotan ? "Sí" : "No"}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeResultadoAmbosAnotan(
             columna.partidos,
@@ -4992,7 +5732,9 @@ function crearTablaResultadoAmbosAnotan(
             operador,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -5005,13 +5747,17 @@ function crearTablaResultadoAmbosAnotan(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
@@ -5030,7 +5776,6 @@ function crearTablaResultadoAmbosAnotan(
   `;
 }
 
-
 // ============================================================
 // RESULTADO DEL PARTIDO O GOLES TOTALES MÁS / MENOS
 // ============================================================
@@ -5040,11 +5785,9 @@ function crearTablaResultadoOGolesTotales(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const columnas = [
     {
@@ -5098,7 +5841,9 @@ function crearTablaResultadoOGolesTotales(
         ${formatearLinea(linea)}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeResultadoOGolesTotales(
             columna.partidos,
@@ -5108,7 +5853,9 @@ function crearTablaResultadoOGolesTotales(
             esMas,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -5121,26 +5868,34 @@ function crearTablaResultadoOGolesTotales(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             ${crearFila(nombreEquipoLocal, "resultadoLocal", true, linea)}
             ${crearFila(nombreEquipoLocal, "resultadoLocal", false, linea)}
             ${crearFila("Empate", "resultadoEmpate", true, linea)}
             ${crearFila("Empate", "resultadoEmpate", false, linea)}
             ${crearFila(nombreEquipoVisitante, "resultadoVisitante", true, linea)}
             ${crearFila(nombreEquipoVisitante, "resultadoVisitante", false, linea)}
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -5149,7 +5904,6 @@ function crearTablaResultadoOGolesTotales(
     </div>
   `;
 }
-
 
 // ============================================================
 // RESULTADO DEL PARTIDO CON MÁS / MENOS
@@ -5160,17 +5914,13 @@ function crearTablaResultadoMasMenos(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
-  const partidosLocalGeneral =
-    resultado?.equipo_local?.partidos_general || [];
+  const partidosLocalGeneral = resultado?.equipo_local?.partidos_general || [];
 
-  const partidosLocalCasa =
-    resultado?.equipo_local?.partidos_local || [];
+  const partidosLocalCasa = resultado?.equipo_local?.partidos_local || [];
 
   const partidosVisitanteGeneral =
     resultado?.equipo_visitante?.partidos_general || [];
@@ -5230,7 +5980,9 @@ function crearTablaResultadoMasMenos(
         ${formatearLinea(linea)}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeResultadoMasMenos(
             columna.partidos,
@@ -5240,7 +5992,9 @@ function crearTablaResultadoMasMenos(
             esMas,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -5253,26 +6007,34 @@ function crearTablaResultadoMasMenos(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             ${crearFila(nombreEquipoLocal, "resultadoLocal", true, linea)}
             ${crearFila(nombreEquipoLocal, "resultadoLocal", false, linea)}
             ${crearFila(nombreEquipoVisitante, "resultadoVisitante", true, linea)}
             ${crearFila(nombreEquipoVisitante, "resultadoVisitante", false, linea)}
             ${crearFila("Empate", "resultadoEmpate", true, linea)}
             ${crearFila("Empate", "resultadoEmpate", false, linea)}
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -5281,7 +6043,6 @@ function crearTablaResultadoMasMenos(
     </div>
   `;
 }
-
 
 // ============================================================
 // MÁS / MENOS — TOTAL DE GOLES
@@ -5294,11 +6055,9 @@ function crearTablaMasMenosTotal(
   periodo = "FT",
   lineaMaxima = 9.5,
 ) {
-  const partidosLocalGeneral =
-    resultado?.equipo_local?.partidos_general || [];
+  const partidosLocalGeneral = resultado?.equipo_local?.partidos_general || [];
 
-  const partidosLocalCasa =
-    resultado?.equipo_local?.partidos_local || [];
+  const partidosLocalCasa = resultado?.equipo_local?.partidos_local || [];
 
   const partidosVisitanteGeneral =
     resultado?.equipo_visitante?.partidos_general || [];
@@ -5351,73 +6110,65 @@ function crearTablaMasMenosTotal(
 
         <tbody>
 
-          ${lineas.map((linea) => {
-
-            const masLocalGeneral =
-              calcularPorcentajeTotalGoles(
+          ${lineas
+            .map((linea) => {
+              const masLocalGeneral = calcularPorcentajeTotalGoles(
                 partidosLocalGeneral,
                 linea,
                 true,
                 periodo,
               );
 
-            const menosLocalGeneral =
-              calcularPorcentajeTotalGoles(
+              const menosLocalGeneral = calcularPorcentajeTotalGoles(
                 partidosLocalGeneral,
                 linea,
                 false,
                 periodo,
               );
 
-            const masLocalCasa =
-              calcularPorcentajeTotalGoles(
+              const masLocalCasa = calcularPorcentajeTotalGoles(
                 partidosLocalCasa,
                 linea,
                 true,
                 periodo,
               );
 
-            const menosLocalCasa =
-              calcularPorcentajeTotalGoles(
+              const menosLocalCasa = calcularPorcentajeTotalGoles(
                 partidosLocalCasa,
                 linea,
                 false,
                 periodo,
               );
 
-            const masVisitanteFuera =
-              calcularPorcentajeTotalGoles(
+              const masVisitanteFuera = calcularPorcentajeTotalGoles(
                 partidosVisitanteFuera,
                 linea,
                 true,
                 periodo,
               );
 
-            const menosVisitanteFuera =
-              calcularPorcentajeTotalGoles(
+              const menosVisitanteFuera = calcularPorcentajeTotalGoles(
                 partidosVisitanteFuera,
                 linea,
                 false,
                 periodo,
               );
 
-            const masVisitanteGeneral =
-              calcularPorcentajeTotalGoles(
+              const masVisitanteGeneral = calcularPorcentajeTotalGoles(
                 partidosVisitanteGeneral,
                 linea,
                 true,
                 periodo,
               );
 
-            const menosVisitanteGeneral =
-              calcularPorcentajeTotalGoles(
+              const menosVisitanteGeneral = calcularPorcentajeTotalGoles(
                 partidosVisitanteGeneral,
                 linea,
                 false,
                 periodo,
               );
 
-            return `
+              return `
 
               <tr>
 
@@ -5469,7 +6220,8 @@ function crearTablaMasMenosTotal(
               </tr>
 
             `;
-          }).join("")}
+            })
+            .join("")}
 
         </tbody>
 
@@ -5478,7 +6230,6 @@ function crearTablaMasMenosTotal(
     </div>
   `;
 }
-
 
 // ============================================================
 // CALCULAR RESULTADO DEL PARTIDO CON MÁS / MENOS
@@ -5499,52 +6250,33 @@ function porcentajeResultadoMasMenos(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const golesEquipo =
-      obtenerGolesEquipo(
-        partido,
-        equipoId
-      );
+    const golesEquipo = obtenerGolesEquipo(partido, equipoId);
 
-    const golesRival =
-      obtenerGolesRecibidosEquipo(
-        partido,
-        equipoId
-      );
+    const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
-    if (
-      !Number.isFinite(golesEquipo) ||
-      !Number.isFinite(golesRival)
-    ) {
+    if (!Number.isFinite(golesEquipo) || !Number.isFinite(golesRival)) {
       return;
     }
 
     validos += 1;
 
-    const resultado = golesEquipo > golesRival
-      ? "victoria"
-      : golesEquipo < golesRival
-        ? "derrota"
-        : "empate";
+    const resultado =
+      golesEquipo > golesRival
+        ? "victoria"
+        : golesEquipo < golesRival
+          ? "derrota"
+          : "empate";
 
     const total = golesEquipo + golesRival;
-    const cumpleLinea = esMas
-      ? total > linea
-      : total < linea;
+    const cumpleLinea = esMas ? total > linea : total < linea;
 
-    if (
-      resultado === resultadoEsperado &&
-      cumpleLinea
-    ) {
+    if (resultado === resultadoEsperado && cumpleLinea) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR DOBLE OPORTUNIDAD CON MÁS / MENOS
@@ -5565,52 +6297,33 @@ function porcentajeDobleOportunidadMasMenos(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const golesEquipo =
-      obtenerGolesEquipo(
-        partido,
-        equipoId
-      );
+    const golesEquipo = obtenerGolesEquipo(partido, equipoId);
 
-    const golesRival =
-      obtenerGolesRecibidosEquipo(
-        partido,
-        equipoId
-      );
+    const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
-    if (
-      !Number.isFinite(golesEquipo) ||
-      !Number.isFinite(golesRival)
-    ) {
+    if (!Number.isFinite(golesEquipo) || !Number.isFinite(golesRival)) {
       return;
     }
 
     validos += 1;
 
-    const resultado = golesEquipo > golesRival
-      ? "victoria"
-      : golesEquipo < golesRival
-        ? "derrota"
-        : "empate";
+    const resultado =
+      golesEquipo > golesRival
+        ? "victoria"
+        : golesEquipo < golesRival
+          ? "derrota"
+          : "empate";
 
     const total = golesEquipo + golesRival;
-    const cumpleLinea = esMas
-      ? total > linea
-      : total < linea;
+    const cumpleLinea = esMas ? total > linea : total < linea;
 
-    if (
-      resultadosEsperados.includes(resultado) &&
-      cumpleLinea
-    ) {
+    if (resultadosEsperados.includes(resultado) && cumpleLinea) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR DOBLE OPORTUNIDAD Y AMBOS EQUIPOS ANOTAN
@@ -5630,35 +6343,24 @@ function porcentajeDobleOportunidadAmbosAnotan(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const golesEquipo =
-      obtenerGolesEquipo(
-        partido,
-        equipoId
-      );
+    const golesEquipo = obtenerGolesEquipo(partido, equipoId);
 
-    const golesRival =
-      obtenerGolesRecibidosEquipo(
-        partido,
-        equipoId
-      );
+    const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
-    if (
-      !Number.isFinite(golesEquipo) ||
-      !Number.isFinite(golesRival)
-    ) {
+    if (!Number.isFinite(golesEquipo) || !Number.isFinite(golesRival)) {
       return;
     }
 
     validos += 1;
 
-    const resultado = golesEquipo > golesRival
-      ? "victoria"
-      : golesEquipo < golesRival
-        ? "derrota"
-        : "empate";
+    const resultado =
+      golesEquipo > golesRival
+        ? "victoria"
+        : golesEquipo < golesRival
+          ? "derrota"
+          : "empate";
 
-    const anotaronAmbos =
-      golesEquipo > 0 && golesRival > 0;
+    const anotaronAmbos = golesEquipo > 0 && golesRival > 0;
 
     if (
       resultadosEsperados.includes(resultado) &&
@@ -5668,12 +6370,8 @@ function porcentajeDobleOportunidadAmbosAnotan(
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR RESULTADO DEL PARTIDO Y/O AMBOS EQUIPOS ANOTAN
@@ -5694,67 +6392,47 @@ function porcentajeResultadoAmbosAnotan(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const golesEquipo =
-      obtenerGolesEquipo(
-        partido,
-        equipoId
-      );
+    const golesEquipo = obtenerGolesEquipo(partido, equipoId);
 
-    const golesRival =
-      obtenerGolesRecibidosEquipo(
-        partido,
-        equipoId
-      );
+    const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
-    if (
-      !Number.isFinite(golesEquipo) ||
-      !Number.isFinite(golesRival)
-    ) {
+    if (!Number.isFinite(golesEquipo) || !Number.isFinite(golesRival)) {
       return;
     }
 
     validos += 1;
 
-    const resultado = golesEquipo > golesRival
-      ? "victoria"
-      : golesEquipo < golesRival
-        ? "derrota"
-        : "empate";
+    const resultado =
+      golesEquipo > golesRival
+        ? "victoria"
+        : golesEquipo < golesRival
+          ? "derrota"
+          : "empate";
 
-    const anotaronAmbos =
-      golesEquipo > 0 && golesRival > 0;
+    const anotaronAmbos = golesEquipo > 0 && golesRival > 0;
 
-    const cumpleResultado =
-      resultado === resultadoEsperado;
+    const cumpleResultado = resultado === resultadoEsperado;
 
-    const cumpleAmbosAnotan =
-      anotaronAmbos === ambosAnotanEsperado;
+    const cumpleAmbosAnotan = anotaronAmbos === ambosAnotanEsperado;
 
-    const cumpleMercado = operador === "y"
-      ? cumpleResultado && cumpleAmbosAnotan
-      : cumpleResultado || cumpleAmbosAnotan;
+    const cumpleMercado =
+      operador === "y"
+        ? cumpleResultado && cumpleAmbosAnotan
+        : cumpleResultado || cumpleAmbosAnotan;
 
     if (cumpleMercado) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR PORCENTAJE DE PRÓXIMO GOL
 // ============================================================
 
-function porcentajeProximoGol(
-  partidos,
-  equipoId,
-  resultadoEsperado,
-) {
+function porcentajeProximoGol(partidos, equipoId, resultadoEsperado) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -5763,11 +6441,7 @@ function porcentajeProximoGol(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const estado =
-      obtenerEstadoPrimerGol(
-        partido,
-        equipoId
-      );
+    const estado = obtenerEstadoPrimerGol(partido, equipoId);
 
     if (estado === null) {
       return;
@@ -5780,12 +6454,8 @@ function porcentajeProximoGol(
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR RESULTADO DEL PARTIDO O GOLES TOTALES
@@ -5806,52 +6476,33 @@ function porcentajeResultadoOGolesTotales(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const golesEquipo =
-      obtenerGolesEquipo(
-        partido,
-        equipoId
-      );
+    const golesEquipo = obtenerGolesEquipo(partido, equipoId);
 
-    const golesRival =
-      obtenerGolesRecibidosEquipo(
-        partido,
-        equipoId
-      );
+    const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
-    if (
-      !Number.isFinite(golesEquipo) ||
-      !Number.isFinite(golesRival)
-    ) {
+    if (!Number.isFinite(golesEquipo) || !Number.isFinite(golesRival)) {
       return;
     }
 
     validos += 1;
 
-    const resultado = golesEquipo > golesRival
-      ? "victoria"
-      : golesEquipo < golesRival
-        ? "derrota"
-        : "empate";
+    const resultado =
+      golesEquipo > golesRival
+        ? "victoria"
+        : golesEquipo < golesRival
+          ? "derrota"
+          : "empate";
 
     const total = golesEquipo + golesRival;
-    const cumpleLinea = esMas
-      ? total > linea
-      : total < linea;
+    const cumpleLinea = esMas ? total > linea : total < linea;
 
-    if (
-      resultado === resultadoEsperado ||
-      cumpleLinea
-    ) {
+    if (resultado === resultadoEsperado || cumpleLinea) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // AMBOS EQUIPOS ANOTAN
@@ -5862,11 +6513,9 @@ function crearTablaAmbosAnotan(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const partidosLocalGeneral =
-    resultado?.equipo_local?.partidos_general || [];
+  const partidosLocalGeneral = resultado?.equipo_local?.partidos_general || [];
 
-  const partidosLocalCasa =
-    resultado?.equipo_local?.partidos_local || [];
+  const partidosLocalCasa = resultado?.equipo_local?.partidos_local || [];
 
   const partidosVisitanteGeneral =
     resultado?.equipo_visitante?.partidos_general || [];
@@ -5939,7 +6588,6 @@ function crearTablaAmbosAnotan(
   `;
 }
 
-
 // ============================================================
 // AMBOS EQUIPOS ANOTAN Y MÁS / MENOS
 // ============================================================
@@ -5949,11 +6597,9 @@ function crearTablaAmbosAnotanMasMenos(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const partidosLocalGeneral =
-    resultado?.equipo_local?.partidos_general || [];
+  const partidosLocalGeneral = resultado?.equipo_local?.partidos_general || [];
 
-  const partidosLocalCasa =
-    resultado?.equipo_local?.partidos_local || [];
+  const partidosLocalCasa = resultado?.equipo_local?.partidos_local || [];
 
   const partidosVisitanteGeneral =
     resultado?.equipo_visitante?.partidos_general || [];
@@ -5997,7 +6643,9 @@ function crearTablaAmbosAnotanMasMenos(
         ${esMas ? "Más" : "Menos"} ${formatearLinea(linea)}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeAmbosAnotanMasMenos(
             columna.partidos,
@@ -6006,7 +6654,9 @@ function crearTablaAmbosAnotanMasMenos(
             esMas,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -6019,24 +6669,32 @@ function crearTablaAmbosAnotanMasMenos(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             ${crearFila(true, true, linea)}
             ${crearFila(false, true, linea)}
             ${crearFila(true, false, linea)}
             ${crearFila(false, false, linea)}
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -6045,7 +6703,6 @@ function crearTablaAmbosAnotanMasMenos(
     </div>
   `;
 }
-
 
 // ============================================================
 // TOTAL DE GOLES DE UN EQUIPO
@@ -6057,11 +6714,9 @@ function crearTablaTotalGolesEquipo(
   nombreEquipoVisitante,
   equipoObjetivo,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
   const esLocal = equipoObjetivo === "local";
 
@@ -6144,23 +6799,31 @@ function crearTablaTotalGolesEquipo(
           <tr>
             <th>Goles</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${totales.map((total) => `
+          ${totales
+            .map(
+              (total) => `
             <tr>
               <td>${total.etiqueta}</td>
 
-              ${columnas.map((columna) => `
+              ${columnas
+                .map(
+                  (columna) => `
                 <td>
                   ${porcentajeGolesEquipoRango(
                     columna.partidos,
@@ -6170,9 +6833,13 @@ function crearTablaTotalGolesEquipo(
                     total.maximo,
                   )}
                 </td>
-              `).join("")}
+              `,
+                )
+                .join("")}
             </tr>
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -6181,7 +6848,6 @@ function crearTablaTotalGolesEquipo(
     </div>
   `;
 }
-
 
 // ============================================================
 // AMBOS EQUIPOS ANOTAN O MÁS DE GOLES
@@ -6227,7 +6893,9 @@ function crearTablaAmbosAnotanOMasGoles(
         ${cumpleMercado ? "Sí" : "No"}
       </td>
 
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>
           ${porcentajeAmbosAnotanOMasGoles(
             columna.partidos,
@@ -6235,7 +6903,9 @@ function crearTablaAmbosAnotanOMasGoles(
             cumpleMercado,
           )}
         </td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -6248,19 +6918,25 @@ function crearTablaAmbosAnotanOMasGoles(
           <tr>
             <th>Mercado</th>
 
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>
                 ${escaparHTML(columna.nombre)}
                 <br>
                 ${columna.condicion}
               </th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
 
         <tbody>
 
-          ${lineas.map((linea) => `
+          ${lineas
+            .map(
+              (linea) => `
             <tr>
               <td colspan="5">
                 Ambos equipos anotan o Más de ${formatearLinea(linea)}
@@ -6268,7 +6944,9 @@ function crearTablaAmbosAnotanOMasGoles(
             </tr>
             ${crearFila(true, linea)}
             ${crearFila(false, linea)}
-          `).join("")}
+          `,
+            )
+            .join("")}
 
         </tbody>
 
@@ -6277,7 +6955,6 @@ function crearTablaAmbosAnotanOMasGoles(
     </div>
   `;
 }
-
 
 // ============================================================
 // MÁS / MENOS — GOLES MARCADOS POR EL LOCAL
@@ -6305,17 +6982,13 @@ function crearTablaMasMenosGolesLocal(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
-  const partidosLocalGeneral =
-    resultado?.equipo_local?.partidos_general || [];
+  const partidosLocalGeneral = resultado?.equipo_local?.partidos_general || [];
 
-  const partidosLocalCasa =
-    resultado?.equipo_local?.partidos_local || [];
+  const partidosLocalCasa = resultado?.equipo_local?.partidos_local || [];
 
   const partidosVisitanteGeneral =
     resultado?.equipo_visitante?.partidos_general || [];
@@ -6378,81 +7051,73 @@ function crearTablaMasMenosGolesLocal(
 
         <tbody>
 
-          ${lineas.map((linea) => {
-
-            const masLocalGeneral =
-              porcentajeGolesEquipo(
+          ${lineas
+            .map((linea) => {
+              const masLocalGeneral = porcentajeGolesEquipo(
                 partidosLocalGeneral,
                 equipoLocalId,
                 linea,
                 "mas",
-                "marcados"
+                "marcados",
               );
 
-            const menosLocalGeneral =
-              porcentajeGolesEquipo(
+              const menosLocalGeneral = porcentajeGolesEquipo(
                 partidosLocalGeneral,
                 equipoLocalId,
                 linea,
                 "menos",
-                "marcados"
+                "marcados",
               );
 
-            const masLocalCasa =
-              porcentajeGolesEquipo(
+              const masLocalCasa = porcentajeGolesEquipo(
                 partidosLocalCasa,
                 equipoLocalId,
                 linea,
                 "mas",
-                "marcados"
+                "marcados",
               );
 
-            const menosLocalCasa =
-              porcentajeGolesEquipo(
+              const menosLocalCasa = porcentajeGolesEquipo(
                 partidosLocalCasa,
                 equipoLocalId,
                 linea,
                 "menos",
-                "marcados"
+                "marcados",
               );
 
-            const masVisitanteGeneral =
-              porcentajeGolesEquipo(
+              const masVisitanteGeneral = porcentajeGolesEquipo(
                 partidosVisitanteGeneral,
                 equipoVisitanteId,
                 linea,
                 "mas",
-                "recibidos"
+                "recibidos",
               );
 
-            const menosVisitanteGeneral =
-              porcentajeGolesEquipo(
+              const menosVisitanteGeneral = porcentajeGolesEquipo(
                 partidosVisitanteGeneral,
                 equipoVisitanteId,
                 linea,
                 "menos",
-                "recibidos"
+                "recibidos",
               );
 
-            const masVisitanteFuera =
-              porcentajeGolesEquipo(
+              const masVisitanteFuera = porcentajeGolesEquipo(
                 partidosVisitanteFuera,
                 equipoVisitanteId,
                 linea,
                 "mas",
-                "recibidos"
+                "recibidos",
               );
 
-            const menosVisitanteFuera =
-              porcentajeGolesEquipo(
+              const menosVisitanteFuera = porcentajeGolesEquipo(
                 partidosVisitanteFuera,
                 equipoVisitanteId,
                 linea,
                 "menos",
-                "recibidos"
+                "recibidos",
               );
 
-            return `
+              return `
 
               <tr>
 
@@ -6504,7 +7169,8 @@ function crearTablaMasMenosGolesLocal(
               </tr>
 
             `;
-          }).join("")}
+            })
+            .join("")}
 
         </tbody>
 
@@ -6513,7 +7179,6 @@ function crearTablaMasMenosGolesLocal(
     </div>
   `;
 }
-
 
 // ============================================================
 // MÁS / MENOS — GOLES MARCADOS POR EL VISITANTE
@@ -6541,17 +7206,13 @@ function crearTablaMasMenosGolesVisitante(
   nombreEquipoLocal,
   nombreEquipoVisitante,
 ) {
-  const equipoLocalId =
-    resultado?.equipo_local?.id;
+  const equipoLocalId = resultado?.equipo_local?.id;
 
-  const equipoVisitanteId =
-    resultado?.equipo_visitante?.id;
+  const equipoVisitanteId = resultado?.equipo_visitante?.id;
 
-  const partidosLocalGeneral =
-    resultado?.equipo_local?.partidos_general || [];
+  const partidosLocalGeneral = resultado?.equipo_local?.partidos_general || [];
 
-  const partidosLocalCasa =
-    resultado?.equipo_local?.partidos_local || [];
+  const partidosLocalCasa = resultado?.equipo_local?.partidos_local || [];
 
   const partidosVisitanteGeneral =
     resultado?.equipo_visitante?.partidos_general || [];
@@ -6614,81 +7275,73 @@ function crearTablaMasMenosGolesVisitante(
 
         <tbody>
 
-          ${lineas.map((linea) => {
-
-            const masVisitanteGeneral =
-              porcentajeGolesEquipo(
+          ${lineas
+            .map((linea) => {
+              const masVisitanteGeneral = porcentajeGolesEquipo(
                 partidosVisitanteGeneral,
                 equipoVisitanteId,
                 linea,
                 "mas",
-                "marcados"
+                "marcados",
               );
 
-            const menosVisitanteGeneral =
-              porcentajeGolesEquipo(
+              const menosVisitanteGeneral = porcentajeGolesEquipo(
                 partidosVisitanteGeneral,
                 equipoVisitanteId,
                 linea,
                 "menos",
-                "marcados"
+                "marcados",
               );
 
-            const masVisitanteFuera =
-              porcentajeGolesEquipo(
+              const masVisitanteFuera = porcentajeGolesEquipo(
                 partidosVisitanteFuera,
                 equipoVisitanteId,
                 linea,
                 "mas",
-                "marcados"
+                "marcados",
               );
 
-            const menosVisitanteFuera =
-              porcentajeGolesEquipo(
+              const menosVisitanteFuera = porcentajeGolesEquipo(
                 partidosVisitanteFuera,
                 equipoVisitanteId,
                 linea,
                 "menos",
-                "marcados"
+                "marcados",
               );
 
-            const masLocalGeneral =
-              porcentajeGolesEquipo(
+              const masLocalGeneral = porcentajeGolesEquipo(
                 partidosLocalGeneral,
                 equipoLocalId,
                 linea,
                 "mas",
-                "recibidos"
+                "recibidos",
               );
 
-            const menosLocalGeneral =
-              porcentajeGolesEquipo(
+              const menosLocalGeneral = porcentajeGolesEquipo(
                 partidosLocalGeneral,
                 equipoLocalId,
                 linea,
                 "menos",
-                "recibidos"
+                "recibidos",
               );
 
-            const masLocalCasa =
-              porcentajeGolesEquipo(
+              const masLocalCasa = porcentajeGolesEquipo(
                 partidosLocalCasa,
                 equipoLocalId,
                 linea,
                 "mas",
-                "recibidos"
+                "recibidos",
               );
 
-            const menosLocalCasa =
-              porcentajeGolesEquipo(
+              const menosLocalCasa = porcentajeGolesEquipo(
                 partidosLocalCasa,
                 equipoLocalId,
                 linea,
                 "menos",
-                "recibidos"
+                "recibidos",
               );
 
-            return `
+              return `
 
               <tr>
 
@@ -6740,7 +7393,8 @@ function crearTablaMasMenosGolesVisitante(
               </tr>
 
             `;
-          }).join("")}
+            })
+            .join("")}
 
         </tbody>
 
@@ -6749,7 +7403,6 @@ function crearTablaMasMenosGolesVisitante(
     </div>
   `;
 }
-
 
 // ============================================================
 // MÁS / MENOS — GOLES DEL EQUIPO EN PRIMER TIEMPO
@@ -6767,16 +7420,64 @@ function crearTablaMasMenosGolesEquipoPrimerTiempo(
 
   const columnas = esLocal
     ? [
-        { partidos: resultado?.equipo_local?.partidos_general || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "General · Marcados", tipo: "marcados" },
-        { partidos: resultado?.equipo_local?.partidos_local || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "Casa · Marcados", tipo: "marcados" },
-        { partidos: resultado?.equipo_visitante?.partidos_visitante || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "Fuera · Recibidos", tipo: "recibidos" },
-        { partidos: resultado?.equipo_visitante?.partidos_general || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "General · Recibidos", tipo: "recibidos" },
+        {
+          partidos: resultado?.equipo_local?.partidos_general || [],
+          equipoId: equipoLocalId,
+          nombre: nombreEquipoLocal,
+          condicion: "General · Marcados",
+          tipo: "marcados",
+        },
+        {
+          partidos: resultado?.equipo_local?.partidos_local || [],
+          equipoId: equipoLocalId,
+          nombre: nombreEquipoLocal,
+          condicion: "Casa · Marcados",
+          tipo: "marcados",
+        },
+        {
+          partidos: resultado?.equipo_visitante?.partidos_visitante || [],
+          equipoId: equipoVisitanteId,
+          nombre: nombreEquipoVisitante,
+          condicion: "Fuera · Recibidos",
+          tipo: "recibidos",
+        },
+        {
+          partidos: resultado?.equipo_visitante?.partidos_general || [],
+          equipoId: equipoVisitanteId,
+          nombre: nombreEquipoVisitante,
+          condicion: "General · Recibidos",
+          tipo: "recibidos",
+        },
       ]
     : [
-        { partidos: resultado?.equipo_visitante?.partidos_general || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "General · Marcados", tipo: "marcados" },
-        { partidos: resultado?.equipo_visitante?.partidos_visitante || [], equipoId: equipoVisitanteId, nombre: nombreEquipoVisitante, condicion: "Fuera · Marcados", tipo: "marcados" },
-        { partidos: resultado?.equipo_local?.partidos_local || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "Casa · Recibidos", tipo: "recibidos" },
-        { partidos: resultado?.equipo_local?.partidos_general || [], equipoId: equipoLocalId, nombre: nombreEquipoLocal, condicion: "General · Recibidos", tipo: "recibidos" },
+        {
+          partidos: resultado?.equipo_visitante?.partidos_general || [],
+          equipoId: equipoVisitanteId,
+          nombre: nombreEquipoVisitante,
+          condicion: "General · Marcados",
+          tipo: "marcados",
+        },
+        {
+          partidos: resultado?.equipo_visitante?.partidos_visitante || [],
+          equipoId: equipoVisitanteId,
+          nombre: nombreEquipoVisitante,
+          condicion: "Fuera · Marcados",
+          tipo: "marcados",
+        },
+        {
+          partidos: resultado?.equipo_local?.partidos_local || [],
+          equipoId: equipoLocalId,
+          nombre: nombreEquipoLocal,
+          condicion: "Casa · Recibidos",
+          tipo: "recibidos",
+        },
+        {
+          partidos: resultado?.equipo_local?.partidos_general || [],
+          equipoId: equipoLocalId,
+          nombre: nombreEquipoLocal,
+          condicion: "General · Recibidos",
+          tipo: "recibidos",
+        },
       ];
 
   const lineas = [0.5, 1.5, 2.5, 3.5];
@@ -6784,7 +7485,9 @@ function crearTablaMasMenosGolesEquipoPrimerTiempo(
   const crearFila = (esMas, linea) => `
     <tr>
       <td>${esMas ? "Más" : "Menos"} ${formatearLinea(linea)}</td>
-      ${columnas.map((columna) => `
+      ${columnas
+        .map(
+          (columna) => `
         <td>${porcentajeGolesEquipoPrimerTiempo(
           columna.partidos,
           columna.equipoId,
@@ -6792,7 +7495,9 @@ function crearTablaMasMenosGolesEquipoPrimerTiempo(
           linea,
           esMas,
         )}</td>
-      `).join("")}
+      `,
+        )
+        .join("")}
     </tr>
   `;
 
@@ -6802,9 +7507,13 @@ function crearTablaMasMenosGolesEquipoPrimerTiempo(
         <thead>
           <tr>
             <th>Mercado</th>
-            ${columnas.map((columna) => `
+            ${columnas
+              .map(
+                (columna) => `
               <th>${escaparHTML(columna.nombre)}<br>${columna.condicion}</th>
-            `).join("")}
+            `,
+              )
+              .join("")}
           </tr>
         </thead>
         <tbody>
@@ -6814,7 +7523,6 @@ function crearTablaMasMenosGolesEquipoPrimerTiempo(
     </div>
   `;
 }
-
 
 function porcentajeGolesEquipoPrimerTiempo(
   partidos,
@@ -6827,11 +7535,7 @@ function porcentajeGolesEquipoPrimerTiempo(
   let acertados = 0;
 
   (partidos || []).forEach((partido) => {
-    const goles = obtenerEstadisticaPartido(
-      partido,
-      "1ST",
-      "timeline:goles",
-    );
+    const goles = obtenerEstadisticaPartido(partido, "1ST", "timeline:goles");
 
     if (!goles) {
       return;
@@ -6856,15 +7560,11 @@ function porcentajeGolesEquipoPrimerTiempo(
   return porcentajeMercado(acertados, validos);
 }
 
-
 // ============================================================
 // CALCULAR PORCENTAJE DE AMBOS EQUIPOS ANOTAN
 // ============================================================
 
-function porcentajeAmbosAnotan(
-  partidos,
-  ambosAnotan,
-) {
+function porcentajeAmbosAnotan(partidos, ambosAnotan) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -6876,40 +7576,27 @@ function porcentajeAmbosAnotan(
     const golesLocal = Number(partido?.marcador_local);
     const golesVisitante = Number(partido?.marcador_visitante);
 
-    if (
-      !Number.isFinite(golesLocal) ||
-      !Number.isFinite(golesVisitante)
-    ) {
+    if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
       return;
     }
 
     validos += 1;
 
-    const anotaronAmbos =
-      golesLocal > 0 && golesVisitante > 0;
+    const anotaronAmbos = golesLocal > 0 && golesVisitante > 0;
 
     if (anotaronAmbos === ambosAnotan) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR AMBOS ANOTAN CON MÁS / MENOS
 // ============================================================
 
-function porcentajeAmbosAnotanMasMenos(
-  partidos,
-  ambosAnotan,
-  linea,
-  esMas,
-) {
+function porcentajeAmbosAnotanMasMenos(partidos, ambosAnotan, linea, esMas) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -6921,37 +7608,24 @@ function porcentajeAmbosAnotanMasMenos(
     const golesLocal = Number(partido?.marcador_local);
     const golesVisitante = Number(partido?.marcador_visitante);
 
-    if (
-      !Number.isFinite(golesLocal) ||
-      !Number.isFinite(golesVisitante)
-    ) {
+    if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
       return;
     }
 
     validos += 1;
 
-    const anotaronAmbos =
-      golesLocal > 0 && golesVisitante > 0;
+    const anotaronAmbos = golesLocal > 0 && golesVisitante > 0;
 
     const total = golesLocal + golesVisitante;
-    const cumpleLinea = esMas
-      ? total > linea
-      : total < linea;
+    const cumpleLinea = esMas ? total > linea : total < linea;
 
-    if (
-      anotaronAmbos === ambosAnotan &&
-      cumpleLinea
-    ) {
+    if (anotaronAmbos === ambosAnotan && cumpleLinea) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR AMBOS ANOTAN O MÁS DE GOLES
@@ -6973,17 +7647,13 @@ function porcentajeAmbosAnotanOMasGoles(
     const golesLocal = Number(partido?.marcador_local);
     const golesVisitante = Number(partido?.marcador_visitante);
 
-    if (
-      !Number.isFinite(golesLocal) ||
-      !Number.isFinite(golesVisitante)
-    ) {
+    if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
       return;
     }
 
     validos += 1;
 
-    const anotaronAmbos =
-      golesLocal > 0 && golesVisitante > 0;
+    const anotaronAmbos = golesLocal > 0 && golesVisitante > 0;
 
     const total = golesLocal + golesVisitante;
     const masGoles = total > linea;
@@ -6994,22 +7664,14 @@ function porcentajeAmbosAnotanOMasGoles(
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR PORCENTAJE DE UN RANGO DE GOLES TOTALES
 // ============================================================
 
-function porcentajeTotalGolesRango(
-  partidos,
-  minimo,
-  maximo,
-) {
+function porcentajeTotalGolesRango(partidos, minimo, maximo) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7021,10 +7683,7 @@ function porcentajeTotalGolesRango(
     const golesLocal = Number(partido?.marcador_local);
     const golesVisitante = Number(partido?.marcador_visitante);
 
-    if (
-      !Number.isFinite(golesLocal) ||
-      !Number.isFinite(golesVisitante)
-    ) {
+    if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
       return;
     }
 
@@ -7032,28 +7691,22 @@ function porcentajeTotalGolesRango(
 
     const total = golesLocal + golesVisitante;
     const cumpleMinimo = total >= minimo;
-    const cumpleMaximo =
-      maximo === null || total <= maximo;
+    const cumpleMaximo = maximo === null || total <= maximo;
 
     if (cumpleMinimo && cumpleMaximo) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // OBTENER TARJETAS DE UN PARTIDO
 // ============================================================
 
 function obtenerResumenTarjetas(partido) {
-  const tarjetas =
-    partido?.estadisticas?.eventos_jugadores?.tarjetas;
+  const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
 
   if (!Array.isArray(tarjetas)) {
     return null;
@@ -7079,16 +7732,11 @@ function obtenerResumenTarjetas(partido) {
   return resumen;
 }
 
-
 // ============================================================
 // CALCULAR PORCENTAJE DE TARJETAS ROJAS
 // ============================================================
 
-function porcentajeTarjetasRojas(
-  partidos,
-  linea,
-  esMas,
-) {
+function porcentajeTarjetasRojas(partidos, linea, esMas) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7097,8 +7745,7 @@ function porcentajeTarjetasRojas(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const tarjetas =
-      partido?.estadisticas?.eventos_jugadores?.tarjetas;
+    const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
 
     if (!Array.isArray(tarjetas)) {
       return;
@@ -7106,26 +7753,20 @@ function porcentajeTarjetasRojas(
 
     validos += 1;
 
-    const rojas = tarjetas.filter((tarjeta) =>
-      tarjeta?.tipo === "Roja" ||
-      tarjeta?.tipo === "Segunda amarilla"
+    const rojas = tarjetas.filter(
+      (tarjeta) =>
+        tarjeta?.tipo === "Roja" || tarjeta?.tipo === "Segunda amarilla",
     ).length;
 
-    const cumpleLinea = esMas
-      ? rojas > linea
-      : rojas < linea;
+    const cumpleLinea = esMas ? rojas > linea : rojas < linea;
 
     if (cumpleLinea) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 function porcentajeTarjetasPrimerTiempo(partidos, linea, esMas) {
   let validos = 0;
@@ -7134,78 +7775,243 @@ function porcentajeTarjetasPrimerTiempo(partidos, linea, esMas) {
     const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
     if (!Array.isArray(tarjetas)) return;
     validos += 1;
-    const total = tarjetas.filter((tarjeta) => Number(tarjeta?.minuto) <= 45).length;
+    const total = tarjetas.filter(
+      (tarjeta) => Number(tarjeta?.minuto) <= 45,
+    ).length;
     if (esMas ? total > linea : total < linea) acertados += 1;
   });
   return porcentajeMercado(acertados, validos);
 }
 
 function porcentajeProximaTarjeta(partidos, equipoId, esperado) {
-  let validos=0, acertados=0;
-  (partidos||[]).forEach(partido=>{const tarjetas=partido?.estadisticas?.eventos_jugadores?.tarjetas; const lado=obtenerLadoEquipoPartido(partido,equipoId); if(!Array.isArray(tarjetas)||!lado)return; validos++; const primera=tarjetas[0]; const estado=!primera?"sin_tarjetas":primera.equipo===lado?"equipo":"rival"; if(estado===esperado)acertados++;});
-  return porcentajeMercado(acertados,validos);
+  let validos = 0,
+    acertados = 0;
+  (partidos || []).forEach((partido) => {
+    const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
+    const lado = obtenerLadoEquipoPartido(partido, equipoId);
+    if (!Array.isArray(tarjetas) || !lado) return;
+    validos++;
+    const primera = tarjetas[0];
+    const estado = !primera
+      ? "sin_tarjetas"
+      : primera.equipo === lado
+        ? "equipo"
+        : "rival";
+    if (estado === esperado) acertados++;
+  });
+  return porcentajeMercado(acertados, validos);
 }
 
-function porcentajeTarjetasEquipoPrimerTiempo(partidos,equipoId,linea,esMas,tipo="equipo") {
-  let validos=0,acertados=0;
-  (partidos||[]).forEach(partido=>{const tarjetas=partido?.estadisticas?.eventos_jugadores?.tarjetas; const lado=obtenerLadoEquipoPartido(partido,equipoId); if(!Array.isArray(tarjetas)||!lado)return; validos++; const ladoObjetivo=tipo==="rival"?(lado==="local"?"visitante":"local"):lado; const total=tarjetas.filter(t=>t?.equipo===ladoObjetivo&&Number(t?.minuto)<=45).length; if(esMas?total>linea:total<linea)acertados++;});
-  return porcentajeMercado(acertados,validos);
+function porcentajeTarjetasEquipoPrimerTiempo(
+  partidos,
+  equipoId,
+  linea,
+  esMas,
+  tipo = "equipo",
+) {
+  let validos = 0,
+    acertados = 0;
+  (partidos || []).forEach((partido) => {
+    const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
+    const lado = obtenerLadoEquipoPartido(partido, equipoId);
+    if (!Array.isArray(tarjetas) || !lado) return;
+    validos++;
+    const ladoObjetivo =
+      tipo === "rival" ? (lado === "local" ? "visitante" : "local") : lado;
+    const total = tarjetas.filter(
+      (t) => t?.equipo === ladoObjetivo && Number(t?.minuto) <= 45,
+    ).length;
+    if (esMas ? total > linea : total < linea) acertados++;
+  });
+  return porcentajeMercado(acertados, validos);
 }
 
 function obtenerTarjetasPorTiempo(partido) {
-  const tarjetas=partido?.estadisticas?.eventos_jugadores?.tarjetas;
-  if(!Array.isArray(tarjetas))return null;
-  const resumen={local:{primero:0,segundo:0},visitante:{primero:0,segundo:0}};
-  tarjetas.forEach(t=>{if(!resumen[t?.equipo])return; const tiempo=Number(t?.minuto)<=45?"primero":"segundo"; resumen[t.equipo][tiempo]+=1;});
+  const tarjetas = partido?.estadisticas?.eventos_jugadores?.tarjetas;
+  if (!Array.isArray(tarjetas)) return null;
+  const resumen = {
+    local: { primero: 0, segundo: 0 },
+    visitante: { primero: 0, segundo: 0 },
+  };
+  tarjetas.forEach((t) => {
+    if (!resumen[t?.equipo]) return;
+    const tiempo = Number(t?.minuto) <= 45 ? "primero" : "segundo";
+    resumen[t.equipo][tiempo] += 1;
+  });
   return resumen;
 }
 
-function porcentajeTarjetasAmbosTiempos(partidos,esperado) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);if(!t)return;v++;const cumple=t.local.primero+t.visitante.primero>0&&t.local.segundo+t.visitante.segundo>0;if(cumple===esperado)a++;});return porcentajeMercado(a,v);
+function porcentajeTarjetasAmbosTiempos(partidos, esperado) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = obtenerTarjetasPorTiempo(p);
+    if (!t) return;
+    v++;
+    const cumple =
+      t.local.primero + t.visitante.primero > 0 &&
+      t.local.segundo + t.visitante.segundo > 0;
+    if (cumple === esperado) a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
 function porcentajeAmbosEquiposTarjetasAmbosTiempos(partidos) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);if(!t)return;v++;if(t.local.primero>0&&t.local.segundo>0&&t.visitante.primero>0&&t.visitante.segundo>0)a++;});return porcentajeMercado(a,v);
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = obtenerTarjetasPorTiempo(p);
+    if (!t) return;
+    v++;
+    if (
+      t.local.primero > 0 &&
+      t.local.segundo > 0 &&
+      t.visitante.primero > 0 &&
+      t.visitante.segundo > 0
+    )
+      a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
-function porcentajeTarjetasEquipoSegundoTiempo(partidos,equipoId,linea,esMas,tipo="equipo") {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);const lado=obtenerLadoEquipoPartido(p,equipoId);if(!t||!lado)return;v++;const ladoObjetivo=tipo==="rival"?(lado==="local"?"visitante":"local"):lado;const total=t[ladoObjetivo].segundo;if(esMas?total>linea:total<linea)a++;});return porcentajeMercado(a,v);
+function porcentajeTarjetasEquipoSegundoTiempo(
+  partidos,
+  equipoId,
+  linea,
+  esMas,
+  tipo = "equipo",
+) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = obtenerTarjetasPorTiempo(p);
+    const lado = obtenerLadoEquipoPartido(p, equipoId);
+    if (!t || !lado) return;
+    v++;
+    const ladoObjetivo =
+      tipo === "rival" ? (lado === "local" ? "visitante" : "local") : lado;
+    const total = t[ladoObjetivo].segundo;
+    if (esMas ? total > linea : total < linea) a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
 function obtenerTotalPenalesConcedidos(partido) {
-  const filas=partido?.estadisticas?.periodos;
-  if(!Array.isArray(filas))return null;
-  const fila=filas.find(f=>f?.periodo==="FT"&&f?.estadistica_key==="timeline:penales_causados");
-  if(!fila)return null;
-  const local=Number(fila.local),visitante=Number(fila.visitante);
-  return Number.isFinite(local)&&Number.isFinite(visitante)?local+visitante:null;
+  const filas = partido?.estadisticas?.periodos;
+  if (!Array.isArray(filas)) return null;
+  const fila = filas.find(
+    (f) =>
+      f?.periodo === "FT" && f?.estadistica_key === "timeline:penales_causados",
+  );
+  if (!fila) return null;
+  const local = Number(fila.local),
+    visitante = Number(fila.visitante);
+  return Number.isFinite(local) && Number.isFinite(visitante)
+    ? local + visitante
+    : null;
 }
 
-function porcentajeEventoTarjetas(partidos,tipo,esperado) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const tarjetas=p?.estadisticas?.eventos_jugadores?.tarjetas;const penales=obtenerTotalPenalesConcedidos(p);if(!Array.isArray(tarjetas)||penales===null)return;v++;const roja=tarjetas.some(t=>t?.tipo==="Roja"||t?.tipo==="Segunda amarilla");const rojaPrimero=tarjetas.some(t=>(t?.tipo==="Roja"||t?.tipo==="Segunda amarilla")&&Number(t?.minuto)<=45);const penal=penales>0;const cumple=tipo==="roja_primero"?rojaPrimero:tipo==="roja_y_penal"?roja&&penal:roja||penal;if(cumple===esperado)a++;});return porcentajeMercado(a,v);
+function porcentajeEventoTarjetas(partidos, tipo, esperado) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const tarjetas = p?.estadisticas?.eventos_jugadores?.tarjetas;
+    const penales = obtenerTotalPenalesConcedidos(p);
+    if (!Array.isArray(tarjetas) || penales === null) return;
+    v++;
+    const roja = tarjetas.some(
+      (t) => t?.tipo === "Roja" || t?.tipo === "Segunda amarilla",
+    );
+    const rojaPrimero = tarjetas.some(
+      (t) =>
+        (t?.tipo === "Roja" || t?.tipo === "Segunda amarilla") &&
+        Number(t?.minuto) <= 45,
+    );
+    const penal = penales > 0;
+    const cumple =
+      tipo === "roja_primero"
+        ? rojaPrimero
+        : tipo === "roja_y_penal"
+          ? roja && penal
+          : roja || penal;
+    if (cumple === esperado) a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
-function porcentajeRangoTarjetas(partidos,min,max) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerResumenTarjetas(p);if(!t)return;v++;if(t.total>=min&&(max===null||t.total<=max))a++;});return porcentajeMercado(a,v);
+function porcentajeRangoTarjetas(partidos, min, max) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = obtenerResumenTarjetas(p);
+    if (!t) return;
+    v++;
+    if (t.total >= min && (max === null || t.total <= max)) a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
-function resultadoTarjetas(a,b) { return a>b?"equipo":a<b?"rival":"empate"; }
-
-function porcentajeMedioTiempoTiempoCompletoTarjetas(partidos,equipoId,esperadoPrimero,esperadoCompleto) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerTarjetasPorTiempo(p);const lado=obtenerLadoEquipoPartido(p,equipoId);if(!t||!lado)return;v++;const rival=lado==="local"?"visitante":"local";const primero=resultadoTarjetas(t[lado].primero,t[rival].primero);const completo=resultadoTarjetas(t[lado].primero+t[lado].segundo,t[rival].primero+t[rival].segundo);if(primero===esperadoPrimero&&completo===esperadoCompleto)a++;});return porcentajeMercado(a,v);
+function resultadoTarjetas(a, b) {
+  return a > b ? "equipo" : a < b ? "rival" : "empate";
 }
 
-function porcentajeMarcadorCorrectoTarjetas(partidos,equipoId,esperadoEquipo,esperadoRival) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const t=obtenerResumenTarjetas(p);const lado=obtenerLadoEquipoPartido(p,equipoId);if(!t||!lado)return;v++;const rival=lado==="local"?"visitante":"local";if(t[lado]===esperadoEquipo&&t[rival]===esperadoRival)a++;});return porcentajeMercado(a,v);
+function porcentajeMedioTiempoTiempoCompletoTarjetas(
+  partidos,
+  equipoId,
+  esperadoPrimero,
+  esperadoCompleto,
+) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = obtenerTarjetasPorTiempo(p);
+    const lado = obtenerLadoEquipoPartido(p, equipoId);
+    if (!t || !lado) return;
+    v++;
+    const rival = lado === "local" ? "visitante" : "local";
+    const primero = resultadoTarjetas(t[lado].primero, t[rival].primero);
+    const completo = resultadoTarjetas(
+      t[lado].primero + t[lado].segundo,
+      t[rival].primero + t[rival].segundo,
+    );
+    if (primero === esperadoPrimero && completo === esperadoCompleto) a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
-function obtenerCornersPartido(partido,periodo) {
-  const filas=partido?.estadisticas?.periodos;
-  if(!Array.isArray(filas))return null;
-  const fila=filas.find(f=>(f?.periodo===periodo||(periodo==="FT"&&f?.periodo==="ALL"))&&f?.estadistica_key==="corner kicks");
-  if(!fila)return null;
-  const local=Number(fila.local),visitante=Number(fila.visitante);
-  return Number.isFinite(local)&&Number.isFinite(visitante)?{local,visitante}:null;
+function porcentajeMarcadorCorrectoTarjetas(
+  partidos,
+  equipoId,
+  esperadoEquipo,
+  esperadoRival,
+) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const t = obtenerResumenTarjetas(p);
+    const lado = obtenerLadoEquipoPartido(p, equipoId);
+    if (!t || !lado) return;
+    v++;
+    const rival = lado === "local" ? "visitante" : "local";
+    if (t[lado] === esperadoEquipo && t[rival] === esperadoRival) a++;
+  });
+  return porcentajeMercado(a, v);
+}
+
+function obtenerCornersPartido(partido, periodo) {
+  const filas = partido?.estadisticas?.periodos;
+  if (!Array.isArray(filas)) return null;
+  const fila = filas.find(
+    (f) =>
+      (f?.periodo === periodo || (periodo === "FT" && f?.periodo === "ALL")) &&
+      f?.estadistica_key === "corner kicks",
+  );
+  if (!fila) return null;
+  const local = Number(fila.local),
+    visitante = Number(fila.visitante);
+  return Number.isFinite(local) && Number.isFinite(visitante)
+    ? { local, visitante }
+    : null;
 }
 
 function obtenerEstadisticaPartido(partido, periodo, estadisticaKey) {
@@ -7215,10 +8021,12 @@ function obtenerEstadisticaPartido(partido, periodo, estadisticaKey) {
     return null;
   }
 
-  const fila = filas.find((item) => (
-    (item?.periodo === periodo || (periodo === "FT" && item?.periodo === "ALL")) &&
-    item?.estadistica_key === estadisticaKey
-  ));
+  const fila = filas.find(
+    (item) =>
+      (item?.periodo === periodo ||
+        (periodo === "FT" && item?.periodo === "ALL")) &&
+      item?.estadistica_key === estadisticaKey,
+  );
 
   if (!fila) {
     return null;
@@ -7232,16 +8040,45 @@ function obtenerEstadisticaPartido(partido, periodo, estadisticaKey) {
     : null;
 }
 
-function porcentajeCorners(partidos,periodo,tipo,linea,esMas,equipoId) {
-  let v=0,a=0;(partidos||[]).forEach(p=>{const corners=obtenerCornersPartido(p,periodo);const lado=obtenerLadoEquipoPartido(p,equipoId);if(!corners||!lado)return;v++;const ladoRival=lado==="local"?"visitante":"local";const total=tipo==="equipo"?corners[lado]:tipo==="rival"?corners[ladoRival]:corners.local+corners.visitante;if(esMas?total>linea:total<linea)a++;});return porcentajeMercado(a,v);
+function porcentajeCorners(partidos, periodo, tipo, linea, esMas, equipoId) {
+  let v = 0,
+    a = 0;
+  (partidos || []).forEach((p) => {
+    const corners = obtenerCornersPartido(p, periodo);
+    const lado = obtenerLadoEquipoPartido(p, equipoId);
+    if (!corners || !lado) return;
+    v++;
+    const ladoRival = lado === "local" ? "visitante" : "local";
+    const total =
+      tipo === "equipo"
+        ? corners[lado]
+        : tipo === "rival"
+          ? corners[ladoRival]
+          : corners.local + corners.visitante;
+    if (esMas ? total > linea : total < linea) a++;
+  });
+  return porcentajeMercado(a, v);
 }
 
-function porcentajeEstadistica(partidos, estadisticaKey, linea, esMas, equipoId, objetivo, contarFaltantesComoCero = false, periodo = "FT") {
+function porcentajeEstadistica(
+  partidos,
+  estadisticaKey,
+  linea,
+  esMas,
+  equipoId,
+  objetivo,
+  contarFaltantesComoCero = false,
+  periodo = "FT",
+) {
   let validos = 0;
   let acertados = 0;
 
   (partidos || []).forEach((partido) => {
-    const estadistica = obtenerEstadisticaPartido(partido, periodo, estadisticaKey);
+    const estadistica = obtenerEstadisticaPartido(
+      partido,
+      periodo,
+      estadisticaKey,
+    );
 
     let valor;
 
@@ -7295,11 +8132,12 @@ function porcentajeEquipoMasCorners(partidos, periodo, equipoId, esperado) {
       return;
     }
     const ladoRival = ladoEquipo === "local" ? "visitante" : "local";
-    const resultado = corners[ladoEquipo] > corners[ladoRival]
-      ? "equipo"
-      : corners[ladoEquipo] < corners[ladoRival]
-        ? "rival"
-        : "empate";
+    const resultado =
+      corners[ladoEquipo] > corners[ladoRival]
+        ? "equipo"
+        : corners[ladoEquipo] < corners[ladoRival]
+          ? "rival"
+          : "empate";
 
     validos += 1;
 
@@ -7325,11 +8163,12 @@ function porcentajeTiempoConMasCorners(partidos, esperado) {
 
     const totalPrimerTiempo = primerTiempo.local + primerTiempo.visitante;
     const totalSegundoTiempo = segundoTiempo.local + segundoTiempo.visitante;
-    const resultado = totalPrimerTiempo > totalSegundoTiempo
-      ? "primer_tiempo"
-      : totalPrimerTiempo < totalSegundoTiempo
-        ? "segundo_tiempo"
-        : "empate";
+    const resultado =
+      totalPrimerTiempo > totalSegundoTiempo
+        ? "primer_tiempo"
+        : totalPrimerTiempo < totalSegundoTiempo
+          ? "segundo_tiempo"
+          : "empate";
 
     validos += 1;
 
@@ -7363,7 +8202,12 @@ function porcentajeRangoTotalCorners(partidos, minimo, maximo) {
   return porcentajeMercado(acertados, validos);
 }
 
-function porcentajeMarcadorCorrectoCorners(partidos, equipoId, cornersEquipo, cornersRival) {
+function porcentajeMarcadorCorrectoCorners(
+  partidos,
+  equipoId,
+  cornersEquipo,
+  cornersRival,
+) {
   let validos = 0;
   let acertados = 0;
 
@@ -7394,16 +8238,11 @@ function porcentajeMarcadorCorrectoCorners(partidos, equipoId, cornersEquipo, co
   return porcentajeMercado(acertados, validos);
 }
 
-
 // ============================================================
 // CALCULAR PORCENTAJE DE TARJETAS TOTALES
 // ============================================================
 
-function porcentajeTotalTarjetas(
-  partidos,
-  linea,
-  esMas,
-) {
+function porcentajeTotalTarjetas(partidos, linea, esMas) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7420,21 +8259,15 @@ function porcentajeTotalTarjetas(
 
     validos += 1;
 
-    const cumpleLinea = esMas
-      ? resumen.total > linea
-      : resumen.total < linea;
+    const cumpleLinea = esMas ? resumen.total > linea : resumen.total < linea;
 
     if (cumpleLinea) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR TARJETAS PARA AMBOS EQUIPOS
@@ -7462,29 +8295,21 @@ function porcentajeAmbosEquiposTarjetas(
     validos += 1;
 
     const cumpleMercado =
-      resumen.local >= minimoTarjetas &&
-      resumen.visitante >= minimoTarjetas;
+      resumen.local >= minimoTarjetas && resumen.visitante >= minimoTarjetas;
 
     if (cumpleMercado === cumpleMercadoEsperado) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR PORCENTAJE DE PARIDAD DE GOLES TOTALES
 // ============================================================
 
-function porcentajeTotalGolesParidad(
-  partidos,
-  paridad,
-) {
+function porcentajeTotalGolesParidad(partidos, paridad) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7496,10 +8321,7 @@ function porcentajeTotalGolesParidad(
     const golesLocal = Number(partido?.marcador_local);
     const golesVisitante = Number(partido?.marcador_visitante);
 
-    if (
-      !Number.isFinite(golesLocal) ||
-      !Number.isFinite(golesVisitante)
-    ) {
+    if (!Number.isFinite(golesLocal) || !Number.isFinite(golesVisitante)) {
       return;
     }
 
@@ -7508,31 +8330,19 @@ function porcentajeTotalGolesParidad(
     const total = golesLocal + golesVisitante;
     const esPar = total % 2 === 0;
 
-    if (
-      (paridad === "par" && esPar) ||
-      (paridad === "impar" && !esPar)
-    ) {
+    if ((paridad === "par" && esPar) || (paridad === "impar" && !esPar)) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR MÁS / MENOS DE GOLES TOTALES
 // ============================================================
 
-function calcularPorcentajeTotalGoles(
-  partidos,
-  linea,
-  esMas,
-  periodo = "FT",
-) {
+function calcularPorcentajeTotalGoles(partidos, linea, esMas, periodo = "FT") {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7541,11 +8351,7 @@ function calcularPorcentajeTotalGoles(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-
-    const total = obtenerTotalGolesPartido(
-      partido,
-      periodo,
-    );
+    const total = obtenerTotalGolesPartido(partido, periodo);
 
     if (total === null) {
       return;
@@ -7568,12 +8374,8 @@ function calcularPorcentajeTotalGoles(
     return "N/D";
   }
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR MÁS / MENOS DE GOLES DE UN EQUIPO
@@ -7603,13 +8405,7 @@ function calcularPorcentajeTotalGoles(
 //   -> goles <= 2
 // ============================================================
 
-function porcentajeGolesEquipo(
-  partidos,
-  equipoId,
-  linea,
-  modo,
-  objetivo,
-) {
+function porcentajeGolesEquipo(partidos, equipoId, linea, modo, objetivo) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7618,24 +8414,12 @@ function porcentajeGolesEquipo(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-
     let goles = null;
 
     if (objetivo === "marcados") {
-
-      goles =
-        obtenerGolesEquipo(
-          partido,
-          equipoId
-        );
-
+      goles = obtenerGolesEquipo(partido, equipoId);
     } else if (objetivo === "recibidos") {
-
-      goles =
-        obtenerGolesRecibidosEquipo(
-          partido,
-          equipoId
-        );
+      goles = obtenerGolesRecibidosEquipo(partido, equipoId);
     }
 
     if (!Number.isFinite(goles)) {
@@ -7645,13 +8429,10 @@ function porcentajeGolesEquipo(
     validos += 1;
 
     if (modo === "mas") {
-
       if (goles > linea) {
         acertados += 1;
       }
-
     } else if (modo === "menos") {
-
       if (goles < linea) {
         acertados += 1;
       }
@@ -7662,24 +8443,14 @@ function porcentajeGolesEquipo(
     return "N/D";
   }
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // CALCULAR PORCENTAJE DE GOLES EXACTOS O POR RANGO DEL EQUIPO
 // ============================================================
 
-function porcentajeGolesEquipoRango(
-  partidos,
-  equipoId,
-  tipo,
-  minimo,
-  maximo,
-) {
+function porcentajeGolesEquipoRango(partidos, equipoId, tipo, minimo, maximo) {
   if (!Array.isArray(partidos) || partidos.length === 0) {
     return "N/D";
   }
@@ -7688,9 +8459,10 @@ function porcentajeGolesEquipoRango(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const goles = tipo === "marcados"
-      ? obtenerGolesEquipo(partido, equipoId)
-      : obtenerGolesRecibidosEquipo(partido, equipoId);
+    const goles =
+      tipo === "marcados"
+        ? obtenerGolesEquipo(partido, equipoId)
+        : obtenerGolesRecibidosEquipo(partido, equipoId);
 
     if (!Number.isFinite(goles)) {
       return;
@@ -7699,20 +8471,15 @@ function porcentajeGolesEquipoRango(
     validos += 1;
 
     const cumpleMinimo = goles >= minimo;
-    const cumpleMaximo =
-      maximo === null || goles <= maximo;
+    const cumpleMaximo = maximo === null || goles <= maximo;
 
     if (cumpleMinimo && cumpleMaximo) {
       acertados += 1;
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // TOTAL DE GOLES DE UN PARTIDO POR PERIODO
@@ -7728,17 +8495,10 @@ function obtenerTotalGolesPartido(partido, periodo = "FT") {
       : null;
   }
 
-  const goles = obtenerEstadisticaPartido(
-    partido,
-    periodo,
-    "timeline:goles",
-  );
+  const goles = obtenerEstadisticaPartido(partido, periodo, "timeline:goles");
 
-  return goles
-    ? goles.local + goles.visitante
-    : null;
+  return goles ? goles.local + goles.visitante : null;
 }
-
 
 // ============================================================
 // CALCULAR PORCENTAJE DE MARCADOR CORRECTO
@@ -7758,22 +8518,11 @@ function porcentajeMarcadorCorrecto(
   let acertados = 0;
 
   partidos.forEach((partido) => {
-    const golesEquipo =
-      obtenerGolesEquipo(
-        partido,
-        equipoId
-      );
+    const golesEquipo = obtenerGolesEquipo(partido, equipoId);
 
-    const golesRival =
-      obtenerGolesRecibidosEquipo(
-        partido,
-        equipoId
-      );
+    const golesRival = obtenerGolesRecibidosEquipo(partido, equipoId);
 
-    if (
-      !Number.isFinite(golesEquipo) ||
-      !Number.isFinite(golesRival)
-    ) {
+    if (!Number.isFinite(golesEquipo) || !Number.isFinite(golesRival)) {
       return;
     }
 
@@ -7787,12 +8536,8 @@ function porcentajeMarcadorCorrecto(
     }
   });
 
-  return porcentajeMercado(
-    acertados,
-    validos
-  );
+  return porcentajeMercado(acertados, validos);
 }
-
 
 // ============================================================
 // FORMATEAR LÍNEA
@@ -7808,16 +8553,11 @@ function formatearLinea(linea) {
   return numero.toFixed(1);
 }
 
-
 // ============================================================
 // PORCENTAJE DOBLE OPORTUNIDAD
 // ============================================================
 
-function porcentajeDobleOportunidad(
-  resultado1,
-  resultado2,
-  partidos,
-) {
+function porcentajeDobleOportunidad(resultado1, resultado2, partidos) {
   if (
     resultado1 === null ||
     resultado1 === undefined ||
@@ -7832,29 +8572,16 @@ function porcentajeDobleOportunidad(
   }
 
   const porcentaje =
-    (
-      (
-        Number(resultado1) +
-        Number(resultado2)
-      ) /
-      Number(partidos)
-    ) *
-    100;
+    ((Number(resultado1) + Number(resultado2)) / Number(partidos)) * 100;
 
-  return formatearPorcentaje(
-    porcentaje
-  );
+  return formatearPorcentaje(porcentaje);
 }
-
 
 // ============================================================
 // PORCENTAJE MERCADO
 // ============================================================
 
-function porcentajeMercado(
-  valor,
-  partidos,
-) {
+function porcentajeMercado(valor, partidos) {
   if (
     valor === null ||
     valor === undefined ||
@@ -7867,18 +8594,10 @@ function porcentajeMercado(
     return "N/D";
   }
 
-  const porcentaje =
-    (
-      Number(valor) /
-      Number(partidos)
-    ) *
-    100;
+  const porcentaje = (Number(valor) / Number(partidos)) * 100;
 
-  return formatearPorcentaje(
-    porcentaje
-  );
+  return formatearPorcentaje(porcentaje);
 }
-
 
 // ============================================================
 // FORMATEAR PORCENTAJE
@@ -7891,30 +8610,20 @@ function formatearPorcentaje(porcentaje) {
 
   const numero = Number(porcentaje);
 
-  return `${numero % 1 === 0
-    ? numero
-    : numero.toFixed(1)}%`;
+  return `${numero % 1 === 0 ? numero : numero.toFixed(1)}%`;
 }
-
 
 // ============================================================
 // VALOR MERCADO
 // ============================================================
 
 function valorMercado(valor) {
-  if (
-    valor === null ||
-    valor === undefined ||
-    valor === ""
-  ) {
+  if (valor === null || valor === undefined || valor === "") {
     return "N/D";
   }
 
-  return escaparHTML(
-    String(valor)
-  );
+  return escaparHTML(String(valor));
 }
-
 
 // ============================================================
 // ESCAPAR HTML
