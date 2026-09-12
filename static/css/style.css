@@ -4,27 +4,34 @@
 
 body {
   margin: 0;
-  padding: 30px;
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-  color: #222;
+  padding: 32px 24px 64px;
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(52, 211, 153, 0.12), transparent 28rem),
+    linear-gradient(145deg, #f8fafc 0%, #eef4f3 100%);
+  color: #172033;
 }
 
 .container {
-  max-width: 1500px;
+  max-width: 1580px;
   margin: auto;
 }
 
 h1 {
-  margin-bottom: 25px;
+  margin: 0 0 24px;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  letter-spacing: -0.04em;
+  color: #102a43;
 }
 
 .buscador {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  margin-bottom: 25px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.86);
+  padding: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 16px;
+  margin-bottom: 28px;
+  box-shadow: 0 10px 30px rgba(15, 45, 59, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .inputs {
@@ -46,25 +53,39 @@ h1 {
 
 .campo input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
   font-size: 16px;
+  color: #172033;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.16);
 }
 
 button {
   margin-top: 15px;
-  padding: 12px 25px;
+  padding: 12px 22px;
   border: none;
-  border-radius: 6px;
-  background: #222;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #0f766e, #0b5e58);
   color: white;
   cursor: pointer;
   font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(15, 118, 110, 0.2);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
 button:hover {
-  opacity: 0.85;
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 9px 18px rgba(15, 118, 110, 0.28);
 }
 
 button:disabled {
@@ -81,6 +102,29 @@ button:disabled {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 25px;
+}
+
+/* El historial se conserva para los cálculos, pero no se muestra en pantalla. */
+#resultados {
+  display: none !important;
+}
+
+#resultados.historial-visible {
+  display: grid !important;
+  margin-bottom: 28px;
+}
+
+.boton-secundario {
+  margin-left: 8px;
+  background: #fff;
+  color: #0f766e;
+  border: 1px solid #9dcfc5;
+  box-shadow: none;
+}
+
+.boton-secundario:hover {
+  background: #e8f7f3;
+  box-shadow: none;
 }
 
 .equipo {
@@ -192,18 +236,30 @@ button:disabled {
   width: 100%;
   border-collapse: collapse;
   font-size: 14px;
+  min-width: 620px;
 }
 
 .tabla-estadisticas th {
-  background: #eeeeee;
-  padding: 8px;
+  background: #e8f1f0;
+  color: #25404a;
+  padding: 10px 12px;
   text-align: center;
   font-weight: bold;
+  border-bottom: 1px solid #c9dfdb;
 }
 
 .tabla-estadisticas td {
-  padding: 7px 8px;
-  border-bottom: 1px solid #eee;
+  padding: 9px 12px;
+  border-bottom: 1px solid #e7edf0;
+  color: #354052;
+}
+
+.tabla-estadisticas tbody tr:nth-child(even) {
+  background: rgba(241, 245, 249, 0.6);
+}
+
+.tabla-estadisticas tbody tr:hover {
+  background: #e9f7f3;
 }
 
 .tabla-estadisticas td:first-child {
@@ -213,6 +269,18 @@ button:disabled {
 
 .tabla-estadisticas td:not(:first-child) {
   text-align: center;
+}
+
+.cabecera-probabilidad-combinada,
+.probabilidad-combinada {
+  background: #d8f1e9 !important;
+  color: #075f54 !important;
+  font-weight: 800;
+}
+
+.probabilidad-combinada {
+  border-left: 2px solid #8ed1c2;
+  white-space: nowrap;
 }
 
 .periodo {
@@ -254,12 +322,62 @@ button:disabled {
   user-select: none;
 }
 
+.mercados {
+  margin-top: 8px;
+}
+
+.mercados-seccion > .titulo-seccion {
+  margin: 24px 0 12px;
+  padding: 14px 18px;
+  border: 1px solid #d8e5e4;
+  border-radius: 12px;
+  background: #fff;
+  color: #153e46;
+  box-shadow: 0 5px 16px rgba(15, 45, 59, 0.06);
+}
+
+.mercados-seccion > .titulo-seccion:first-child {
+  margin-top: 0;
+  color: #0f766e;
+  border: 0;
+  padding: 4px 0 12px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.mercados-seccion > .subtitulo-mercado,
+.mercado-jugador-colapsable,
+.jugadores-estadisticas-colapsable {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #dce8e8;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(15, 45, 59, 0.05);
+}
+
+.mercados-seccion > .subtitulo-mercado {
+  margin: 14px 0 0;
+  padding: 13px 16px;
+  color: #204653;
+  font-size: 1rem;
+}
+
+.tabla-estadisticas-wrapper {
+  margin: 0 0 16px;
+  overflow-x: auto;
+  border: 1px solid #dce8e8;
+  border-radius: 0 0 12px 12px;
+  background: #fff;
+  box-shadow: 0 5px 15px rgba(15, 45, 59, 0.05);
+}
+
 .mercado-jugador-colapsable {
   margin: 14px 0;
+  padding: 0 14px 14px;
 }
 
 .jugadores-estadisticas-colapsable {
   margin: 12px 0;
+  padding: 0 14px 14px;
 }
 
 .jugadores-estadisticas-colapsable > summary {
@@ -267,7 +385,8 @@ button:disabled {
   user-select: none;
   font-size: 18px;
   font-weight: 700;
-  color: #222;
+  color: #17424a;
+  padding: 14px 2px;
 }
 
 .mercado-jugador-colapsable > summary {
@@ -275,7 +394,12 @@ button:disabled {
   user-select: none;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #205461;
+  padding: 13px 2px;
+}
+
+details > summary::marker {
+  color: #0f766e;
 }
 
 .titulo-seccion-colapsable:focus-visible {
@@ -350,7 +474,29 @@ button:disabled {
    ============================================================ */
 
 @media (max-width: 900px) {
+  body {
+    padding: 20px 14px 42px;
+  }
+
   .equipos {
     grid-template-columns: 1fr;
+  }
+
+  .buscador {
+    padding: 17px;
+  }
+
+  .boton-secundario {
+    margin-left: 0;
+  }
+
+  .tabla-estadisticas {
+    font-size: 12px;
+    min-width: 560px;
+  }
+
+  .tabla-estadisticas th,
+  .tabla-estadisticas td {
+    padding: 8px;
   }
 }

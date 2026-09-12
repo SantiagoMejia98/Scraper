@@ -225,7 +225,15 @@ async function mostrarAnalisis(data, mostrarMensaje = true) {
   // ==========================================================
 
   if (resultados) {
-    resultados.style.display = "grid";
+    resultados.classList.remove("historial-visible");
+  }
+
+  const botonHistorial = document.getElementById("btnHistorial");
+
+  if (botonHistorial) {
+    botonHistorial.hidden = false;
+    botonHistorial.textContent = "Mostrar historial de partidos";
+    botonHistorial.setAttribute("aria-expanded", "false");
   }
 
   // ==========================================================
@@ -312,6 +320,13 @@ async function buscarPartidos() {
     "Buscando partidos y cargando estadísticas...";
 
   resultados.style.display = "none";
+  resultados.classList.remove("historial-visible");
+
+  const botonHistorial = document.getElementById("btnHistorial");
+
+  if (botonHistorial) {
+    botonHistorial.hidden = true;
+  }
 
   // ==========================================================
   // LIMPIAR MERCADOS
@@ -377,6 +392,25 @@ async function buscarPartidos() {
   } finally {
     boton.disabled = false;
   }
+}
+
+// ============================================================
+// MOSTRAR / OCULTAR HISTORIAL
+// ============================================================
+
+function alternarHistorialPartidos() {
+  const resultados = document.getElementById("resultados");
+  const boton = document.getElementById("btnHistorial");
+
+  if (!resultados || !boton) {
+    return;
+  }
+
+  const visible = resultados.classList.toggle("historial-visible");
+  boton.textContent = visible
+    ? "Ocultar historial de partidos"
+    : "Mostrar historial de partidos";
+  boton.setAttribute("aria-expanded", String(visible));
 }
 
 // ============================================================
