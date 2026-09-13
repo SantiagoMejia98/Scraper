@@ -9,6 +9,7 @@ from routes.estadisticas import (
 )
 
 from routes.mercados import mercados_bp
+from routes.fixtures import fixtures_bp
 # =============================================================================
 # FLASK
 # =============================================================================
@@ -31,6 +32,8 @@ app.register_blueprint(
 )
 
 app.register_blueprint(mercados_bp)
+
+app.register_blueprint(fixtures_bp)
 
 
 # =============================================================================
