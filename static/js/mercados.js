@@ -2001,7 +2001,7 @@ function crearMercadoAsistenciasJugadores(
       nombreLocal,
       nombreVisitante,
       "goalAssist",
-      [1, 2, 3, 4],
+      [1, 2, 3],
     )}
 
   `;
@@ -2273,7 +2273,7 @@ function crearMercadoAsistenciasJugadoresAnterior(
     nombreLocal,
     nombreVisitante,
     "goalAssist",
-    [1, 2, 3, 4],
+    [1, 2, 3],
   );
 }
 
