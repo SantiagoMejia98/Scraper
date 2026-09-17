@@ -26,7 +26,7 @@ HEADERS = {
 # HISTORIAL
 # =============================================================================
 
-PARTIDOS_POR_EQUIPO = 10
+PARTIDOS_POR_EQUIPO = 20
 
 SLEEP_ENTRE_PAGINAS = 1.5
 
